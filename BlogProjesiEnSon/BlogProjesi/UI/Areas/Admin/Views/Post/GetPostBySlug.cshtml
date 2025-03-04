@@ -1,0 +1,74 @@
+﻿@model Business.DTOs.PostDTOs.PostDetailDTO
+@using System.Linq;
+@{
+    ViewBag.Title = "Yazı Detayları";
+    Layout = "_AdminLayout";
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı',
+                        text: '@TempData["SuccessMessage"]'
+                    });
+            </text>
+        }
+    </script>
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5 class="card-title">@Model.Title</h5>
+    </div>
+    <div class="card-body">
+        <img src="@Model.FeaturedImage" alt="@Model.Title" class="img-fluid" style="max-width:400px;" />
+        <p>@Model.Content</p>
+        <strong>Kategori:</strong> @Model.CategoryName<br />
+        <strong>Yazar:</strong> @Model.Author?.UserName<br />
+        <strong>Oluşturulma Tarihi:</strong> @Model.CreatedAt.ToShortDateString()
+        @if (Model.UpdatedAt.HasValue)
+        {
+            <br />
+            <strong>Güncellenme Tarihi:</strong> @Model.UpdatedAt.Value.ToShortDateString()
+        }
+    </div>
+</div>
+
+<div class="mb-3">
+    <h3>Yorumlar</h3>
+    @if (Model.Comments.Any())
+    {
+        <div class="list-group">
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="list-group-item">
+                    <p>@comment.Content - <em>@comment.AuthorName</em></p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Yorum yok.</p>
+    }
+</div>
+
+<div class="mb-3">
+    <h3>Etiketler</h3>
+    @if (Model.Tags != null && Model.Tags.Any())
+    {
+        foreach (var tag in Model.Tags)
+        {
+            <span class="badge badge-info">@tag.TagName</span> @* veya @tag.Name, DTO'nuzdaki property ismine bağlı *@
+        }
+    }
+    else
+    {
+        <p>Etiket yok.</p>
+    }
+</div>

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Business.DTOs.TagDTOs.TagDTO>
+
+@{
+    ViewData["Title"] = "Popüler Etiketler";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-warning text-white">
+            <h4>Popüler Etiketler</h4>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <p class="text-muted">Popüler etiket bulunamadı.</p>
+            }
+            else
+            {
+                <ol class="list-group list-group-numbered">
+                    @foreach (var tag in Model)
+                    {
+                        <li class="list-group-item">@tag.Name</li>
+                    }
+                </ol>
+            }
+            <a asp-action="Index" class="btn btn-secondary mt-3">Geri Dön</a>
+        </div>
+    </div>
+</div>

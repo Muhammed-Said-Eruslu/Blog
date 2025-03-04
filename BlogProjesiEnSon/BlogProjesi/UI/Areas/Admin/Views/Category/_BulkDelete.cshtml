@@ -1,0 +1,36 @@
+﻿@model List<CategoryListDTO>
+
+<div class="bulk-actions mb-3">
+    <form asp-action="BulkDelete" method="post" id="bulkDeleteForm">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Seçili kategorileri silmek istediğinize emin misiniz?')">Seçileni Sil</button>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" /></th>
+                    <th>Kategori Adı</th>
+                    <th>Açıklama</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                        <tr>
+                            <td><input type="checkbox" name="ids" value="@Model[i].Id" /></td>
+                            <td>@Model[i].Name</td>
+                            <td>@Model[i].Description</td>
+                        </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<script>
+    document.getElementById('selectAll').addEventListener('click', function() {
+        var checkboxes = document.getElementsByName('ids');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+</script>

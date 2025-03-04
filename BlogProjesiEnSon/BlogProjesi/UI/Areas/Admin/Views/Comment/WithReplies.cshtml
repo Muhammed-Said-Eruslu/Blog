@@ -1,0 +1,38 @@
+﻿@using Business.DTOs.CommentsDTOs
+@model CommentWithRepliesDTO
+@{
+    ViewData["Title"] = "Yorum ve Cevapları";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h6>
+        </div>
+        <div class="card-body">
+            <div class="comment-main">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">@Model.AuthorName</h5>
+                        <p class="card-text">@Model.Content</p>
+                        <p class="text-muted">@Model.CreatedAt.ToString("f")</p>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3">Cevaplar (@Model.Replies.Count)</h5>
+
+                @foreach (var reply in Model.Replies)
+                {
+                    <div class="card mb-2 ml-5">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">@reply.AuthorName</h6>
+                            <p class="card-text">@reply.Content</p>
+                            <p class="text-muted small">@reply.CreatedDate.ToString("f")</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

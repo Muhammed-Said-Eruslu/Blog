@@ -1,0 +1,90 @@
+﻿@using Business.DTOs.PostTagDTOs
+@model PostTagCreateDTO
+
+@{
+    ViewData["Title"] = "PostTag - Create";
+    Layout = "_AdminLayout";
+}
+
+<!-- Select2 CSS (Dropdown Arama İçin) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-plus-circle"></i> Yeni PostTag Ekle
+            </h4>
+            <a asp-action="Index" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Geri
+            </a>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Post Seçimi -->
+                <div class="form-group">
+                    <label for="PostId"><i class="fas fa-sticky-note text-primary"></i> Post Seç</label>
+                    <select asp-for="PostId" class="form-control select2">
+                        <option value="">Bir post seçin...</option>
+                        @foreach (var post in ViewBag.Posts)
+                        {
+                            <option value="@post.Value">@post.Text</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.PostId, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Tag Seçimi -->
+                <div class="form-group">
+                    <label for="TagId"><i class="fas fa-hashtag text-success"></i> Tag Seç</label>
+                    <select asp-for="TagId" class="form-control select2">
+                        <option value="">Bir tag seçin...</option>
+                        @foreach (var tag in ViewBag.Tags)
+                        {
+                            <option value="@tag.Value">@tag.Text</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(m => m.TagId, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Aktiflik Durumu (Switch) -->
+                <div class="form-group">
+                    <label for="IsActive"><i class="fas fa-toggle-on text-success"></i> Aktiflik Durumu</label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="IsActiveSwitch" asp-for="IsActive">
+                        <label class="custom-control-label" for="IsActiveSwitch">Aktif</label>
+                    </div>
+                </div>
+
+                <!-- Butonlar -->
+                <div class="text-right">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Select2 JS (Dropdown Arama İçin) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Seçiniz...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+}

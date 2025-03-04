@@ -1,0 +1,61 @@
+﻿@using Business.DTOs.PostTagDTOs
+@model PostTagDTO
+@{
+    ViewData["Title"] = "PostTag - Düzenle";
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-edit"></i> PostTag Düzenle
+            </h4>
+            <a asp-action="Index" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Geri
+            </a>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Post Adı (Sadece Görüntüleme - Değiştirilemez) -->
+                <div class="form-group">
+                    <label for="PostTitle"><i class="fas fa-sticky-note text-primary"></i> Post Adı</label>
+                    <input type="text" class="form-control" value="@Model.PostTitle" readonly />
+                </div>
+
+                <!-- Tag Adı (Sadece Görüntüleme - Değiştirilemez) -->
+                <div class="form-group">
+                    <label for="TagName"><i class="fas fa-hashtag text-success"></i> Tag Adı</label>
+                    <input type="text" class="form-control" value="@Model.TagName" readonly />
+                </div>
+
+                <!-- Aktiflik Durumu (Switch) -->
+                <div class="form-group">
+                    <label for="IsActive"><i class="fas fa-toggle-on text-success"></i> Aktiflik Durumu</label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="IsActiveSwitch" asp-for="IsActive">
+                        <label class="custom-control-label" for="IsActiveSwitch">Aktif</label>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.IsActive, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Güncelle & Geri Butonları -->
+                <div class="text-right">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Güncelle
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+﻿@using Business.DTOs.CommentsDTOs
+@model CommentUpdateDTO
+@{
+    ViewData["Title"] = "Yorum Düzenle";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <!-- Gizli Alanlar -->
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="PostId" value="@Model.PostId" />
+                <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+                <input type="hidden" asp-for="ParentCommentId" value="@Model.ParentCommentId" />
+
+                <!-- Yorum İçeriği -->
+                <div class="form-group">
+                    <label asp-for="Content"></label>
+                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <!-- Yazar Adı -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="AuthorName"></label>
+                            <input asp-for="AuthorName" class="form-control" />
+                            <span asp-validation-for="AuthorName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Yazar E-posta -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="AuthorEmail"></label>
+                            <input asp-for="AuthorEmail" class="form-control" />
+                            <span asp-validation-for="AuthorEmail" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Güncelle</button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

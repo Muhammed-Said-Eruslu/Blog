@@ -1,0 +1,21 @@
+﻿@using Business.DTOs.PostDTOs
+@model PostDTO
+
+@{
+    ViewData["Title"] = "Tüm Etiketleri Sil";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Tüm Etiketleri Sil</h2>
+
+    <p>Post: <strong>@Model.Title</strong></p>
+    <p>Bu işlem, bu posta ait tüm etiketleri silecektir.</p>
+
+    <form asp-action="ClearTagsFromPost" method="post">
+        <input type="hidden" name="PostId" value="@Model.Id" />
+
+        <button type="submit" class="btn btn-danger">Tüm Etiketleri Kaldır</button>
+        <a href="@Url.Action("Index", "Post")" class="btn btn-secondary">Geri Dön</a>
+    </form>
+</div>

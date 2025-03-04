@@ -1,0 +1,147 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<!-- Örnek Admin Dashboard -->
+<div class="content-wrapper">
+    <div class="row mb-4">
+        <!-- Sayfa Başlığı -->
+        <div class="col-12">
+            <h1 class="text-dark">Yönetim Paneli</h1>
+            <p class="text-muted">Blog sitesindeki genel istatistikleri ve hızlı erişim kısayollarını buradan yönetebilirsiniz.</p>
+        </div>
+    </div>
+
+    <!-- İstatistik Kartları -->
+    <div class="row mb-4">
+        <!-- Toplam Yazı -->
+        <div class="col-md-3 grid-margin">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h4 class="mb-2">Toplam Yazı</h4>
+                    <h2>152</h2>
+                    <p class="mt-2">Son 24 saatte 3 yeni yazı eklendi.</p>
+                    <i class="mdi mdi-file-document-box mdi-48px float-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Kategori -->
+        <div class="col-md-3 grid-margin">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h4 class="mb-2">Toplam Kategori</h4>
+                    <h2>12</h2>
+                    <p class="mt-2">Yeni eklenen kategori yok.</p>
+                    <i class="mdi mdi-tag-multiple mdi-48px float-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Yorum -->
+        <div class="col-md-3 grid-margin">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h4 class="mb-2">Toplam Yorum</h4>
+                    <h2>485</h2>
+                    <p class="mt-2">Son 24 saatte 10 yeni yorum yapıldı.</p>
+                    <i class="mdi mdi-comment-multiple-outline mdi-48px float-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Kullanıcı -->
+        <div class="col-md-3 grid-margin">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h4 class="mb-2">Toplam Kullanıcı</h4>
+                    <h2>36</h2>
+                    <p class="mt-2">Son 24 saatte 2 yeni kayıt.</p>
+                    <i class="mdi mdi-account-multiple mdi-48px float-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Çizelge ve Kısa Yollar -->
+    <div class="row mb-4">
+        <!-- Örnek Grafik -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Aylık Yazı İstatistikleri</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Buraya bir chart kütüphanesi entegre edebilirsin (ör. Chart.js, Morris.js, ApexCharts vs.) -->
+                    <p class="text-muted">Grafik alanı</p>
+                    <div style="height: 300px; background: #f1f1f1; display: flex; align-items: center; justify-content: center;">
+                        <span class="text-muted">Burada Aylık Yazı Grafiği Görünecek</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hızlı Erişim Kartları -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Hızlı Erişim</h5>
+                </div>
+                <div class="card-body">
+                    <a href="@Url.Action("Create", "Post")" class="btn btn-primary btn-block mb-2">
+                        <i class="mdi mdi-plus"></i> Yeni Yazı Ekle
+                    </a>
+                    <a href="@Url.Action("Index", "Comment")" class="btn btn-info btn-block mb-2">
+                        <i class="mdi mdi-comment"></i> Yorum Yönetimi
+                    </a>
+                    <a href="@Url.Action("Index", "Category")" class="btn btn-success btn-block mb-2">
+                        <i class="mdi mdi-tag"></i> Kategori Yönetimi
+                    </a>
+                    <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="btn btn-warning btn-block">
+                        <i class="mdi mdi-account"></i> Kullanıcı Yönetimi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- En Popüler Yazılar veya Son Yazılar -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">En Popüler Yazılar</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Nasıl Programcı Olunur?
+                            <span class="badge badge-primary badge-pill">1300 Görüntüleme</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Entity Framework Tüyoları
+                            <span class="badge badge-primary badge-pill">945 Görüntüleme</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            ASP.NET Core vs. Node.js
+                            <span class="badge badge-primary badge-pill">678 Görüntüleme</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Son Eklenen Yazılar</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">C# 10 Yenilikleri</li>
+                        <li class="list-group-item">Blazor ile Dynamic Component Kullanımı</li>
+                        <li class="list-group-item">SQL Index Kullanımı</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

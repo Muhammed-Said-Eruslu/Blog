@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Posta Doğrulama</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007BFF;
+            background: #e8f0fe;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://yourlogo.com/logo.png" alt="Şirket Logosu">
+        </div>
+        <div class="title">E-Posta Doğrulama Kodu</div>
+        <p>Merhaba,</p>
+        <p>Aşağıdaki kodu kullanarak e-posta adresinizi doğrulayabilirsiniz.</p>
+        <div class="code">{{CODE}}</div>
+        <p>Kodun geçerlilik süresi 5 dakikadır.</p>
+        <div class="footer">
+            © 2024 Blog Projesi | Tüm Hakları Saklıdır.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+﻿@model Business.DTOs.PostDTOs.PostCreateDTO
+@{
+    ViewBag.Title = "Yeni Yazı Oluştur";
+    Layout = "_AdminLayout";
+}
+
+@section Styles {
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 1px solid #ccc;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.375rem;
+            border: none;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+            .btn-success:hover {
+                background-color: #218838;
+            }
+
+        .card {
+            border: 1px solid #e3e6f0;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,.15);
+            margin-bottom: 2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        #imagePreview {
+            max-width: 200px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Select2 başlatma
+            $('select[multiple]').select2({
+                placeholder: "Etiket seçiniz...",
+                allowClear: true
+            });
+            $('select:not([multiple])').select2({
+                placeholder: "Seçiniz...",
+                allowClear: true
+            });
+
+            // Öne çıkan resim önizleme
+            $('#FeaturedImageFile').change(function () {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result).fadeIn();
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+    </script>
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="mb-4">Yeni Yazı Oluştur</h2>
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <!-- Başlık -->
+                        <div class="form-group">
+                            <label asp-for="Title" class="form-label">Başlık</label>
+                            <input asp-for="Title" class="form-control" placeholder="Yazı başlığı giriniz" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- İçerik -->
+                        <div class="form-group">
+                            <label asp-for="Content" class="form-label">İçerik</label>
+                            <textarea asp-for="Content" class="form-control" rows="5" placeholder="Yazı içeriğini giriniz"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Video Dosyası (dosya inputu, modeldeki VideoUrl alanına değil) -->
+                        <div class="form-group">
+                            <label class="form-label">Video Dosyası Seçiniz</label>
+                            <input type="file" id="VideoFile" name="VideoFile" class="form-control" accept="video/*" />
+                        </div>
+
+                        <!-- Özet -->
+                        <div class="form-group">
+                            <label asp-for="Excerpt" class="form-label">Özet</label>
+                            <textarea asp-for="Excerpt" class="form-control" placeholder="Yazı özetini giriniz"></textarea>
+                            <span asp-validation-for="Excerpt" class="text-danger"></span>
+                        </div>
+
+                        <!-- Öne Çıkan Resim -->
+                        <div class="form-group">
+                            <label class="form-label">Öne Çıkan Resim</label>
+                            <input type="file" id="FeaturedImageFile" name="FeaturedImageFile" class="form-control" accept="image/*" />
+                            <img id="imagePreview" src="#" alt="Resim Önizleme" />
+                        </div>
+
+                        <!-- Kategori -->
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="form-label">Kategori</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+                                <option value="">Kategori Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Yazar -->
+                        <div class="form-group">
+                            <label asp-for="UserId" class="form-label">Yazar</label>
+                            <select asp-for="UserId" asp-items="ViewBag.Users" class="form-control">
+                                <option value="">Yazar Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Etiketler -->
+                        <div class="form-group">
+                            <label asp-for="TagIds" class="form-label">Etiketler</label>
+                            <select asp-for="TagIds" asp-items="ViewBag.Tags" class="form-control" multiple>
+                                <option value="">Etiket Seçiniz</option>
+                            </select>
+                            <span asp-validation-for="TagIds" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Oluştur</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

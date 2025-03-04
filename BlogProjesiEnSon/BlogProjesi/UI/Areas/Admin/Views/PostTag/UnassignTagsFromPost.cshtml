@@ -1,0 +1,28 @@
+﻿@using Business.DTOs.PostTagDTOs
+@model PostTagDTO
+
+@{
+    ViewData["Title"] = "Post'tan Etiket Kaldır";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Post'tan Etiket Kaldır</h2>
+
+    <form asp-action="UnassignTagsFromPost" method="post">
+        <input type="hidden" name="PostId" value="@Model.PostId" />
+
+        <div class="mb-3">
+            <label for="TagIds" class="form-label">Kaldırılacak Etiketler</label>
+            <select name="TagIds" class="form-select" multiple>
+                @foreach (var tag in Model.AssignedTags)
+                {
+                    <option value="@tag.Id">@tag.Name</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Kaldır</button>
+        <a href="@Url.Action("Index", "Post")" class="btn btn-secondary">Geri Dön</a>
+    </form>
+</div>

@@ -1,0 +1,38 @@
+﻿@using Business.DTOs.TagDTOs
+@model List<TagDTO>
+
+@{
+    ViewData["Title"] = "Post'a Ait Etiketler";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Post'a Ait Etiketler</h2>
+
+    @if (Model.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Etiket ID</th>
+                    <th>Etiket Adı</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tag in Model)
+                {
+                    <tr>
+                        <td>@tag.Id</td>
+                        <td>@tag.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">Bu post için etiket bulunamadı.</p>
+    }
+
+    <a href="@Url.Action("Index", "Post")" class="btn btn-secondary">Geri Dön</a>
+</div>

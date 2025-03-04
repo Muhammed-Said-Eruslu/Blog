@@ -1,0 +1,148 @@
+﻿@using Business.DTOs.CommentsDTOs
+@using UI.Areas.Admin.Truncate;
+@model List<CommentListDTO>
+@{
+    ViewData["Title"] = "Yorum Yönetimi";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <!-- Başlık -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+    </div>
+
+    <!-- Filtreleme Butonları -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filtreleme Seçenekleri</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <form method="get" asp-action="ByUser" class="form-inline">
+                        <div class="input-group">
+                            <input type="text" name="userId" class="form-control" placeholder="Kullanıcı ID" required />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Kullanıcı Yorumları
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <form method="get" asp-action="ByPost" class="form-inline">
+                        <div class="input-group">
+                            <input type="text" name="postId" class="form-control" placeholder="Yazı ID" required />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Yazıya Göre Yorumlar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <a asp-action="RecentComments" class="btn btn-info btn-block">
+                        <i class="fas fa-clock"></i> Son Yorumlar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yorumlar Tablosu -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Yorum Listesi</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>İçerik</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Yazar</th>
+                            <th>Yazı ID</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Content.Truncate(50)</td>
+                                <td>@item.CreatedDate.ToString("dd MMM yyyy")</td>
+                                <td>@item.AuthorName</td>
+                                <td>@item.PostId</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                            <i class="fas fa-info"></i> Detaylar
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Güncelle
+                                        </a>
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">
+                                            <i class="fas fa-trash"></i> Sil
+                                        </button>
+                                        <a asp-action="WithReplies" asp-route-commentId="@item.Id" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-comments"></i> Yanıtlar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Yeni Yorum Ekle Butonu -->
+<a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <i class="fas fa-plus fa-sm text-white-50"></i> Test Yorumu Ekle
+</a>
+<!-- SweetAlert ve Silme İşlemi -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    let commentId = this.getAttribute("data-id");
+
+                    Swal.fire({
+                        title: "Emin misiniz?",
+                        text: "Bu yorumu geri alamazsınız!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Evet, sil!",
+                        cancelButtonText: "İptal"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/Admin/Comment/Delete/${commentId}`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ id: commentId })
+                            }).then(response => {
+                                if (response.ok) {
+                                    Swal.fire("Silindi!", "Yorum başarıyla silindi.", "success")
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire("Hata!", "Yorum silinemedi.", "error");
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

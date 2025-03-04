@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Business.DTOs.TagDTOs.TagDTO>
+
+@{
+    ViewData["Title"] = "Post'a Ait Etiketler";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h4>Post'a Ait Etiketler</h4>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <p class="text-muted">Bu gönderiye ait etiket bulunmamaktadır.</p>
+            }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var tag in Model)
+                    {
+                        <li class="list-group-item">@tag.Name</li>
+                    }
+                </ul>
+            }
+            <a asp-action="Index" class="btn btn-secondary mt-3">Geri Dön</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+﻿@model UI.Areas.User.Models.AccountVMs.SendMailVM
+
+@{
+    ViewData["Title"] = "E-Posta Doğrulama";
+    Layout = "_UserLayout";
+}
+
+<style>
+    /* Kart Gölgelendirme ve Yumuşak Kenarlar */
+    .verify-card {
+        animation: fadeInUp 0.6s ease-in-out;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+        /* Başlık için Arkaplan ve Animasyon */
+        .verify-card .card-header {
+            background: linear-gradient(45deg, #007bff, #17a2b8);
+            animation: headerFade 1.2s ease-in-out;
+        }
+
+    /* Input İçin Rahatlatıcı Animasyon */
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #ddd;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+    /* Onayla Butonu Hover Animasyonu */
+    .btn-verify {
+        transition: all 0.3s ease-in-out;
+        background: #17a2b8;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+
+        .btn-verify:hover {
+            background: #007bff;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+    /* Animasyonlar */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes headerFade {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card verify-card">
+                <div class="card-header text-white text-center">
+                    <h3 class="mb-0">E-Posta Doğrulama</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-center text-muted">
+                        E-Posta adresinize gönderilen doğrulama kodunu girin.
+                    </p>
+                    <form asp-action="EmailConfirm" method="post">
+                        <div class="mb-4">
+                            <label asp-for="UserCode" class="form-label">Doğrulama Kodu</label>
+                            <input asp-for="UserCode" class="form-control text-center" placeholder="123456">
+                            <span asp-validation-for="UserCode" class="text-danger"></span>
+                        </div>
+
+                        <!-- RegisterVM ve ConfirmCode Verilerini Gizli Alanlarla Gönder -->
+                        <input type="hidden" asp-for="RegisterVM.Email" />
+                        <input type="hidden" asp-for="RegisterVM.Password" />
+                        <input type="hidden" asp-for="RegisterVM.FirstName" />
+                        <input type="hidden" asp-for="RegisterVM.LastName" />
+                        <input type="hidden" asp-for="RegisterVM.BirthDate" />
+                        <input type="hidden" asp-for="RegisterVM.PhotoUrl" />
+                        <input type="hidden" asp-for="RegisterVM.Gender" />
+                        <input type="hidden" asp-for="ConfirmCode" />
+
+                        <button type="submit" class="btn btn-verify w-100">Onayla</button>
+                    </form>
+
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-1">Doğrulama kodu ulaşmadı mı?</p>
+                    <form asp-action="ResendConfirmMail" method="post">
+                        <input type="hidden" asp-for="RegisterVM.Email" />
+                        <button type="submit" class="btn btn-link text-primary">Tekrar Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

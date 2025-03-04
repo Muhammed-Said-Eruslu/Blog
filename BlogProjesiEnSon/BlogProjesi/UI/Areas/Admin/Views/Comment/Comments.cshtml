@@ -1,0 +1,31 @@
+﻿@using Business.DTOs.CommentsDTOs
+@model List<CommentListDTO>
+
+@{
+    ViewData["Title"] = "Yorumlar";
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Yazar</th>
+                <th>İçerik</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in Model)
+            {
+                <tr>
+                    <td>@comment.Id</td>
+                    <td>@comment.AuthorName</td>
+                    <td>@comment.Content</td>
+                    <td>@comment.CreatedDate.ToString("dd MMM yyyy ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,48 @@
+﻿@model Business.DTOs.TagDTOs.TagDTO
+
+@{
+    ViewData["Title"] = "Etiket Detayları";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-info text-white">
+            <h4>Etiket Detayları</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Etiket Adı:</strong> @Model.Name</p>
+            <p><strong>Slug (URL Adı):</strong> @Model.Slug</p>
+            <p><strong>Açıklama:</strong> @(string.IsNullOrEmpty(Model.Description) ? "Açıklama eklenmemiş." : Model.Description)</p>
+            <p><strong>Durum:</strong> @Html.Raw(Model.IsActive ? "<span class='badge bg-success'>Aktif</span>" : "<span class='badge bg-danger'>Pasif</span>")</p>
+
+            <p><strong>Oluşturulma Tarihi:</strong> @Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+
+            @if (Model.PostTags != null && Model.PostTags.Any())
+            {
+                <h5 class="mt-4">Bu Etiketi Kullanan Gönderiler</h5>
+                <ul class="list-group">
+                    @foreach (var postTag in Model.PostTags)
+                    {
+                        <li class="list-group-item">
+                            <a asp-area="Admin" asp-controller="Post" asp-action="Details" asp-route-id="@postTag.PostId">
+                                @postTag.PostTitle
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="mt-4 text-muted">Bu etiket herhangi bir gönderiye eklenmemiş.</p>
+            }
+
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Düzenle
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+            </div>
+        </div>
+    </div>
+</div>

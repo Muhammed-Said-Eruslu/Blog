@@ -1,0 +1,84 @@
+﻿@using Business.DTOs.PostTagDTOs
+@model PostTagDTO
+@{
+    ViewData["Title"] = "PostTag - Details";
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-tags"></i> PostTag Detayları
+            </h4>
+            <a asp-action="Index" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left"></i> Geri
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-id-badge text-secondary"></i> PostTag ID</h5>
+                    <p class="text-muted">@Model.Id</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5><i class="fas fa-sticky-note text-primary"></i> Post Adı</h5>
+                    <p class="badge badge-primary p-2">@Model.PostTitle</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5><i class="fas fa-hashtag text-success"></i> Tag Adı</h5>
+                    <p class="badge badge-success p-2">@Model.TagName</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5><i class="fas fa-toggle-on text-info"></i> Aktif Mi?</h5>
+                    <p>
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge badge-success"><i class="fas fa-check"></i> Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger"><i class="fas fa-times"></i> Pasif</span>
+                        }
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5><i class="fas fa-calendar-alt text-warning"></i> Oluşturulma Tarihi</h5>
+                    <p class="text-muted">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5><i class="fas fa-edit text-dark"></i> Güncellenme Tarihi</h5>
+                    <p class="text-muted">
+                        @(Model.UpdatedAt.HasValue
+                            ? Model.UpdatedAt.Value.ToString("dd MMM yyyy HH:mm")
+                            : "Henüz Güncellenmemiş")
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-right">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Geri
+            </a>
+        </div>
+    </div>
+</div>
+

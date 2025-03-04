@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Elen - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">
+
+    <!-- CSS links replaced with ~/elen-master/ -->
+    <link rel="stylesheet" href="~/elen-master/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="~/elen-master/css/animate.css">
+
+    <link rel="stylesheet" href="~/elen-master/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/elen-master/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/elen-master/css/magnific-popup.css">
+
+    <link rel="stylesheet" href="~/elen-master/css/aos.css">
+
+    <link rel="stylesheet" href="~/elen-master/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="~/elen-master/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/elen-master/css/jquery.timepicker.css">
+
+    <!-- Notyf Kütüphaneleri -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+
+    <link rel="stylesheet" href="~/elen-master/css/flaticon.css">
+    <link rel="stylesheet" href="~/elen-master/css/icomoon.css">
+    <link rel="stylesheet" href="~/elen-master/css/style.css">
+    @inject AspNetCoreHero.ToastNotification.Abstractions.INotyfService Notyf
+    <style>
+        .user-panel {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .user-btn {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        /* Dropdown düğmesi */
+        .dropdown button {
+            background-color: #333;
+            color: white;
+            width: 100%;
+        }
+
+        /* Dropdown menü */
+        .dropdown-menu {
+            width: 100%;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+            /* Dropdown menüdeki bağlantılar */
+            .dropdown-menu a {
+                display: block;
+                padding: 10px;
+                text-decoration: none;
+                color: black;
+            }
+
+                /* Üzerine gelindiğinde */
+                .dropdown-menu a:hover {
+                    background-color: #f8f9fa;
+                }
+
+    </style>
+</head>
+<body>
+
+    <div id="colorlib-page">
+        <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+        <aside id="colorlib-aside" role="complementary" class="js-fullheight text-center">
+            <h1 id="colorlib-logo"><a href="~/elen-master/index.html">elen<span>.</span></a></h1>
+            <!-- Kullanıcı Paneli (Giriş / Çıkış / Profil) -->
+            <div class="user-panel">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <!-- Kullanıcı giriş yapmışsa -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle user-btn" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-user"></i> @User.Identity.Name
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="@Url.Action("Profile","Account")"><i class="icon-user"></i> Profil</a>
+                            <a class="dropdown-item" href="@Url.Action("LikedPosts","Account")"><i class="icon-heart"></i> Beğendiklerim</a>
+                            <a class="dropdown-item" href="@Url.Action("MyComments","Account")"><i class="icon-comment"></i> Yorumlarım</a>
+                            <a class="dropdown-item" href="@Url.Action("Logout","Account")"><i class="icon-sign-out"></i> Çıkış Yap</a>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <!-- Kullanıcı giriş yapmamışsa -->
+                    <div class="login-register">
+                        <a href="~/User/Account/Login" class="btn btn-primary user-btn"><i class="icon-sign-in"></i> Giriş Yap</a>
+                        <a href="~/User/Account/Register" class="btn btn-outline-primary user-btn"><i class="icon-user-plus"></i> Kayıt Ol</a>
+                    </div>
+                }
+            </div>
+            <nav id="colorlib-main-menu" role="navigation">
+                <ul>
+                    <li class="colorlib-active"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
+                    <li><a href="~/elen-master/photography.html">Fotoğraflar</a></li>
+                    <li><a href="~/elen-master/travel.html">Seyahat</a></li>
+                    <li><a href="~/elen-master/fashion.html">Moda</a></li>
+                    <li><a href="~/elen-master/about.html">Hakkımda</a></li>
+                    <li><a href="~/elen-master/contact.html">İletişim</a></li>
+                </ul>
+            </nav>
+
+            <div class="colorlib-footer">
+                <p>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    Telif Hakları &copy;<script>document.write(new Date().getFullYear());</script>
+                    Tüm Hakları Saklıdır | Created By Muhammed Said Eruslu
+                    
+                    <ul>
+                        <li><a href="#"><i class="icon-facebook"></i></a></li>
+                        <li><a href="#"><i class="icon-twitter"></i></a></li>
+                        <li><a href="#"><i class="icon-instagram"></i></a></li>
+                        <li><a href="#"><i class="icon-linkedin"></i></a></li>
+                    </ul>
+            </div>
+        </aside> <!-- END COLORLIB-ASIDE -->
+
+        <div id="colorlib-main">
+  
+            @RenderBody()
+         @*    @{
+                var notyf = Context.RequestServices.GetService(typeof(AspNetCoreHero.ToastNotification.Abstractions.INotyfService))
+                as AspNetCoreHero.ToastNotification.Abstractions.INotyfService;
+            }
+            @notyf?.Display() *@
+
+
+
+            <!-- Start of the Footer part (down) from original code -->
+            <footer class="ftco-footer ftco-bg-dark ftco-section">
+                <div class="container px-md-5">
+                    <div class="row mb-5">
+                        <div class="col-md">
+                            <div class="ftco-footer-widget mb-4 ml-md-4">
+                                <h2 class="ftco-heading-2">Category</h2>
+                                <ul class="list-unstyled categories">
+                                    <li><a href="#">Photography <span>(6)</span></a></li>
+                                    <li><a href="#">Fashion <span>(8)</span></a></li>
+                                    <li><a href="#">Technology <span>(2)</span></a></li>
+                                    <li><a href="#">Travel <span>(2)</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="ftco-footer-widget mb-4">
+                                <h2 class="ftco-heading-2">Archives</h2>
+                                <ul class="list-unstyled categories">
+                                    <li><a href="#">October 2018 <span>(6)</span></a></li>
+                                    <li><a href="#">September 2018 <span>(6)</span></a></li>
+                                    <li><a href="#">August 2018 <span>(8)</span></a></li>
+                                    <li><a href="#">July 2018 <span>(2)</span></a></li>
+                                    <li><a href="#">June 2018 <span>(7)</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="ftco-footer-widget mb-4">
+                                <h2 class="ftco-heading-2">Sorun Mu Var?</h2>
+                                <div class="block-23 mb-3">
+                                    <ul>
+                                        <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
+                                        <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
+                                        <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@yourdomain.com</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                Telif Hakları &copy;<script>document.write(new Date().getFullYear());</script>
+                                Her hakkı saklıdır | Created By Muhammed Said Eruslu
+                                
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of the Footer part -->
+
+        </div><!-- END COLORLIB-MAIN -->
+    </div><!-- END COLORLIB-PAGE -->
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" /><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" /></svg></div>
+
+
+    <script src="~/elen-master/js/jquery.min.js"></script>
+    <script src="~/elen-master/js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="~/elen-master/js/popper.min.js"></script>
+    <script src="~/elen-master/js/bootstrap.min.js"></script>
+    <script src="~/elen-master/js/jquery.easing.1.3.js"></script>
+    <script src="~/elen-master/js/jquery.waypoints.min.js"></script>
+    <script src="~/elen-master/js/jquery.stellar.min.js"></script>
+    <script src="~/elen-master/js/owl.carousel.min.js"></script>
+    <script src="~/elen-master/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/elen-master/js/aos.js"></script>
+    <script src="~/elen-master/js/jquery.animateNumber.min.js"></script>
+    <script src="~/elen-master/js/bootstrap-datepicker.js"></script>
+    <script src="~/elen-master/js/jquery.timepicker.min.js"></script>
+    <script src="~/elen-master/js/scrollax.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&sensor=false"></script>
+    <script src="~/elen-master/js/google-map.js"></script>
+    <script src="~/elen-master/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+        });
+    </script>
+
+</body>
+</html>

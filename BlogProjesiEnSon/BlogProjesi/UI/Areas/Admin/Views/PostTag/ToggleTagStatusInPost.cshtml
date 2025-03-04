@@ -1,0 +1,22 @@
+﻿@using Business.DTOs.PostTagDTOs
+@model PostTagDTO
+
+@{
+    ViewData["Title"] = "Post Tag Aktiflik Değiştir";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Post Tag Aktiflik Değiştir</h2>
+
+    <form asp-action="ToggleTagStatusInPost" method="post">
+        <input type="hidden" name="PostTagId" value="@Model.Id" />
+
+
+        <p>Etiket: <strong>@Model.TagName</strong></p>
+        <p>Şu anki Durum: <strong>@(Model.IsActive ? "Aktif" : "Pasif")</strong></p>
+
+        <button type="submit" class="btn btn-warning">Durumu Değiştir</button>
+        <a href="@Url.Action("Index", "Post")" class="btn btn-secondary">Geri Dön</a>
+    </form>
+</div>

@@ -1,0 +1,286 @@
+﻿@model Business.DTOs.UserDTOs.UserProfileDTO
+@{
+    ViewData["Title"] = "Profilim";
+    Layout = "_UserLayout";
+}
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <!-- Başarılı/Hata Mesajları -->
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["Success"]
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+
+                <!-- PROFİL BİLGİLERİ KARTI -->
+                <div class="card shadow-lg mb-5">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Profil Yönetimi</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Profil Resmi Alanı -->
+                        <div class="text-center mb-4">
+                            <div class="avatar-upload d-inline-block">
+                                <div class="avatar-preview rounded-circle shadow"
+                                     style="background-image: url('/images/avatar/@Model.ProfileImage');
+                                            width: 150px;
+                                            height: 150px;
+                                            background-size: cover;
+                                            background-position: center;">
+                                </div>
+                            </div>
+                            <!-- Profil Resmi Değiştir -->
+                            <form method="post"
+                                  asp-action="UploadProfileImage"
+                                  asp-controller="Account"
+                                  asp-area="User"
+                                  enctype="multipart/form-data"
+                                  class="mt-3 w-50 mx-auto">
+                                <div class="custom-file">
+                                    <input type="file"
+                                           name="ProfileImage"
+                                           class="custom-file-input"
+                                           id="profileImageUpload"
+                                           accept="image/*"
+                                           onchange="this.form.submit()">
+                                    <label class="custom-file-label" for="profileImageUpload">
+                                        <i class="fas fa-camera mr-2"></i>Profil Resmini Değiştir
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Profil Bilgileri Formu -->
+                        <form asp-action="UpdateProfile"
+                              asp-controller="Account"
+                              asp-area="User"
+                              method="post">
+                            <!-- Kullanıcının E-posta'sı Formda Gönderilsin diye hidden input ekliyoruz -->
+                            <input type="hidden" name="Email" value="@Model.Email" />
+
+                            <div class="form-row">
+                                <div class="col-md-6 form-group">
+                                    <label for="FullName" class="font-weight-bold">Ad Soyad</label>
+                                    <input type="text"
+                                           name="FullName"
+                                           class="form-control form-control-lg"
+                                           value="@Model.FullName"
+                                           required />
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    <label for="UserName" class="font-weight-bold">Kullanıcı Adı</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">@@</span>
+                                        </div>
+                                        <input type="text"
+                                               name="UserName"
+                                               class="form-control form-control-lg"
+                                               value="@Model.UserName"
+                                               required />
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Benzersiz bir kullanıcı adı belirleyin.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">E-posta Adresi</label>
+                                <input type="email"
+                                       class="form-control form-control-lg"
+                                       value="@Model.Email"
+                                       readonly />
+                                <!-- 'readonly' -> Kullanıcı görür ama değiştiremez. -->
+                            </div>
+
+                            <div class="text-right">
+                                <button type="submit"
+                                        class="btn btn-primary btn-lg px-4 mt-2">
+                                    <i class="fas fa-save mr-2"></i>Profili Güncelle
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ŞİFRE DEĞİŞTİRME KARTI -->
+                <div class="card shadow-lg">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0"><i class="fas fa-lock mr-2"></i> Şifre Değiştir</h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="ChangePassword"
+                              asp-controller="Account"
+                              asp-area="User"
+                              method="post"
+                              id="passwordForm">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Mevcut Şifre</label>
+                                <input type="password"
+                                       name="CurrentPassword"
+                                       class="form-control form-control-lg"
+                                       required />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Yeni Şifre</label>
+                                <input type="password"
+                                       name="NewPassword"
+                                       id="newPassword"
+                                       class="form-control form-control-lg"
+                                       required
+                                       pattern="^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$!%*?&]{8,}$"
+                                       title="En az 8 karakter, bir büyük harf ve bir rakam içermeli.">
+                                <div class="bg-light border rounded mt-2 p-2">
+                                    <small class="requirement d-block mb-1" data-rule="length">
+                                        <i class="fas fa-times text-danger"></i> En az 8 karakter
+                                    </small>
+                                    <small class="requirement d-block mb-1" data-rule="uppercase">
+                                        <i class="fas fa-times text-danger"></i> En az 1 büyük harf
+                                    </small>
+                                    <small class="requirement d-block mb-1" data-rule="number">
+                                        <i class="fas fa-times text-danger"></i> En az 1 rakam
+                                    </small>
+                                </div>
+                                <!-- Caps Lock Uyarısı -->
+                                <div id="capsLockWarning" class="mt-2 d-none text-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> Caps Lock açık olabilir!
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Yeni Şifre (Tekrar)</label>
+                                <input type="password"
+                                       name="ConfirmPassword"
+                                       id="confirmPassword"
+                                       class="form-control form-control-lg"
+                                       required />
+                                <div id="passwordMatch" class="mt-2 d-none text-success">
+                                    <i class="fas fa-check"></i> Şifreler eşleşiyor
+                                </div>
+                                <div id="passwordMismatch" class="mt-2 d-none text-danger">
+                                    <i class="fas fa-times"></i> Şifreler eşleşmiyor!
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <button type="submit"
+                                        class="btn btn-danger btn-lg px-4 mt-3"
+                                        id="submitPasswordBtn"
+                                        disabled>
+                                    <i class="fas fa-key mr-2"></i> Şifreyi Değiştir
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Sadece örnek stiller */
+
+    .avatar-upload {
+        position: relative;
+        max-width: 150px;
+        margin: 0 auto;
+    }
+    .avatar-preview {
+        background-size: cover;
+        background-position: center;
+        border: 3px solid #fff;
+    }
+    .custom-file-label::after {
+        content: \"Gözat\";
+    }
+</style>
+
+<script>
+    // ==== Genişletilmiş Şifre Doğrulama ====
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const requirements = document.querySelectorAll('.requirement');
+    const submitPasswordBtn = document.getElementById('submitPasswordBtn');
+    const capsLockWarning = document.getElementById('capsLockWarning');
+
+    // Kurallar: min 8 karakter, 1 büyük harf, 1 rakam
+    function checkPasswordValidity() {
+        const password = newPassword.value;
+        const rules = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            number: /\\d/.test(password)
+        };
+
+        requirements.forEach(req => {
+            const rule = req.dataset.rule; 
+            const icon = req.querySelector('i');
+            if (rules[rule]) {
+                icon.classList.replace('fa-times', 'fa-check');
+                icon.classList.replace('text-danger', 'text-success');
+            } else {
+                icon.classList.replace('fa-check', 'fa-times');
+                icon.classList.replace('text-success', 'text-danger');
+            }
+        });
+
+        return Object.values(rules).every(val => val === true);
+    }
+
+    // Şifreler eşleşiyor mu?
+    function checkPasswordMatch() {
+        const match = (newPassword.value === confirmPassword.value);
+        document.getElementById('passwordMatch').classList.toggle('d-none', !match);
+        document.getElementById('passwordMismatch').classList.toggle('d-none', match);
+        return match;
+    }
+
+    // Butonun aktif/pasif olması
+    function updatePasswordButton() {
+        const isValid = checkPasswordValidity() && checkPasswordMatch();
+        submitPasswordBtn.disabled = !isValid;
+    }
+
+    // Caps Lock Uyarısı
+    const checkCapsLock = (e) => {
+        if (e.getModifierState && e.getModifierState('CapsLock')) {
+            capsLockWarning.classList.remove('d-none');
+        } else {
+            capsLockWarning.classList.add('d-none');
+        }
+    };
+    newPassword.addEventListener('keyup', checkCapsLock);
+    confirmPassword.addEventListener('keyup', checkCapsLock);
+
+    // Şifre alanlarında anlık kontrol
+    newPassword.addEventListener('input', updatePasswordButton);
+    confirmPassword.addEventListener('input', updatePasswordButton);
+
+    // Form gönderimde son kontrol
+    document.getElementById('passwordForm').addEventListener('submit', (e) => {
+        if (!checkPasswordValidity() || !checkPasswordMatch()) {
+            e.preventDefault();
+            alert('Lütfen şifre kurallarına uyduğunuzdan ve şifrelerin eşleştiğinden emin olun!');
+        }
+    });
+</script>

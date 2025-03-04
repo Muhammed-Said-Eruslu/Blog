@@ -1,0 +1,202 @@
+﻿@using Business.DTOs.TagDTOs
+@model IEnumerable<TagDTO>
+
+@{
+    ViewData["Title"] = "Etiket Listesi";
+    Layout = "_AdminLayout";
+}
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@Html.AntiForgeryToken() <!-- CSRF Token Eklendi -->
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="fas fa-tags"></i> Etiket Listesi
+            </h4>
+            <a asp-action="Create" class="btn btn-light">
+                <i class="fas fa-plus-circle"></i> Yeni Etiket Ekle
+            </a>
+        </div>
+
+        <div class="card-body">
+            <!-- Yardımcı Metotlar -->
+            <div class="mb-3">
+                <a asp-action="GetPopularTags" asp-route-count="5" class="btn btn-info">
+                    <i class="fas fa-fire"></i> Popüler Etiketler
+                </a>
+             
+            </div>
+
+            <!-- Başarı / Hata Mesajları -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="tagTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Etiket Adı</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tag in Model.Select((item, index) => new { Item = item, Index = index + 1 }))
+                        {
+                            <tr id="row_@tag.Item.Id">
+                                <td>@tag.Index</td>
+                                <td>@tag.Item.Name</td>
+                                <td id="status_@tag.Item.Id">
+                                    @if (tag.Item.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@tag.Item.Id"
+                                       class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> Detay
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@tag.Item.Id"
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </a>
+
+                                    @if (tag.Item.PostId != null)  // Eğer PostId varsa, butonu göster
+                                    {
+                                        <a asp-action="GetTagsByPostId" asp-route-postId="@tag.Item.PostId"
+                                           class="btn btn-sm btn-secondary">
+                                            <i class="fas fa-list"></i> Gönderiye Ait Etiketler
+                                        </a>
+                                    }
+
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="confirmDelete('@tag.Item.Id')">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- jQuery & DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            // CSRF Token'ı al ve AJAX isteklerine otomatik olarak ekle
+            let csrfToken = $('input[name="__RequestVerificationToken"]').val();
+            $.ajaxSetup({
+                headers: {
+                    "RequestVerificationToken": csrfToken
+                }
+            });
+
+            $('#tagTable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json"
+                }
+            });
+        });
+
+        // Etiket durumu değiştirme
+        function toggleTagActivation(tagId) {
+            $.ajax({
+                url: `/Admin/Tag/ToggleTagActivation/${tagId}`,
+                type: "POST",
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.success) {
+                        let statusElement = $("#status_" + tagId);
+                        if (statusElement.text().trim() === "Aktif") {
+                            statusElement.html('<span class="badge bg-danger">Pasif</span>');
+                        } else {
+                            statusElement.html('<span class="badge bg-success">Aktif</span>');
+                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı!',
+                            text: response.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Hata!', response.message, 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Hata:", xhr.responseText);
+                    Swal.fire('Hata!', 'İşlem gerçekleştirilemedi.', 'error');
+                }
+            });
+        }
+
+        // Etiket silme işlemi
+        function confirmDelete(tagId) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu etiketi silmek istediğinize emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Admin/Tag/DeleteConfirmed/${tagId}`,
+                        type: "POST",
+                        contentType: "application/json",
+                        success: function (response) {
+                            if (response.success) {
+                                $("#row_" + tagId).fadeOut(500, function () {
+                                    $(this).remove();
+                                });
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Silindi!',
+                                    text: response.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            } else {
+                                Swal.fire('Hata!', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Hata:", xhr.responseText);
+                            Swal.fire('Hata!', 'Silme işlemi başarısız.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

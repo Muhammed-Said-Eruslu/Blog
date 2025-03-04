@@ -1,0 +1,257 @@
+﻿@model Business.DTOs.PostDTOs.PaginatedList<Business.DTOs.PostDTOs.PostListDTO>
+@{
+    Layout = "_UserLayout";
+}
+
+<!-- ================= CAROUSEL (SAYFA ÜSTÜ) ================= -->
+<section class="mb-5">
+    <div id="topCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Slider Göstergeleri (isteğe bağlı) -->
+        <ol class="carousel-indicators">
+            <li data-target="#topCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#topCarousel" data-slide-to="1"></li>
+            <li data-target="#topCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <div class="carousel-inner">
+            <!-- 1. Slide (Aktif) -->
+            <div class="carousel-item active">
+                <img class="d-block w-100 carousel-img"
+                     src="~/elen-master/images/image_11.jpg"
+                     alt="Slide 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Merhaba Dünya!</h5>
+                    <p>İnternetten alınan ilk görsel: Unsplash.</p>
+                </div>
+            </div>
+
+            <!-- 2. Slide -->
+            <div class="carousel-item">
+                <img class="d-block w-100 carousel-img"
+                     src="~/elen-master/images/image_11.jpg"
+                     alt="Slide 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Keşfetmeye Devam</h5>
+                    <p>Harika manzara, harika ruh hali!</p>
+                </div>
+            </div>
+
+            <!-- 3. Slide -->
+            <div class="carousel-item">
+                <img class="d-block w-100 carousel-img"
+                     src="~/elen-master/images/image_11.jpg"
+                     alt="Slide 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Yeni Ufuklar</h5>
+                    <p>Seyahat, teknoloji ve daha fazlası!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Önceki & Sonraki Butonları -->
+        <a class="carousel-control-prev" href="#topCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Önceki</span>
+        </a>
+        <a class="carousel-control-next" href="#topCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Sonraki</span>
+        </a>
+    </div>
+</section>
+<!-- ================ CAROUSEL SON ================= -->
+<!-- Aşağıdaki kısım senin mevcut "Blog Yazıları" kodun, post.FeaturedImage değişmedi. -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-2">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="mb-4">Blog Yazıları</h2>
+                <p>En yeni yazılarımızı keşfedin!</p>
+            </div>
+        </div>
+
+        <!-- Postların Bulunduğu Satır -->
+        <div class="row">
+            @if (Model != null && Model.Items.Any())
+            {
+                @foreach (var post in Model.Items)
+                {
+                    <div class="col-md-4 mb-5">
+                        <div class="blog-entry ftco-animate shadow-sm rounded">
+                            <a href="@Url.Action("Details", "Home", new { area = "User", id = post.Id })"
+                               class="img img-2"
+                               style="background-image: url('@post.FeaturedImage');"
+                               onclick="increaseViewCount('@post.Id')">
+                            </a>
+                            <div class="text text-2 pt-2 mt-3">
+                                <span class="category mb-3 d-block">
+                                    <a href="#">@post.CategoryName</a>
+                                </span>
+                                <h3 class="mb-4">
+                                    <a href="@Url.Action("Details", "Home", new { area = "User", id = post.Id })">
+                                        @post.Title
+                                    </a>
+                                </h3>
+                                <p class="mb-4">@post.Excerpt</p>
+                                <div class="author mb-4 d-flex align-items-center">
+                                    <a href="#" class="img" style="background-image: url('~/elen-master/images/person_2.jpg');"></a>
+                                    <div class="ml-3 info">
+                                        <span>Yazar</span>
+                                        <h3>
+                                            <a href="#">@post.FullName</a>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="meta-wrap align-items-center">
+                                    <div class="half order-md-last">
+                                        <p class="meta">
+                                            <span>
+                                                <i class="icon-heart like-btn" id="like-icon-@post.Id"
+                                                   onclick="event.stopPropagation(); likePost('@post.Id')"></i>
+                                                <span id="like-count-@post.Id">@post.LikeCount</span>
+                                            </span>
+                                            <span>
+                                                <i class="icon-eye"></i>
+                                                <span id="view-count-@post.Id">@post.ViewCount</span>
+                                            </span>
+                                            <span><i class="icon-comment"></i>@post.CommentCount</span>
+                                        </p>
+                                    </div>
+                                    <a asp-area="User"
+                                       asp-controller="Home"
+                                       asp-action="Details"
+                                       asp-route-slug="@post.Slug"
+                                       class="btn btn-primary py-2">
+                                        Devamını Oku <span class="ion-ios-arrow-forward"></span>
+                                    </a>
+
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-md-12 text-center">
+                    <p class="text-muted">Henüz blog yazısı eklenmedi.</p>
+                </div>
+            }
+        </div> <!-- ROW BURADA KAPANIYOR -->
+        <!-- Boşluk Ekleyerek Sayfalama Butonlarını Tam Alta İndirme -->
+        <div class="clearfix w-100"></div>
+
+        <!-- Sayfalama (Pagination) -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <ul class="pagination justify-content-center">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageIndex - 1, pageSize = Model.PageSize })">Önceki</a>
+                        </li>
+                    }
+
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageIndex + 1, pageSize = Model.PageSize })">Sonraki</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CSS ile Sayfalama Butonları için Ek Boşluk -->
+<style>
+    .clearfix {
+        clear: both;
+    }
+
+    .pagination-container {
+        margin-top: 80px;
+        padding-top: 40px;
+        clear: both; /* Sayfalama üstteki elemanlarla çakışmaz */
+    }
+
+    .blog-entry {
+        min-height: 450px; /* Postların yükseklik problemi olmasını engeller */
+    }
+
+    /* Carousel resminin yüksekliğini kısıtlıyoruz */
+    .carousel-img {
+        max-height: 450px; /* İstediğin değere göre ayarla örn 400/500 */
+        object-fit: cover;
+    }
+
+    /* Ok butonlarını belirginleştirelim */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1); /* rengi ters çevirip görünür yapar */
+        width: 30px;
+        height: 30px;
+    }
+</style>
+
+<script>
+    function likePost(postId) {
+        let url = "/User/Home/LikePost"; // Elle yazılmış URL
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { postId: postId },
+            success: function(response) {
+                if (response.success) {
+                    $("#like-count-" + postId).text(response.likeCount);
+                    $("#like-icon-" + postId).css("color", "red");
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Beğeni eklendi!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    alert("Beğeni işlemi başarısız: " + response.message);
+                    console.error("Hata Detayı:", response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Bir hata oluştu: " + xhr.responseText);
+                console.error("AJAX Hata Detayı:", xhr, status, error);
+            }
+        });
+    }
+
+    function increaseViewCount(postId) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("IncreaseViewCount", "Home")",
+            data: { postId: postId },
+            success: function(response) {
+                if (response.success) {
+                    $("#view-count-" + postId).text(response.viewCount);
+                }
+            }
+        });
+    }
+</script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

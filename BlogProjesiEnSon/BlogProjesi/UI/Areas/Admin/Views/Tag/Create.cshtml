@@ -1,0 +1,64 @@
+﻿@model Business.DTOs.TagDTOs.TagCreateDTO
+
+@{
+    ViewData["Title"] = "Yeni Etiket Ekle";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white">
+            <h4>Yeni Etiket Ekle</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Etiket Adı -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Etiket Adı</label>
+                    <input asp-for="Name" class="form-control" required placeholder="Etiket adını girin..." />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Slug (URL Dostu Ad) -->
+                <div class="mb-3">
+                    <label asp-for="Slug" class="form-label">Slug (URL Adı)</label>
+                    <input asp-for="Slug" class="form-control" placeholder="Slug otomatik oluşturulacak..." readonly />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+
+                <!-- Açıklama -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Etiket hakkında açıklama girin..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Kaydet</button>
+                <a asp-action="Index" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Etiket adını girerken otomatik slug oluşturma
+        document.getElementById("Name").addEventListener("input", function() {
+            let name = this.value.toLowerCase().trim();
+            let slug = name
+                .replace(/ğ/g, "g")
+                .replace(/ü/g, "u")
+                .replace(/ş/g, "s")
+                .replace(/ı/g, "i")
+                .replace(/ö/g, "o")
+                .replace(/ç/g, "c")
+                .replace(/[^a-z0-9\s-]/g, "") // Sadece harf ve rakam kalsın
+                .replace(/\s+/g, "-") // Boşlukları tire yap
+                .replace(/-+/g, "-"); // Çift tireleri tek tire yap
+
+            document.getElementById("Slug").value = slug;
+        });
+    </script>
+}

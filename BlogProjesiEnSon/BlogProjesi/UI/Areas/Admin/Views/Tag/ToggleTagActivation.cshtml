@@ -1,0 +1,27 @@
+﻿@model Business.DTOs.TagDTOs.TagDTO
+
+@{
+    ViewData["Title"] = "Etiket Durumu Değiştir";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-secondary text-white">
+            <h4>Etiket Durumu Değiştir</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Etiket:</strong> @Model.Name</p>
+            <p><strong>Mevcut Durum:</strong> @(Model.IsActive ? "Aktif" : "Pasif")</p>
+
+            <form asp-action="ToggleTagActivation" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-toggle-on"></i> Durumu Değiştir
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Geri Dön</a>
+        </div>
+    </div>
+</div>
