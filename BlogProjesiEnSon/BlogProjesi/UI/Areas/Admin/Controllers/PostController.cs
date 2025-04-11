@@ -82,7 +82,7 @@ namespace UI.Areas.Admin.Controllers
                 .Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
-                    Text = u.FullName  // veya FullName gibi bir property
+                    Text = u.UserName  // veya FullName gibi bir property
                 })
                 .ToListAsync();
 

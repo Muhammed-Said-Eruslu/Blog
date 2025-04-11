@@ -1,6 +1,7 @@
 ﻿using Business.DTOs.CommentsDTOs;
 using Business.DTOs.PostDTOs;
 using Domain.Core.İnterfaces;
+using Domain.Entites;
 using Domain.Enums;
 using Domain.Utilities.Interfaces;
 using System;
@@ -35,13 +36,19 @@ namespace Business.Services.PostServices
         Task<IDataResult<T>> GetPostWithIncludesAsync<T>(Guid postId, Func<IQueryable<T>, IQueryable<T>> include) where T : class, IEntity;
         public Task<IResult> UpdateVideoUrlAsync(Guid postId, string videoUrl);
         Task<IDataResult<List<string>>> GetAllSlugsAsync();
-        Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync();
-
+        Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync(Guid userId);
+        Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync(string searchQuery);
         Task<IResult> IncreaseViewCountAsync(Guid postId);
         Task<IResult> IncreaseLikeCountAsync(Guid postId);
-        Task<IDataResult<T>> GetPostWithIncludesAsync<T>(string slug, Func<IQueryable<T>, IQueryable<T>> include) where T : class, IEntity; 
+        Task<IDataResult<T>> GetPostWithIncludesAsync<T>(string slug, Func<IQueryable<T>, IQueryable<T>> include) where T : class, IEntity;
 
 
+        Task<IDataResult<List<PostListDTO>>> GetRelatedTagPostsAsync(Guid postId, int count = 5);
+
+        // Benzer Kategori Postları
+        Task<IDataResult<List<PostListDTO>>> GetRelatedCategoryPostsAsync(Guid postId, int count = 5);
+        Task<AppUser> GetUserWithLikedPostsAsync(Guid userId);
+        Task<IDataResult<Post>> ToggleLikeAsync(Guid userId, Guid postId);
 
 
     }

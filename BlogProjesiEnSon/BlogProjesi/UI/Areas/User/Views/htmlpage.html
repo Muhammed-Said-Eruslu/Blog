@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelik Onayı</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #4a4a4a;
+        }
+
+        .btn {
+            background-color: #6c5ce7;
+            color: #ffffff;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .code-box {
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #f1f1f1;
+            padding: 12px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 20px;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h1>🎉 Aboneliğiniz Onaylandı!</h1>
+        <p>Merhaba,</p>
+        <p>Blogumuza başarıyla abone oldunuz. Artık yeni gönderiler, güncellemeler ve sürpriz içeriklerden ilk sizin haberiniz olacak!</p>
+
+        <p style="margin-top: 25px;">
+            İşte doğrulama kodunuz:
+        </p>
+
+        <div class="code-box">
+            {{CODE}}
+        </div>
+
+        <p style="margin-top: 30px;">
+            Harika içeriklerle buluşmak için bizi takipte kalın!
+        </p>
+
+        <a class="btn" href="https://blogprojesi.com">Bloga Git</a>
+
+        <div class="footer">
+            &copy; @DateTime.Now.Year Blog Projesi<br>
+            Bu e-posta sistem tarafından otomatik gönderilmiştir.
+        </div>
+    </div>
+</body>
+</html>

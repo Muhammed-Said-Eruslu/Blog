@@ -94,6 +94,27 @@
                 reader.readAsDataURL(this.files[0]);
             });
         });
+           // Başlık girildiğinde slug otomatik oluştur
+        document.getElementById("Title").addEventListener("input", function () {
+            let title = this.value.toLowerCase().trim();
+            let slug = title
+                .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
+                .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
+                .replace(/[^a-z0-9\s-]/g, "") // Sadece harf ve rakam kalsın
+                .replace(/\s+/g, "-") // Boşlukları tire yap
+                .replace(/-+/g, "-"); // Çift tireleri tek tire yap
+            document.getElementById("Slug").value = slug;
+        });
+
+        // Öne çıkan resim önizleme
+        document.getElementById("FeaturedImageFile").addEventListener("change", function () {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("imagePreview").src = e.target.result;
+                document.getElementById("imagePreview").style.display = "block";
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
     </script>
 }
 
@@ -109,6 +130,13 @@
                             <label asp-for="Title" class="form-label">Başlık</label>
                             <input asp-for="Title" class="form-control" placeholder="Yazı başlığı giriniz" />
                             <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Slug (URL Dostu Ad) -->
+                        <div class="mb-3">
+                            <label asp-for="Slug" class="form-label">Slug (URL Adı)</label>
+                            <input asp-for="Slug" class="form-control" placeholder="Slug otomatik oluşturulacak..." readonly />
+                            <span asp-validation-for="Slug" class="text-danger"></span>
                         </div>
 
                         <!-- İçerik -->

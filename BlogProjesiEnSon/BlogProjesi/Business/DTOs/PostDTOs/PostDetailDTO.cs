@@ -25,7 +25,6 @@ namespace Business.DTOs.PostDTOs
         // SEO uyumlu URL için slug
         public string Slug { get; set; }
 
-
         // Kategori bilgisi
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
@@ -43,6 +42,9 @@ namespace Business.DTOs.PostDTOs
         public List<PostDetailDTO> RelatedTagPosts { get; set; } = new List<PostDetailDTO>();
         public List<PostDetailDTO> RelatedCategoryPosts { get; set; } = new List<PostDetailDTO>();
         public List<PostDetailDTO> PopularPosts { get; set; } = new List<PostDetailDTO>();
+
+        public bool IsLiked { get; set; }
+
 
 
     }

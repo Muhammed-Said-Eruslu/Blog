@@ -3,9 +3,12 @@ using Infrastructure.AppContext;
 using Infrastructure.DataAccess.Interface;
 using Infrastructure.Repositories.CategoryRepository;
 using Infrastructure.Repositories.CommentRepository;
+using Infrastructure.Repositories.ContactRepository;
 using Infrastructure.Repositories.MailRepository;
+using Infrastructure.Repositories.PhotoRepository;
 using Infrastructure.Repositories.PostRepository;
 using Infrastructure.Repositories.PostTagRepository;
+using Infrastructure.Repositories.SubscriberRepository;
 using Infrastructure.Repositories.TagRepository;
 using Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -45,6 +48,9 @@ namespace Infrastructure.Extensions
             services.AddScoped<ITagRepostiry, TagRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IAsyncSendMailRepository, MailRepository>();
+            services.AddScoped<IContactRepistory, ContactRepository>();
+            services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+            services.AddScoped<IPhotoRepository, PhotoRepository>();
 
             using (var scope = services.BuildServiceProvider().CreateScope())
             {

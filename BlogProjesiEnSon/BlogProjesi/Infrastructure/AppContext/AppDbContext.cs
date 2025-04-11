@@ -23,9 +23,29 @@ namespace Infrastructure.AppContext
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<PostTag> PostTags { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<AppUserPost> AppUserPosts { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
+        public virtual DbSet<Subscriber> Subscribers { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            base.OnModelCreating(builder);
+
+            // Many-to-Many ilişkisini ara tablo ile tanımla
+            builder.Entity<AppUserPost>()
+                .HasKey(up => new { up.UserId, up.PostId }); // Composite Key
+
+            builder.Entity<AppUserPost>()
+                .HasOne(up => up.User)
+                .WithMany(u => u.LikedPosts)
+                .HasForeignKey(up => up.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete kullanıyoruz
+
+            builder.Entity<AppUserPost>()
+                .HasOne(up => up.Post)
+                .WithMany(p => p.LikedUsers)
+                .HasForeignKey(up => up.PostId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete kullanıyoruz
 
             // **Yorum - Parent Yorum İlişkisi**
             builder.Entity<Comment>()
@@ -48,8 +68,9 @@ namespace Infrastructure.AppContext
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.SetNull); // ✅ Kullanıcı silinirse yorumun UserId NULL olur.
 
-            base.OnModelCreating(builder);
+
         }
+
 
 
         public override int SaveChanges()

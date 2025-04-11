@@ -1,0 +1,17 @@
+﻿@model Business.DTOs.PhotoDTOs.PhotoListDTO
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2>Fotoğraf Detay</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4>@Model.Title</h4>
+        <img src="@Model.ImageUrl" class="img-thumbnail mt-3" style="max-width: 300px;" />
+        <p class="mt-3"><strong>Yüklenme Tarihi:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Düzenle</a>
+        <a asp-action="Index" class="btn btn-secondary">Geri</a>
+    </div>
+</div>

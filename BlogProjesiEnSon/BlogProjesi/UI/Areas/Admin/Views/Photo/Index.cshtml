@@ -1,0 +1,71 @@
+﻿@model List<Business.DTOs.PhotoDTOs.PhotoListDTO>
+
+@{
+    Layout = "_AdminLayout";
+
+}
+
+<h2>Fotoğraflar</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">Yeni Fotoğraf</a>
+
+<table id="photoTable" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Fotoğraf</th>
+            <th>Oluşturulma</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>@item.Title</td>
+                    <td><img src="@item.ImageUrl" width="100" /></td>
+                    <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detay</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Düzenle</a>
+
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">Sil</button>
+
+                        <form id="delete-form-@item.Id" asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:none;"></form>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#photoTable').DataTable();
+
+                $('.delete-btn').click(function () {
+                    var photoId = $(this).data('id');
+                    Swal.fire({
+                        title: 'Emin misiniz?',
+                        text: "Bu fotoğraf silinecek!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Evet, sil!',
+                        cancelButtonText: 'Vazgeç'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#delete-form-' + photoId).submit();
+                        }
+                    });
+                });
+            });
+        </script>
+}

@@ -15,11 +15,13 @@ namespace Business.DTOs.PostDTOs
         public string Excerpt { get; set; }
         public string Slug { get; set; }
         public string FeaturedImage { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
         public Guid UserId { get; set; }
         public int ViewCount { get; set; }
         public int CommentCount { get; set; }
         public int LikeCount { get; set; }
+        public bool IsLiked { get; set; }
     }
 }

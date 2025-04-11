@@ -7,47 +7,80 @@ using Business.DTOs.CommentsDTOs;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entites;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Infrastructure.Repositories.ContactRepository;
+using Business.Services.ContactServices;
+using Microsoft.AspNetCore.Identity;
+using Business.Services.PhotoServices;
+using Business.Helpers;
 
 namespace UI.Areas.User.Controllers
 {
     [Area("User")]
-
     public class HomeController : Controller
     {
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
+        private readonly INotyfService _notfy;
+        private readonly IContactService _contactService;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IPhotoService _photoService;
 
-        public HomeController(IPostService postService, ICommentService commentService)
+        public HomeController(IPostService postService, ICommentService commentService, INotyfService notfy, IContactService contactService, UserManager<AppUser> userManager, IPhotoService photoService)
         {
             _postService = postService;
             _commentService = commentService;
+            _notfy = notfy;
+            _contactService = contactService;
+            _userManager = userManager;
+            _photoService = photoService;
         }
-        [HttpGet("")]
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 6)
-        {
-            var result = await _postService.GetAllWithCountAsync(); // Doğru metodu çağırdık
 
-            if (!result.IsSucces || result.Data == null)
+        /// <summary>
+        /// Anasayfa: Arama, sayfalama ve popüler postları getirir
+        /// </summary>
+        [HttpGet("")]
+        public async Task<IActionResult> Index(string searchQuery, int pageNumber = 1, int pageSize = 6)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            Guid.TryParse(userIdClaim, out Guid userId); // Kullanıcı giriş yapmamışsa `Guid.Empty` olur
+
+            var postsResult = await _postService.GetAllWithCountAsync(userId);
+            var popularPostsResult = await _postService.GetPopularPostsAsync(3);
+
+            if (!postsResult.IsSucces || postsResult.Data == null)
             {
                 TempData["ErrorMessage"] = "Blog yazıları yüklenemedi.";
                 return View(new PaginatedList<PostListDTO>(new List<PostListDTO>(), 0, pageNumber, pageSize));
             }
 
-            var count = result.Data.Count();
-            var items = result.Data.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var filteredPosts = postsResult.Data;
+            var totalCount = filteredPosts.Count();
+            var items = filteredPosts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            return View(new PaginatedList<PostListDTO>(items, count, pageNumber, pageSize));
+            ViewBag.SearchQuery = searchQuery;
+            ViewBag.PopularPosts = popularPostsResult.Data;
+
+            return View(new PaginatedList<PostListDTO>(items, totalCount, pageNumber, pageSize));
         }
 
-        [HttpGet("Details")]
 
+        /// <summary>
+        /// Detay sayfası (Slug bazlı)
+        /// </summary>
+        // HomeController.cs - Details Metodu
+        [HttpGet("Postdetayları/{slug}")]
         public async Task<IActionResult> Details(string slug)
         {
             var result = await _postService.GetPostWithIncludesAsync<Post>(
                 slug,
                 query => query
                     .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
-                    .Include(p => p.Comments)
+                    .Include(p => p.Comments).ThenInclude(c => c.User)
             );
 
             if (!result.IsSucces || result.Data == null)
@@ -56,23 +89,53 @@ namespace UI.Areas.User.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Görüntülenme sayısını artır
             await _postService.IncreaseViewCountAsync(result.Data.Id);
+
+            // PostDetailDTO'ya çevir
             var postDetailDto = result.Data.Adapt<PostDetailDTO>();
+            postDetailDto.Comments = CommentMappingHelper.MapCommentsWithReplies(result.Data.Comments.ToList());
+
+            // İlişkili verileri doldur
+            var relatedTagResult = await _postService.GetRelatedTagPostsAsync(result.Data.Id);
+            var relatedCategoryResult = await _postService.GetRelatedCategoryPostsAsync(result.Data.Id);
+            var popularPostsResult = await _postService.GetPopularPostsAsync(5);
+
+
+            postDetailDto.RelatedTagPosts = relatedTagResult.Data?.Adapt<List<PostDetailDTO>>() ?? new List<PostDetailDTO>();
+            postDetailDto.RelatedCategoryPosts = relatedCategoryResult.Data?.Adapt<List<PostDetailDTO>>() ?? new List<PostDetailDTO>();
+            postDetailDto.PopularPosts = popularPostsResult.Data?.Adapt<List<PostDetailDTO>>() ?? new List<PostDetailDTO>();
+
 
             return View(postDetailDto);
         }
 
-
-
-
+        /// <summary>
+        /// Yorum ekleme
+        /// </summary>
         [HttpPost("User/Post/AddComment")]
         public async Task<IActionResult> AddComment(CommentCreateDTO model)
         {
-            model.AuthorEmail = model.AuthorName;
+            // Kullanıcının kimliğini al
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bilgisi alınamadı.";
+                return RedirectToAction("Details", new { slug = model.PostSlug });
+            }
+
+            // DTO'ya UserId ata
+            model.UserId = userId;
+
+            // Geri kalan bilgiler
+            model.AuthorEmail = model.AuthorName; // belki kaldırabilirsin, ihtiyaç yoksa
+
+            // Model validation
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Lütfen tüm alanları doldurun.";
-                return RedirectToAction("Details", new { id = model.PostId });
+                return RedirectToAction("Details", new { slug = model.PostSlug });
             }
 
             var result = await _commentService.AddAsync(model);
@@ -86,35 +149,45 @@ namespace UI.Areas.User.Controllers
                 TempData["SuccessMessage"] = "Yorumunuz başarıyla eklendi!";
             }
 
-            return RedirectToAction("Details", new { id = model.PostId });
+            return RedirectToAction("Details", new { slug = model.PostSlug });
         }
+
+
+
+
+        /// <summary>
+        /// Beğenme (Ajax)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> LikePost(Guid postId)
         {
-            Console.WriteLine("LikePost method called with postId: " + postId); // Log ekledik
             try
             {
                 if (postId == Guid.Empty)
                     return Json(new { success = false, message = "Geçersiz Post ID!" });
 
+                // Like artır
                 var result = await _postService.IncreaseLikeCountAsync(postId);
                 if (!result.IsSucces)
                     return Json(new { success = false, message = result.Message });
 
+                // Güncellenmiş postu al
                 var updatedPost = await _postService.GetByIdAsync(postId);
                 if (updatedPost.Data == null)
                     return Json(new { success = false, message = "Gönderi bulunamadı!" });
 
+                // Yeni likeCount'u dön
                 return Json(new { success = true, likeCount = updatedPost.Data.LikeCount });
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Hata oluştu: " + ex.Message); // Log ekledik
                 return Json(new { success = false, message = "Bir hata oluştu: " + ex.Message });
             }
         }
 
-
+        /// <summary>
+        /// Görüntülenme sayısını artırma (Ajax)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> IncreaseViewCount(Guid postId)
         {
@@ -126,8 +199,154 @@ namespace UI.Areas.User.Controllers
             return Json(new { success = true, viewCount = updatedPost.Data.ViewCount });
         }
 
+        /// <summary>
+        /// Canlı Arama (Autocomplete) - Ajax GET
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<JsonResult> GetAutocompleteResults(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+                return Json(new List<object>());
 
+            var postsResult = await _postService.GetAllWithCountAsync(term);
+
+            var list = postsResult.Data
+                .OrderByDescending(p => p.CreatedDate)
+                .Take(5)
+                .Select(p => new
+                {
+                    slug = p.Slug,
+                    title = p.Title,
+                    image = p.FeaturedImage, // Resim URL'si
+                    category = p.CategoryName, // Kategori adı
+                    date = p.CreatedDate.ToString("dd MMM yyyy") // Tarih
+                }).ToList();
+
+            return Json(list);
+        }
+
+        [Authorize]
+        [HttpGet("LikedPosts")]
+        public async Task<IActionResult> LikedPosts()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                TempData["ErrorMessage"] = "Lütfen giriş yapınız!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Kullanıcının beğendiği postları Include() ile çekiyoruz.
+            var user = await _postService.GetUserWithLikedPostsAsync(userId);
+
+            if (user == null || user.LikedPosts == null || !user.LikedPosts.Any())
+            {
+                TempData["InfoMessage"] = "Henüz beğendiğiniz bir gönderi bulunmuyor!";
+                return View(new List<PostListDTO>());
+            }
+
+            // Null kontrolü ile Post nesnesini güvenli bir şekilde çekiyoruz
+            var likedPosts = user.LikedPosts
+                .Where(lp => lp.Post != null) // `null` kontrolü
+                .Select(lp => lp.Post.Adapt<PostListDTO>())
+                .ToList();
+
+            return View(likedPosts);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleLike(Guid postId)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Json(new { success = false, message = "Önce giriş yapmalısınız!" });
+
+            // Kullanıcı ID'yi al
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Json(new { success = false, message = "Kullanıcı kimliği bulunamadı, lütfen tekrar giriş yapın!" });
+            }
+
+            // Kullanıcının postu beğenip beğenmediğini kontrol et
+            var result = await _postService.ToggleLikeAsync(userId, postId);
+
+            if (!result.IsSucces)
+                return Json(new { success = false, message = result.Message });
+
+            return Json(new
+            {
+                success = true,
+                likeCount = result.Data.LikeCount,
+                isLiked = result.Data.LikedUsers.Any(l => l.UserId == userId) // Beğeni durumu
+            });
+        }
+
+        [HttpGet("Hakkımda")]
+        public async Task<IActionResult> About()
+        {
+            return View();
+        }
+
+        [HttpGet("İletişim")]
+        public async Task<IActionResult> Contact()
+        {
+            return View();
+        }
+
+        [HttpPost("İletişim")]
+        public async Task<IActionResult> Contact(Contact model)
+        {
+            Console.WriteLine($"Gelen ID: {model.Id}");
+            if (model == null)
+            {
+                _notfy.Error("Lütfen geçerli bir mesaj giriniz.");
+                return View();
+            }
+
+            if (model.Id == Guid.Empty)
+            {
+                model.Id = Guid.NewGuid();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var entry in ModelState)
+                {
+                    foreach (var error in entry.Value.Errors)
+                    {
+                        Console.WriteLine($"Hata: {entry.Key} - {error.ErrorMessage}");
+                    }
+                }
+
+                _notfy.Error("Lütfen tüm alanları doğru bir şekilde doldurun.");
+                return View(model);
+            }
+
+
+
+            try
+            {
+                await _contactService.AddAsync(model);
+                _notfy.Success("Mesajınız başarıyla gönderildi!");
+                return RedirectToAction("Contact");
+            }
+            catch (Exception ex)
+            {
+                _notfy.Error("Mesaj gönderilirken bir hata oluştu. Hata: " + ex.Message);
+                return View(model);
+            }
+        }
+        [HttpGet("Fotoğraflar")]
+        public async Task<IActionResult> Photo()
+        {
+            var photos = await _photoService.GetAllPhotosAsync();
+            return View(photos);
+        }
 
     }
 }
-

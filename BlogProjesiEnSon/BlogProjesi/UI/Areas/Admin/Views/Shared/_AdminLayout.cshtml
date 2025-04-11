@@ -158,7 +158,7 @@
             <ul class="nav">
                 <li class="nav-item nav-category">Ana Menü</li>
                 <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Index","Admin")">
+                    <a class="nav-link" href="@Url.Action("Index","Admin", new {area ="Admin" })">
                         <span class="icon-bg"><i class="mdi mdi-view-dashboard"></i></span>
                         <span class="menu-title">Dashboard</span>
                     </a>
@@ -172,19 +172,25 @@
                     <div class="collapse" id="tables">
                         <ul class="nav flex-column sub-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index","Category")">Kategoriler</a>
+                                <a class="nav-link" href="@Url.Action("Index","Category", new {area ="Admin" })">Kategoriler</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index","Comment")">Yorumlar</a>
+                                <a class="nav-link" href="@Url.Action("Index","Comment", new {area ="Admin" })">Yorumlar</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index","Post")">Postlar</a>
+                                <a class="nav-link" href="@Url.Action("Index","Post", new {area ="Admin" })">Postlar</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index","PostTag")">PostTag</a>
+                                <a class="nav-link" href="@Url.Action("Index","PostTag", new {area ="Admin" })">PostTag</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Index","Tag")">Tag</a>
+                                <a class="nav-link" href="@Url.Action("Index","Tag", new {area ="Admin" })">Tag</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index","Contact", new {area ="Admin" })">Mesajlar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Index","Photo", new {area ="Admin" })">Fotoğraflar</a>
                             </li>
                         </ul>
                     </div>

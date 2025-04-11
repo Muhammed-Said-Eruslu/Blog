@@ -113,10 +113,10 @@ namespace Infrastructure.Repositories.MailRepository
         {
             return await SendMail(to, subject, "E-postanız hazırlanıyor...");
         }
-        private async Task<string> GetEmailTemplate(string templateName, Dictionary<string, string> replacements)
+        public async Task<string> GetEmailTemplate(string templateName, Dictionary<string, string> replacements)
         {
-            string templatePath = Path.Combine(@"C:\Users\Said\Desktop\BlogProjesı\BlogProjesi\Infrastructure\Templates", templateName);
-
+            // wwwroot/templates klasörüne göre yol oluştur
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "templates", templateName);
 
             if (!File.Exists(templatePath))
             {
@@ -132,5 +132,6 @@ namespace Infrastructure.Repositories.MailRepository
 
             return emailBody;
         }
+
     }
 }

@@ -13,5 +13,6 @@ namespace Infrastructure.Repositories.MailRepository
         Task<IResult> SendMail(string to, string subject, string body);
         Task<IResult> SendMail(string to, string subject);
         string GenerateRandomPassword(int length);
+        Task<string> GetEmailTemplate(string templateName, Dictionary<string, string> replacements);
     }
 }

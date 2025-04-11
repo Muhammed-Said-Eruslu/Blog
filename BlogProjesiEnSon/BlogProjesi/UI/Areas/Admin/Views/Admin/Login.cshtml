@@ -1,0 +1,134 @@
+﻿@using UI.Areas.Admin.Models.VMs.AdminVM
+@model LoginVM
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Girişi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --primary-hover: #15345a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background: linear-gradient(45deg, #0d1b2a, #1b263b);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 12px;
+            padding: 0.875rem 1.25rem;
+            padding-right: 2.5rem;
+            height: 45px;
+        }
+
+            .form-control:focus {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.2);
+            }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 58%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1rem;
+        }
+
+        .form-label {
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+            }
+
+        .remember-me {
+            accent-color: var(--primary-color);
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <form asp-action="Login" asp-controller="Admin" method="post" asp-area="Admin">
+            <div class="mb-4 text-center">
+                <h2 class="text-white mb-0">ADMİN GİRİŞİ</h2>
+                <p class="text-white-50 mt-2">Yönetim paneline erişim</p>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label asp-for="Email" class="form-label text-white opacity-75">E-posta</label>
+                <input asp-for="Email" class="form-control" placeholder="admin@example.com" />
+                <i class="fas fa-envelope input-icon"></i>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label asp-for="Password" class="form-label text-white opacity-75">Şifre</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                <i class="fas fa-lock input-icon"></i>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input remember-me" type="checkbox" />
+                    <label class="form-check-label text-white opacity-75" asp-for="RememberMe">
+                        Beni Hatırla
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

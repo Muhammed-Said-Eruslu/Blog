@@ -1,5 +1,7 @@
 ﻿using Domain.Core.İnterfaces;
 using Domain.Entites;
+using Domain.Utilities.Concretes;
+using Domain.Utilities.Interfaces;
 using Infrastructure.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -96,5 +98,69 @@ namespace Infrastructure.Repositories.PostRepository
             query = include(query);  // İlişkili verilerle birlikte sorguyu oluşturuyoruz
             return await query.ToListAsync();
         }
+
+        public async Task<AppUser> GetUserWithLikedPostsAsync(Guid userId)
+        {
+            return await _context.Set<AppUser>()
+                .Include(u => u.LikedPosts) // AppUserPost ilişkisini çek
+                .ThenInclude(lp => lp.Post) // AppUserPost içindeki Post bilgisini de çek
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+
+
+        public async Task<IDataResult<Post>> ToggleLikeAsync(Guid userId, Guid postId)
+        {
+            var user = await _context.Set<AppUser>().FindAsync(userId);
+            var post = await _context.Set<Post>().FindAsync(postId);
+
+            if (user == null || post == null)
+                return new ErrorDataResult<Post>("Kullanıcı veya gönderi bulunamadı.");
+
+            var existingLike = await _context.Set<AppUserPost>()
+                .FirstOrDefaultAsync(up => up.UserId == userId && up.PostId == postId);
+
+            if (existingLike != null)
+            {
+                // Kullanıcı beğenmişse, beğenisini kaldır
+                _context.Set<AppUserPost>().Remove(existingLike);
+                post.LikeCount--;
+            }
+            else
+            {
+                // Kullanıcı beğenmemişse, beğeni ekle
+                var newLike = new AppUserPost { UserId = userId, PostId = postId };
+                await _context.Set<AppUserPost>().AddAsync(newLike);
+                post.LikeCount++;
+            }
+
+            // Post güncellemesini de ekledik
+            _context.Set<Post>().Update(post);
+
+            await _context.SaveChangesAsync();
+
+            return new SuccessDataResult<Post>(post, "Beğeni durumu güncellendi.");
+        }
+
+
+        public async Task<AppUserPost> GetAppUserPostAsync(Guid userId, Guid postId)
+        {
+            return await _context.Set<AppUserPost>()
+                .FirstOrDefaultAsync(up => up.UserId == userId && up.PostId == postId);
+        }
+
+        public async Task AddLikeAsync(AppUserPost like)
+        {
+            await _context.Set<AppUserPost>().AddAsync(like);
+        }
+
+        public async Task RemoveLikeAsync(AppUserPost like)
+        {
+            _context.Set<AppUserPost>().Remove(like);
+        }
+
+
+
+
     }
 }
