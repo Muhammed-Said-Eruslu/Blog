@@ -1,86 +1,106 @@
-﻿@{
+﻿@model UI.Areas.Admin.Models.VMs.DashboardVM.DashboardViewModel
+@{
     Layout = "_AdminLayout";
+    ViewBag.Title = "Dashboard";
 }
 
-<!-- Örnek Admin Dashboard -->
 <div class="content-wrapper">
+    <!-- Başlık -->
     <div class="row mb-4">
-        <!-- Sayfa Başlığı -->
         <div class="col-12">
-            <h1 class="text-dark">Yönetim Paneli</h1>
-            <p class="text-muted">Blog sitesindeki genel istatistikleri ve hızlı erişim kısayollarını buradan yönetebilirsiniz.</p>
+            <h1 class="text-white">Yönetim Paneli</h1>
+            <p class="text-muted">Genel istatistikler ve hızlı erişim kısayolları</p>
         </div>
     </div>
 
-    <!-- İstatistik Kartları -->
+    <!-- İstatistik Kartları (Toplam Yazı, Kategori, Yorum, Kullanıcı) -->
     <div class="row mb-4">
         <!-- Toplam Yazı -->
-        <div class="col-md-3 grid-margin">
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h4 class="mb-2">Toplam Yazı</h4>
-                    <h2>152</h2>
-                    <p class="mt-2">Son 24 saatte 3 yeni yazı eklendi.</p>
+                    <h2>@Model.TotalPosts</h2>
+                    <p class="mt-2">Son 24 saatte @Model.NewPostsLast24Hours yeni yazı eklendi.</p>
                     <i class="mdi mdi-file-document-box mdi-48px float-right"></i>
                 </div>
             </div>
         </div>
-
         <!-- Toplam Kategori -->
-        <div class="col-md-3 grid-margin">
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <h4 class="mb-2">Toplam Kategori</h4>
-                    <h2>12</h2>
-                    <p class="mt-2">Yeni eklenen kategori yok.</p>
+                    <h2>@Model.TotalCategories</h2>
+                    <p class="mt-2">Kategori sayısı güncel.</p>
                     <i class="mdi mdi-tag-multiple mdi-48px float-right"></i>
                 </div>
             </div>
         </div>
-
         <!-- Toplam Yorum -->
-        <div class="col-md-3 grid-margin">
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div class="card bg-info text-white">
                 <div class="card-body">
                     <h4 class="mb-2">Toplam Yorum</h4>
-                    <h2>485</h2>
-                    <p class="mt-2">Son 24 saatte 10 yeni yorum yapıldı.</p>
+                    <h2>@Model.TotalComments</h2>
+                    <p class="mt-2">Son 24 saatte @Model.NewCommentsLast24Hours yeni yorum.</p>
                     <i class="mdi mdi-comment-multiple-outline mdi-48px float-right"></i>
                 </div>
             </div>
         </div>
-
         <!-- Toplam Kullanıcı -->
-        <div class="col-md-3 grid-margin">
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <h4 class="mb-2">Toplam Kullanıcı</h4>
-                    <h2>36</h2>
-                    <p class="mt-2">Son 24 saatte 2 yeni kayıt.</p>
+                    <h2>@Model.TotalUsers</h2>
+                    <p class="mt-2">Identity üzerinden çekildi.</p>
                     <i class="mdi mdi-account-multiple mdi-48px float-right"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Çizelge ve Kısa Yollar -->
+    <!-- Örnek "Gelir" Kartı -->
     <div class="row mb-4">
-        <!-- Örnek Grafik -->
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="d-flex align-items-center align-self-start">
+                                <h3 class="mb-0">$12.34</h3>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="icon icon-box-success">
+                                <span class="mdi mdi-arrow-top-right icon-item"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 class="text-muted font-weight-normal">Toplam Gelir</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aylık Yazı Grafiği (Chart.js) + Hızlı Erişim -->
+    <div class="row mb-4">
+        <!-- Grafik Alanı -->
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Aylık Yazı İstatistikleri</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Buraya bir chart kütüphanesi entegre edebilirsin (ör. Chart.js, Morris.js, ApexCharts vs.) -->
-                    <p class="text-muted">Grafik alanı</p>
-                    <div style="height: 300px; background: #f1f1f1; display: flex; align-items: center; justify-content: center;">
-                        <span class="text-muted">Burada Aylık Yazı Grafiği Görünecek</span>
+                    <div class="chart-container">
+                        <canvas id="monthlyPostsChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Hızlı Erişim Kartları -->
+
+        <!-- Hızlı Erişim -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-light">
@@ -104,7 +124,7 @@
         </div>
     </div>
 
-    <!-- En Popüler Yazılar veya Son Yazılar -->
+    <!-- En Popüler ve Son Yazılar -->
     <div class="row mb-4">
         <div class="col-md-6 mb-2">
             <div class="card">
@@ -112,20 +132,22 @@
                     <h5 class="mb-0">En Popüler Yazılar</h5>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Nasıl Programcı Olunur?
-                            <span class="badge badge-primary badge-pill">1300 Görüntüleme</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Entity Framework Tüyoları
-                            <span class="badge badge-primary badge-pill">945 Görüntüleme</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            ASP.NET Core vs. Node.js
-                            <span class="badge badge-primary badge-pill">678 Görüntüleme</span>
-                        </li>
-                    </ul>
+                    @if (Model.PopularPosts != null && Model.PopularPosts.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var postTitle in Model.PopularPosts)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @postTitle
+                                    <span class="badge badge-primary badge-pill">1000+ Görüntüleme</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Popüler yazı bulunamadı.</p>
+                    }
                 </div>
             </div>
         </div>
@@ -135,13 +157,89 @@
                     <h5 class="mb-0">Son Eklenen Yazılar</h5>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">C# 10 Yenilikleri</li>
-                        <li class="list-group-item">Blazor ile Dynamic Component Kullanımı</li>
-                        <li class="list-group-item">SQL Index Kullanımı</li>
-                    </ul>
+                    @if (Model.RecentPosts != null && Model.RecentPosts.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var postTitle in Model.RecentPosts)
+                            {
+                                <li class="list-group-item">
+                                    @postTitle
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Henüz yeni bir yazı eklenmedi.</p>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Chart.js Kütüphanesi -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Aylık yazı verisi (int[] dizisi)
+    var monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyPostCounts));
+
+    // Ocak - Aralık etiketler
+    var monthLabels = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+                       "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+    var ctx = document.getElementById('monthlyPostsChart').getContext('2d');
+    var monthlyPostsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: monthLabels,
+            datasets: [{
+                label: 'Aylık Yazı Sayısı',
+                data: monthlyData,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+    /* Kart ve Layout Stilleri */
+    .card {
+        border: none;
+        transition: transform 0.3s;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem; /* Kartlar arasında dikey boşluk */
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+    }
+
+    .badge.badge-primary {
+        background: #007bff;
+    }
+
+        .badge.badge-primary.badge-pill {
+            border-radius: 50px;
+        }
+
+    .list-group-item:hover {
+        background-color: #f0f0f0;
+    }
+</style>

@@ -5,181 +5,381 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">
 
-    <!-- CSS links replaced with ~/elen-master/ -->
+    <!-- Template CSS (Colorlib) -->
     <link rel="stylesheet" href="~/elen-master/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/elen-master/css/animate.css">
-
     <link rel="stylesheet" href="~/elen-master/css/owl.carousel.min.css">
     <link rel="stylesheet" href="~/elen-master/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="~/elen-master/css/magnific-popup.css">
-
     <link rel="stylesheet" href="~/elen-master/css/aos.css">
-
     <link rel="stylesheet" href="~/elen-master/css/ionicons.min.css">
-
     <link rel="stylesheet" href="~/elen-master/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="~/elen-master/css/jquery.timepicker.css">
 
-    <!-- Notyf Kütüphaneleri -->
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Notyf CSS (isteğe bağlı) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
-
+    <!-- Colorlib Template CSS -->
     <link rel="stylesheet" href="~/elen-master/css/flaticon.css">
     <link rel="stylesheet" href="~/elen-master/css/icomoon.css">
     <link rel="stylesheet" href="~/elen-master/css/style.css">
+
     @inject AspNetCoreHero.ToastNotification.Abstractions.INotyfService Notyf
+
     <style>
+        /* --------- S T Y L E   F I X E S --------- */
+
+        /* Dropdown menü */
+        .dropdown-menu {
+            min-width: 200px;
+            border: 1px solid rgba(0,0,0,.15);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+            margin-top: 0.5rem !important;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            color: #212529;
+            transition: all 0.2s;
+        }
+
+            .dropdown-item:hover {
+                background-color: #f8f9fa;
+                color: #1a1a1a;
+            }
+
+        /* Kullanıcı Paneli (Giriş / Kayıt / Profil butonları) */
         .user-panel {
-            margin-bottom: 20px;
-            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 0 15px;
         }
 
         .user-btn {
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
         }
 
-        /* Dropdown düğmesi */
-        .dropdown button {
-            background-color: #333;
+        /* Footer Renk & Stil */
+        .ftco-footer {
+            background: #1a1a1a !important;
+            padding: 4rem 0;
+        }
+
+        /* Abone Ol (Subscribe) alanı */
+        .subscribe-form .form-control {
+            border-radius: 0.25rem 0 0 0.25rem;
+        }
+
+        .subscribe-form .btn {
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+
+        /* Burger Menu Toggle Fix */
+        .colorlib-nav-toggle {
+            cursor: pointer;
+            z-index: 999;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        /* Menünün kapalıyken solda kaybolması */
+        #colorlib-aside {
+            transition: transform 0.3s;
+        }
+
+            #colorlib-aside.active {
+                transform: translateX(0);
+            }
+        /* Başlangıçta aside kapalı olacaksa:
+                   #colorlib-aside { transform: translateX(-250px); }
+                   (opsiyonel) */
+        /* Yukarı Çık Butonu */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #6c5ce7; /* Mor tonları */
             color: white;
-            width: 100%;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: none; /* Başlangıçta gizli */
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            z-index: 999;
         }
 
-        /* Dropdown menü */
-        .dropdown-menu {
-            width: 100%;
-            text-align: center;
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-            /* Dropdown menüdeki bağlantılar */
-            .dropdown-menu a {
-                display: block;
-                padding: 10px;
-                text-decoration: none;
-                color: black;
+            .scroll-to-top:hover {
+                background-color: #a66efa;
+                transform: scale(1.1);
             }
 
-                /* Üzerine gelindiğinde */
-                .dropdown-menu a:hover {
-                    background-color: #f8f9fa;
-                }
+        .notification-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6c5ce7;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+            .notification-btn:hover {
+                background-color: #a29bfe;
+                transform: scale(1.1);
+            }
 
     </style>
 </head>
-<body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const notificationBtn = document.getElementById("notificationToggleBtn");
+        const notificationIcon = document.getElementById("notificationIcon");
 
+        // Başlangıçta bildirim izni ve localStorage kontrolü
+        let isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
+        updateIcon(isSubscribed);
+
+        // Scroll olayıyla göster/gizle
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 150) {
+                notificationBtn.style.display = "none";
+            } else {
+                notificationBtn.style.display = "flex";
+            }
+        });
+
+        // Butona tıklama
+        notificationBtn.addEventListener("click", async () => {
+            if (!("Notification" in window)) {
+                Swal.fire("Tarayıcınız bildirimleri desteklemiyor.");
+                return;
+            }
+
+            const currentPermission = Notification.permission;
+
+            if (currentPermission === "granted") {
+                isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
+
+                if (isSubscribed) {
+                    const result = await Swal.fire({
+                        title: "Bildirimleri kapatmak istiyor musun?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Kapat",
+                        cancelButtonText: "Vazgeç"
+                    });
+
+                    if (result.isConfirmed) {
+                        localStorage.setItem("notificationsEnabled", "false");
+                        updateIcon(false);
+                        Swal.fire("Bildirimler pasif hale getirildi ❌");
+                    }
+                } else {
+                    localStorage.setItem("notificationsEnabled", "true");
+                    updateIcon(true);
+                    new Notification("Bildirimler aktif!", {
+                        body: "Yeni içeriklerden haberdar olacaksın!",
+                        icon: "/favicon.ico"
+                    });
+                    Swal.fire("Bildirimler aktif hale getirildi 🔔");
+                }
+
+            } else if (currentPermission === "default") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        localStorage.setItem("notificationsEnabled", "true");
+                        updateIcon(true);
+                        new Notification("Bildirimler aktif!", {
+                            body: "Yeni içeriklerden haberdar olacaksın!",
+                            icon: "/favicon.ico"
+                        });
+                        Swal.fire("Bildirim izni verildi ve aktif edildi 🎉");
+                    } else {
+                        Swal.fire("Bildirim izni verilmedi 😢");
+                    }
+                });
+            } else if (currentPermission === "denied") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Bildirim engellenmiş",
+                    text: "Tarayıcı ayarlarından bildirim izni vermen gerekiyor."
+                });
+            }
+        });
+
+        function updateIcon(isEnabled) {
+            notificationIcon.className = isEnabled ? "fas fa-bell" : "fas fa-bell-slash";
+        }
+    });
+</script>
+
+
+<body>
     <div id="colorlib-page">
-        <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a>
+
+
+        <!-- ASIDE (Sol Sidebar) -->
         <aside id="colorlib-aside" role="complementary" class="js-fullheight text-center">
-            <h1 id="colorlib-logo"><a href="~/elen-master/index.html">elen<span>.</span></a></h1>
-            <!-- Kullanıcı Paneli (Giriş / Çıkış / Profil) -->
+            <h1 id="colorlib-logo">
+                <a href="~/">elen<span>.</span></a>
+            </h1>
+
+            <!-- Kullanıcı Paneli -->
             <div class="user-panel">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <!-- Kullanıcı giriş yapmışsa -->
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle user-btn" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="icon-user"></i> @User.Identity.Name
+                        <button class="btn btn-dark dropdown-toggle user-btn"
+                                type="button"
+                                id="userDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <i class="fas fa-user me-2"></i>@User.Identity.Name
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="@Url.Action("Profile","Account")"><i class="icon-user"></i> Profil</a>
-                            <a class="dropdown-item" href="@Url.Action("LikedPosts","Account")"><i class="icon-heart"></i> Beğendiklerim</a>
-                            <a class="dropdown-item" href="@Url.Action("MyComments","Account")"><i class="icon-comment"></i> Yorumlarım</a>
-                            <a class="dropdown-item" href="@Url.Action("Logout","Account")"><i class="icon-sign-out"></i> Çıkış Yap</a>
-                        </div>
-                    </div>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Profile","Account")">
+                                    <i class="fas fa-user me-2"></i>Profil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("LikedPosts","Home")">
+                                    <i class="fas fa-heart me-2"></i>Beğendiklerim
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("MyComments","Home")">
+                                    <i class="fas fa-comment me-2"></i>Yorumlarım
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Logout","Account")" onclick="clearUserData()">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
+                                </a>
 
+                            </li>
+                        </ul>
+                    </div>
                 }
                 else
                 {
-                    <!-- Kullanıcı giriş yapmamışsa -->
-                    <div class="login-register">
-                        <a href="~/User/Account/Login" class="btn btn-primary user-btn"><i class="icon-sign-in"></i> Giriş Yap</a>
-                        <a href="~/User/Account/Register" class="btn btn-outline-primary user-btn"><i class="icon-user-plus"></i> Kayıt Ol</a>
+                    <div class="d-grid gap-2">
+                        <a href="~/User/Account/Login" class="btn btn-primary user-btn">
+                            <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                        </a>
+                        <a href="~/User/Account/Register" class="btn btn-outline-secondary user-btn">
+                            <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                        </a>
                     </div>
                 }
             </div>
+
+            <!-- Ana Menü -->
             <nav id="colorlib-main-menu" role="navigation">
                 <ul>
                     <li class="colorlib-active"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
-                    <li><a href="~/elen-master/photography.html">Fotoğraflar</a></li>
-                    <li><a href="~/elen-master/travel.html">Seyahat</a></li>
-                    <li><a href="~/elen-master/fashion.html">Moda</a></li>
-                    <li><a href="~/elen-master/about.html">Hakkımda</a></li>
-                    <li><a href="~/elen-master/contact.html">İletişim</a></li>
+                    <li><a href="@Url.Action("Photo","Home")">Fotoğraflar</a></li>
+                    <li><a href="@Url.Action("About","Home")">Hakkımda</a></li>
+                    <li><a href="@Url.Action("Contact","Home")">İletişim</a></li>
                 </ul>
             </nav>
 
+            <!-- Footer (Sidebar Alt) -->
             <div class="colorlib-footer">
-                <p>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    Telif Hakları &copy;<script>document.write(new Date().getFullYear());</script>
-                    Tüm Hakları Saklıdır | Created By Muhammed Said Eruslu
-                    
-                    <ul>
-                        <li><a href="#"><i class="icon-facebook"></i></a></li>
-                        <li><a href="#"><i class="icon-twitter"></i></a></li>
-                        <li><a href="#"><i class="icon-instagram"></i></a></li>
-                        <li><a href="#"><i class="icon-linkedin"></i></a></li>
-                    </ul>
+                <p class="mb-3">
+                    &copy; @DateTime.Now.Year - Tüm Hakları Saklıdır
+                    <br>Created by Muhammed Said Eruslu
+                </p>
+                <ul class="list-inline">
+                    <li class="list-inline-item"><a href="#"><i class="icon-facebook"></i></a></li>
+                    <li class="list-inline-item"><a href="#"><i class="icon-twitter"></i></a></li>
+                    <li class="list-inline-item"><a href="#"><i class="icon-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="#"><i class="icon-linkedin"></i></a></li>
+                </ul>
             </div>
-        </aside> <!-- END COLORLIB-ASIDE -->
+        </aside>
+        <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a> 
+        <!-- Yukarı Çık Butonu -->
+        <button id="scrollToTopBtn" class="scroll-to-top">
+            <i class="fas fa-chevron-up"></i>
+        </button>
 
+        <!-- END ASIDE -->
+        <!-- MAIN CONTENT -->
         <div id="colorlib-main">
-  
             @RenderBody()
-         @*    @{
-                var notyf = Context.RequestServices.GetService(typeof(AspNetCoreHero.ToastNotification.Abstractions.INotyfService))
-                as AspNetCoreHero.ToastNotification.Abstractions.INotyfService;
-            }
-            @notyf?.Display() *@
 
-
-
-            <!-- Start of the Footer part (down) from original code -->
+            <!-- Footer -->
             <footer class="ftco-footer ftco-bg-dark ftco-section">
                 <div class="container px-md-5">
                     <div class="row mb-5">
-                        <div class="col-md">
-                            <div class="ftco-footer-widget mb-4 ml-md-4">
-                                <h2 class="ftco-heading-2">Category</h2>
+                        <div class="col-md-4">
+                            <div class="ftco-footer-widget mb-4">
+                                <h2 class="ftco-heading-2">Kategoriler</h2>
                                 <ul class="list-unstyled categories">
-                                    <li><a href="#">Photography <span>(6)</span></a></li>
-                                    <li><a href="#">Fashion <span>(8)</span></a></li>
-                                    <li><a href="#">Technology <span>(2)</span></a></li>
-                                    <li><a href="#">Travel <span>(2)</span></a></li>
+                                    <li><a href="#">Teknoloji <span>(12)</span></a></li>
+                                    <li><a href="#">Yaşam <span>(8)</span></a></li>
+                                    <li><a href="#">Seyahat <span>(5)</span></a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md">
+
+                        <div class="col-md-4">
                             <div class="ftco-footer-widget mb-4">
-                                <h2 class="ftco-heading-2">Archives</h2>
+                                <h2 class="ftco-heading-2">Arşiv</h2>
                                 <ul class="list-unstyled categories">
-                                    <li><a href="#">October 2018 <span>(6)</span></a></li>
-                                    <li><a href="#">September 2018 <span>(6)</span></a></li>
-                                    <li><a href="#">August 2018 <span>(8)</span></a></li>
-                                    <li><a href="#">July 2018 <span>(2)</span></a></li>
-                                    <li><a href="#">June 2018 <span>(7)</span></a></li>
+                                    <li><a href="#">Ocak 2024 <span>(5)</span></a></li>
+                                    <li><a href="#">Şubat 2024 <span>(3)</span></a></li>
+                                    <li><a href="#">Mart 2024 <span>(7)</span></a></li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md">
+
+                        <div class="col-md-4">
                             <div class="ftco-footer-widget mb-4">
-                                <h2 class="ftco-heading-2">Sorun Mu Var?</h2>
-                                <div class="block-23 mb-3">
+                                <h2 class="ftco-heading-2">İletişim</h2>
+                                <div class="block-23 mb-4">
                                     <ul>
-                                        <li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
-                                        <li><a href="#"><span class="icon icon-phone"></span><span class="text">+2 392 3929 210</span></a></li>
-                                        <li><a href="#"><span class="icon icon-envelope"></span><span class="text">info@yourdomain.com</span></a></li>
+                                        <li>
+                                            <span class="icon icon-envelope"></span>
+                                            <span class="text">info@example.com</span>
+                                        </li>
                                     </ul>
+                                </div>
+                                <div class="subscribe-form">
+                                    <h3 class="h6 mb-3">Bültenimize Abone Olun</h3>
+                                    <form asp-controller="Common" asp-action="Subscribe" method="post" class="d-flex">
+                                        <input type="email" name="email" class="form-control me-2" placeholder="E-posta adresiniz" required />
+                                        <button type="submit" class="btn btn-primary">Abone Ol</button>
+                                    </form>
+
                                 </div>
                             </div>
                         </div>
@@ -187,24 +387,25 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                Telif Hakları &copy;<script>document.write(new Date().getFullYear());</script>
-                                Her hakkı saklıdır | Created By Muhammed Said Eruslu
-                                
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                &copy; @DateTime.Now.Year - Her hakkı saklıdır |
+                                Created by Muhammed Said Eruslu
                             </p>
                         </div>
                     </div>
                 </div>
             </footer>
-            <!-- End of the Footer part -->
+        </div><!-- END colorlib-main -->
+    </div><!-- END colorlib-page -->
+    <!-- Bildirim Butonu -->
+    <button id="notificationToggleBtn" class="notification-btn">
+        <i id="notificationIcon" class="fas fa-bell-slash"></i>
+    </button>
 
-        </div><!-- END COLORLIB-MAIN -->
-    </div><!-- END COLORLIB-PAGE -->
-    <!-- loader -->
-    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" /><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" /></svg></div>
+    <!-- SCRIPTS -->
+    <!-- Bootstrap 5 JS (Bundle) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-
+    <!-- jQuery + Template Scripts -->
     <script src="~/elen-master/js/jquery.min.js"></script>
     <script src="~/elen-master/js/jquery-migrate-3.0.1.min.js"></script>
     <script src="~/elen-master/js/popper.min.js"></script>
@@ -219,16 +420,60 @@
     <script src="~/elen-master/js/bootstrap-datepicker.js"></script>
     <script src="~/elen-master/js/jquery.timepicker.min.js"></script>
     <script src="~/elen-master/js/scrollax.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&sensor=false"></script>
-    <script src="~/elen-master/js/google-map.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&sensor=false"></script>
+    <script src="~/elen-master/js/google-map.js"></script> -->
     <script src="~/elen-master/js/main.js"></script>
+
     @RenderSection("Scripts", required: false)
 
     <script>
+        // BURGER MENU AÇ/KAPA
         $(document).ready(function () {
-            $('.dropdown-toggle').dropdown();
+            $('.js-colorlib-nav-toggle').on('click', function (e) {
+                e.preventDefault();
+                $(this).toggleClass('active');
+                $('#colorlib-aside').toggleClass('active');
+            });
         });
+                document.addEventListener("DOMContentLoaded", function () {
+            var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+            window.onscroll = function () {
+                if (document.documentElement.scrollTop > 300 || document.body.scrollTop > 300) {
+                    scrollToTopBtn.style.display = "flex"; // Görünür yap
+                } else {
+                    scrollToTopBtn.style.display = "none"; // Gizle
+                }
+            };
+
+            scrollToTopBtn.addEventListener("click", function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        });
+              function clearUserData() {
+            localStorage.removeItem("likedPosts"); // Beğenilen postları temizle
+            localStorage.removeItem("userComments"); // Kullanıcı yorumlarını temizle
+        }
     </script>
+
+
+    @if (TempData["SubscribeStatus"] != null && TempData["SubscribeMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    icon: '@TempData["SubscribeStatus"]',
+                    text: @Html.Raw($"'{TempData["SubscribeMessage"]}'"),
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Tamam'
+                });
+            });
+        </script>
+    }
 
 </body>
 </html>

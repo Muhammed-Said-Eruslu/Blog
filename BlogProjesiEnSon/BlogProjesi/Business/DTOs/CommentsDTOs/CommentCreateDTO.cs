@@ -13,6 +13,8 @@ namespace Business.DTOs.CommentsDTOs
         public string? AuthorEmail { get; set; }
         public Guid PostId { get; set; }
         public Guid? UserId { get; set; }
+        public string? PostSlug { get; set; }
+        public string? AuthorProfileImage { get; set; }
         public Guid? ParentCommentId { get; set; }
     }
 }

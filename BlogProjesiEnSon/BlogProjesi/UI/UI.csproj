@@ -7,8 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\Templates\EmailTemplate.html" />
+	  <Content Remove="wwwroot\Templates\Subs.html" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Folder Include="Areas\Admin\Data\" />
-		<Folder Include="Areas\Admin\Models\" />
 		<Folder Include="Areas\User\Data\" />
 		<Folder Include="wwwroot\images\avatar\" />
 	</ItemGroup>
@@ -24,12 +28,15 @@
 	  <None Include="wwwroot\elen-master\images\.DS_Store" />
 	  <None Include="wwwroot\elen-master\js\.DS_Store" />
 	  <None Include="wwwroot\elen-master\scss\.DS_Store" />
+	  <None Include="wwwroot\Templates\EmailTemplate.html" />
+	  <None Include="wwwroot\Templates\Subs.html" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Humanizer kütüphanesi -->
 		<PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
 		<PackageReference Include="Humanizer" Version="2.14.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.3.0" />
 

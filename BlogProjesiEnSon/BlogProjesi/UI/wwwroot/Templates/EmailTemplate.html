@@ -1,0 +1,165 @@
+﻿﻿
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Posta Doğrulama</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #fafafa 0%, #eeeeee 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 560px;
+            width: 100%;
+            background: #ffffff;
+            padding: 2.5rem;
+            margin: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border: 1px solid rgba(255,140,0,0.1);
+        }
+
+        .logo img {
+            max-width: 140px;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 2px 4px rgba(255,140,0,0.2));
+        }
+
+        .title {
+            font-size: 28px;
+            color: #FF6B00;
+            margin-bottom: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(255,107,0,0.1);
+        }
+
+        .message {
+            font-size: 16px;
+            color: #666666;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .code-container {
+            margin: 2rem 0;
+        }
+
+        .code {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(45deg, #FF6B00 0%, #FF8C00 100%);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(255,140,0,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+            .code:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 12px rgba(255,140,0,0.25);
+            }
+
+            .code:active {
+                transform: translateY(0);
+            }
+
+        .timer {
+            color: #FF6B00;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 1rem;
+            display: block; /* Yeni satırda yer alır */
+        }
+
+            .timer svg {
+                width: 16px;
+                height: 16px;
+                fill: currentColor;
+                vertical-align: middle;
+                margin-right: 4px;
+            }
+
+        .footer {
+            font-size: 13px;
+            color: #888888;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,140,0,0.1);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .code {
+                font-size: 28px;
+                padding: 0.8rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://yourlogo.com/logo.png" alt="Şirket Logosu">
+        </div>
+        <div class="title">E-Posta Adresinizi Doğrulayın</div>
+        <p class="message">
+            Merhaba,<br>
+            Kaydınızı tamamlamak için aşağıdaki doğrulama kodunu kullanabilirsiniz.
+        </p>
+        <div class="code-container">
+            <div class="code" id="verificationCode" onclick="copyCode()">{{CODE}}</div>
+            <div class="timer">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M13 7h-2v6h6v-2h-4z"></path></svg>
+                Geçerlilik Süresi: 5 Dakika
+            </div>
+        </div>
+        <div class="footer">
+            © 2024 Blog Projesi | Tüm Hakları Saklıdır.
+        </div>
+    </div>
+    <script>
+        // Kopyalama işlevi (Bu işlev tarayıcı tabanlı ortamlarda çalışır)
+        function copyCode() {
+            var codeElement = document.getElementById("verificationCode");
+            var range = document.createRange();
+            range.selectNodeContents(codeElement);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand("copy");
+                alert("Kod kopyalandı!");
+            } catch (err) {
+                alert("Kod kopyalanamadı.");
+            }
+            selection.removeAllRanges();
+        }
+    </script>
+</body>
+</html>

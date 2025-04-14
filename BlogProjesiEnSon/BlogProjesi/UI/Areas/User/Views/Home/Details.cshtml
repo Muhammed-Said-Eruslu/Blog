@@ -3,132 +3,280 @@
     Layout = "_UserLayout";
 }
 
-<section class="ftco-section">
+<style>
+    :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #a66efa;
+        --text-dark: #2d3436;
+        --text-light: #636e72;
+    }
+
+    /* Yorum İyileştirmeleri */
+    .comment-author h6 {
+        white-space: normal; /* Satır içinde taşma yapmadan göster */
+        overflow: visible;
+        text-overflow: clip;
+        max-width: 100%; /* Tam genişliği kullan */
+    }
+
+
+    .avatar-img {
+        width: 50px; /* Profil resminin sabit genişliği */
+        height: 50px;
+        border-radius: 50%; /* Yuvarlak profil resmi */
+        object-fit: cover; /* Resmin oranını koruyarak kırpmadan göster */
+        border: 2px solid #fff; /* Hafif bir beyaz çerçeve ekleyerek belirginleştir */
+    }
+
+
+    /* Sidebar Stilleri */
+    .sidebar-box {
+        margin-bottom: 1.5rem;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+        border-radius: 12px;
+    }
+
+        .sidebar-box:hover {
+            transform: translateY(-3px);
+        }
+
+        .sidebar-box h4 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+    /* Diğer Stiller */
+    .video-container {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .tagcloud .badge {
+        transition: all 0.3s;
+    }
+
+        .tagcloud .badge:hover {
+            transform: translateY(-2px);
+        }
+
+    .post-image img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover; /* Resmin oranını koruyarak taşan kısımları kırp */
+        border-radius: 12px; /* Köşeleri daha iyi görünmesi için yuvarla */
+    }
+    /* Video Thumbnail Stilleri */
+    .video-overlay-wrapper {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .video-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        transition: all 0.3s;
+    }
+
+    .video-thumbnail {
+        transition: transform 0.3s;
+    }
+
+    .video-overlay-wrapper:hover .video-thumbnail {
+        transform: scale(1.05);
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+    }
+</style>
+
+<section class="ftco-section py-5">
     <div class="container">
-        <div class="row">
+        <div class="row g-4">
             <!-- Ana İçerik -->
-            <div class="col-lg-8">
-                <div class="blog-entry card shadow-sm p-3 mb-5 bg-white rounded">
+            <div class="col-lg-8 mb-4">
+                <div class="blog-entry card shadow-lg p-4 rounded-3">
                     <!-- Post Görseli -->
-                    <div class="post-image mb-4">
-                        <img src="@Model.FeaturedImage" alt="@Model.Title" class="img-fluid rounded" style="height: 400px; width: 100%; object-fit: cover;">
+                    <div class="post-image mb-4 ratio ratio-16x9">
+                        <img src="@Model.FeaturedImage"
+                             alt="@Model.Title"
+                             class="img-fluid rounded-3 object-fit-cover">
                     </div>
 
-                    <!-- Post Metin İçeriği -->
+                    <!-- Post İçeriği -->
                     <div class="post-content mt-3">
-                        <span class="badge badge-primary p-2">@Model.CategoryName</span>
-                        <h2 class="mt-3 font-weight-bold">@Model.Title</h2>
-                        <p class="meta text-muted">
-                            <span><i class="icon-user"></i> <strong>@Model.AuthorName</strong></span> |
-                            <span><i class="icon-calendar"></i> @Model.CreatedAt.ToString("dd MMM yyyy")</span> |
-                            <span><i class="icon-eye"></i> @Model.ViewCount Görüntülenme</span> |
-                            <span><i class="icon-heart"></i> @Model.LikeCount Beğeni</span>
-                        </p>
+                        <span class="badge bg-primary p-2 mb-3">@Model.CategoryName</span>
+                        <h1 class="mb-3 fw-bold">@Model.Title</h1>
 
-                        <!-- Açıklama Başlığı (varsa) ve İçerik -->
-                        <h5 class="mt-4">Açıklama</h5>
-                        <div class="content mb-4 text-justify" style="line-height: 1.8;">
+                        <div class="d-flex gap-3 text-muted mb-4">
+                            <span><i class="fas fa-user me-1"></i>@Model.AuthorName</span>
+                            <span><i class="fas fa-calendar me-1"></i>@Model.CreatedAt.ToString("dd MMM yyyy")</span>
+                            <span><i class="fas fa-eye me-1"></i>@Model.ViewCount</span>
+                            <span><i class="fas fa-heart me-1"></i>@Model.LikeCount</span>
+                        </div>
+
+                        <div class="content mb-4 fs-5">
                             @Html.Raw(Model.Content)
                         </div>
 
-                        <!-- Video Alanı -->
                         @if (!string.IsNullOrEmpty(Model.VideoUrl))
                         {
                             <div class="video-container mb-4">
-                                <div class="position-relative video-overlay-wrapper" style="max-height: 400px; overflow: hidden; cursor: pointer;" onclick="playVideo()">
-                                    <img id="videoThumbnail" src="https://img.youtube.com/vi/@(Model.VideoUrl.Split('/').Last())/hqdefault.jpg"
-                                         alt="Video Önizleme" class="img-fluid rounded w-100 shadow-sm"
-                                         style="object-fit: cover;">
-                                    <div class="overlay d-flex align-items-center justify-content-center" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);">
-                                        <button class="btn btn-danger" style="font-size: 24px; padding: 15px 30px;">
-                                            <i class="fas fa-play"></i> İzle
-                                        </button>
+                                @if (Model.VideoUrl.Contains("youtube.com") || Model.VideoUrl.Contains("youtu.be"))
+                                {
+                                    <!-- YouTube Videosu İçin -->
+                                    <div class="position-relative video-overlay-wrapper" style="max-height: 400px; overflow: hidden; cursor: pointer;" onclick="playYouTubeVideo()">
+                                        <img id="videoThumbnail" src="https://img.youtube.com/vi/@(Model.VideoUrl.Split('/').Last())/hqdefault.jpg"
+                                             alt="Video Önizleme" class="img-fluid rounded w-100 shadow-sm"
+                                             style="object-fit: cover;">
+                                        <div class="overlay d-flex align-items-center justify-content-center"
+                                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);">
+                                            <button class="btn btn-danger" style="font-size: 24px; padding: 15px 30px;">
+                                                <i class="fas fa-play"></i> İzle
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div id="videoFrame" class="d-none mt-3">
-                                    <div class="embed-responsive embed-responsive-16by9 rounded shadow-sm">
-                                        <iframe id="embeddedVideo" class="embed-responsive-item" src="" frameborder="0" allowfullscreen></iframe>
+                                    <div id="videoFrame" class="d-none mt-3">
+                                        <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                                            <iframe id="embeddedVideo" class="embed-responsive-item" src="" frameborder="0" allowfullscreen></iframe>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                                else
+                                {
+                                    <!-- Yerel Video İçin -->
+                                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                                        <video id="localVideo" controls class="w-100" preload="metadata">
+                                            <source src="@Model.VideoUrl" type="video/mp4">
+                                            <source src="@Model.VideoUrl" type="video/webm">
+                                            <source src="@Model.VideoUrl" type="video/ogg">
+                                            Tarayıcınız bu video formatını desteklemiyor.
+                                        </video>
+                                    </div>
+                                }
                             </div>
                         }
+
+
                     </div>
                 </div>
 
                 <!-- Yorumlar -->
-                <div class="pt-5">
-                    <h3 class="mb-4 text-dark font-weight-bold">@Model.Comments.Count Yorum</h3>
+                <div class="pt-5 mt-4">
+                    <h3 class="mb-4 fw-bold">@Model.Comments.Count Yorum</h3>
+
                     <ul class="comment-list list-unstyled">
-                        @if (Model.Comments != null && Model.Comments.Any())
+                        @if (Model.Comments?.Any() ?? false)
                         {
                             @foreach (var comment in Model.Comments.Where(c => c.ParentCommentId == null))
                             {
-                                <li class="comment card mb-3 p-3 bg-light border-0">
-                                    <div class="d-flex align-items-center">
-                                        <img src="~/elen-master/images/person_2.jpg" alt="User" class="rounded-circle mr-3" width="50" height="50">
-                                        <div>
-                                            <h6 class="mb-1 text-dark font-weight-bold">@comment.AuthorName</h6>
+                                <li class="comment card mb-3 p-3 bg-light border-start border-3 border-primary">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="@(!string.IsNullOrEmpty(comment.AuthorProfileImage) ? comment.AuthorProfileImage : "/images/default-avatar.png")"
+                                             class="rounded-circle me-3 avatar-img"
+                                             width="60"
+                                             height="60"
+                                             alt="@comment.AuthorName">
+                                        <div class="comment-author">
+                                            <h6 class="mb-0 fw-bold" title="@comment.AuthorName">@comment.AuthorName</h6>
                                             <small class="text-muted">@comment.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
                                         </div>
                                     </div>
-                                    <p class="mt-3 text-dark">@comment.Content</p>
-                                    <!-- Yanıtla Butonu -->
-                                    <button class="btn btn-sm btn-outline-primary" onclick="replyToComment('@comment.Id')">
-                                        <i class="icon-reply"></i> Yanıtla
+                                    <p class="mb-2">@comment.Content</p>
+                                    <button class="btn btn-sm btn-outline-primary align-self-start"
+                                            onclick="replyToComment('@comment.Id')">
+                                        <i class="fas fa-reply me-1"></i>Yanıtla
                                     </button>
-                                    <!-- Alt Yorumlar -->
-                                    <ul class="reply-list list-unstyled mt-3 pl-4">
-                                        @foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
-                                        {
-                                            <li class="comment card p-2 mb-2 bg-white border-left border-primary">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="~/elen-master/images/person_2.jpg" alt="User" class="rounded-circle mr-2" width="40" height="40">
-                                                    <div>
-                                                        <h6 class="mb-1 text-dark">@reply.AuthorName</h6>
-                                                        <small class="text-muted">@reply.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+
+                                    @if (Model.Comments.Any(r => r.ParentCommentId == comment.Id))
+                                    {
+                                        <ul class="reply-list list-unstyled mt-3 ps-4">
+                                            @foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
+                                            {
+                                                <li class="comment card p-3 mt-2 bg-white border-start border-3 border-secondary">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="@(!string.IsNullOrEmpty(reply.AuthorProfileImage) ? reply.AuthorProfileImage : "/images/default-avatar.png")"
+                                                             class="rounded-circle me-2 avatar-img"
+                                                             width="40"
+                                                             height="40"
+                                                             alt="@reply.AuthorName">
+                                                        <div class="comment-author">
+                                                            <h6 class="mb-0 fw-bold" title="@reply.AuthorName">@reply.AuthorName</h6>
+                                                            <small class="text-muted">@reply.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <p class="mt-2">@reply.Content</p>
-                                            </li>
-                                        }
-                                    </ul>
+                                                    <p class="mt-2 mb-0">@reply.Content</p>
+                                                </li>
+
+                                            }
+                                        </ul>
+                                    }
                                 </li>
                             }
                         }
                         else
                         {
-                            <p class="text-muted">Henüz yorum yapılmamış.</p>
+                            <div class="alert alert-info">
+                                Henüz yorum yapılmamış. İlk yorumu siz yazın!
+                            </div>
                         }
                     </ul>
 
-                    <!-- Yorum Ekleme Formu -->
-                    <div class="comment-form-wrap mt-5 card p-4 bg-light border-0 shadow-sm">
-                        <h4 class="mb-4 text-dark">Yorum Ekle</h4>
+
+                    <!-- Yorum Formu -->
+                    <div class="comment-form-wrap mt-5 card p-4 bg-light rounded-3">
+                        <h4 class="mb-4 fw-bold">Yorum Yaz</h4>
 
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <!-- Kullanıcı giriş yaptıysa: Normal yorum gönderme formu -->
-                            <form asp-action="AddComment" asp-controller="Home" asp-area="User" method="post">
-                                <input type="hidden" name="PostId" value="@Model.Id" />
+                            <form asp-area="User" asp-controller="Home" asp-action="AddComment" method="post">
+                                <input type="hidden" name="PostId" value="@Model.Id" /> <!-- ✅ Post ID -->
+                                <input type="hidden" name="PostSlug" value="@Model.Slug" /> <!-- ✅ Slug bilgisini de ekledik -->
                                 <input type="hidden" name="ParentCommentId" id="parentCommentId" value="" />
-                                <div class="form-group">
+
+                                <div class="mb-3">
                                     <input type="text" name="AuthorName" class="form-control" value="@User.Identity.Name" readonly>
                                 </div>
-                                <div class="form-group">
-                                    <textarea name="Content" class="form-control" placeholder="Yorumunuz" rows="4" required></textarea>
+
+                                <div class="mb-3">
+                                    <textarea name="Content" class="form-control" rows="4" placeholder="Düşüncelerinizi yazın..." required></textarea>
                                 </div>
-                                <div class="form-group text-right">
-                                    <button type="submit" class="btn btn-primary px-4">Gönder</button>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="fas fa-paper-plane me-2"></i>Gönder
+                                    </button>
                                 </div>
                             </form>
+
+
                         }
                         else
                         {
-                            <!-- Kullanıcı giriş yapmadıysa: Giriş yap / Kayıt ol butonları -->
-                            <div class="alert alert-warning text-center">
-                                <p class="mb-1">Yorum yapabilmek için giriş yapmanız veya kayıt olmanız gerekiyor.</p>
-                                <a href="/User/Account/Login" class="btn btn-sm btn-primary mx-2">Giriş Yap</a>
-                                <a href="/User/Account/Register" class="btn btn-sm btn-secondary mx-2">Kayıt Ol</a>
+                            <div class="alert alert-warning text-center py-3">
+                                <p class="mb-3">Yorum yapabilmek için giriş yapmalısınız</p>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a href="/User/Account/Login" class="btn btn-primary">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                                    </a>
+                                    <a href="/User/Account/Register" class="btn btn-outline-primary">
+                                        <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                                    </a>
+                                </div>
                             </div>
                         }
                     </div>
@@ -137,90 +285,81 @@
 
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <!-- Kategoriler -->
-                <div class="sidebar-box card bg-white shadow-sm p-4 rounded">
-                    <h4 class="text-dark">Kategoriler</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-dark">@Model.CategoryName</a></li>
-                    </ul>
-                </div>
-
-                <!-- Etiketler -->
-                <div class="sidebar-box card bg-white shadow-sm p-4 rounded mt-4">
-                    <h4 class="text-dark">Etiketler</h4>
-                    <div class="tagcloud">
-                        @if (Model.Tags != null && Model.Tags.Any())
-                        {
-                            @foreach (var tag in Model.Tags)
-                            {
-                                <a href="#" class="badge badge-primary p-2 m-1">@tag.TagName</a>
-                            }
-                        }
-                        else
-                        {
-                            <p class="text-muted">Etiket bulunamadı.</p>
-                        }
+                <div class="sticky-top" style="top: 20px;">
+                    <!-- Kategoriler -->
+                    <div class="sidebar-box card p-3 mb-3">
+                        <h4>Kategoriler</h4>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                @Model.CategoryName
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Benzer Etiketlere Ait Postlar -->
-                <div class="sidebar-box card bg-white shadow-sm p-4 rounded mt-4">
-                    <h4 class="text-dark">Benzer Etiket Postları</h4>
-                    <ul class="list-unstyled">
-                        @if (Model.RelatedTagPosts != null && Model.RelatedTagPosts.Any())
-                        {
-                            foreach (var rpost in Model.RelatedTagPosts)
+                    <!-- Etiketler -->
+                    <div class="sidebar-box card p-3 mb-3">
+                        <h4>Etiketler</h4>
+                        <div class="tagcloud d-flex flex-wrap gap-2">
+                            @if (Model.Tags?.Any() ?? false)
                             {
-                                <li class="mb-2">
-                                    <a href="/User/Home/Details/@rpost.Id" class="text-dark">@rpost.Title</a>
-                                </li>
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    <a href="#" class="badge bg-primary text-decoration-none">
+                                        @tag.TagName
+                                    </a>
+                                }
                             }
-                        }
-                        else
-                        {
-                            <p class="text-muted">Benzer etikete ait post bulunamadı.</p>
-                        }
-                    </ul>
-                </div>
+                            else
+                            {
+                                <div class="text-muted">Etiket bulunamadı</div>
+                            }
+                        </div>
+                    </div>
 
-                <!-- Benzer Kategori Postları -->
-                <div class="sidebar-box card bg-white shadow-sm p-4 rounded mt-4">
-                    <h4 class="text-dark">Benzer Kategori Postları</h4>
-                    <ul class="list-unstyled">
-                        @if (Model.RelatedCategoryPosts != null && Model.RelatedCategoryPosts.Any())
-                        {
-                            foreach (var cpost in Model.RelatedCategoryPosts)
+                    <!-- Benzer Kategori Postları -->
+                    <div class="sidebar-box card p-3 mb-3">
+                        <h4>Benzer Kategori Postları</h4>
+                        <div class="list-group list-group-flush">
+                            @foreach (var post in Model.RelatedCategoryPosts.Take(5))
                             {
-                                <li class="mb-2">
-                                    <a href="/User/Home/Details/@cpost.Id" class="text-dark">@cpost.Title</a>
-                                </li>
+                                <a href="/Details/@post.Slug"
+                                   class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-chevron-right text-primary me-2"></i>
+                                    <span class="text-truncate">@post.Title</span>
+                                </a>
                             }
-                        }
-                        else
-                        {
-                            <p class="text-muted">Benzer kategori postu bulunamadı.</p>
-                        }
-                    </ul>
-                </div>
+                        </div>
+                    </div>
 
-                <!-- Popüler Postlar -->
-                <div class="sidebar-box card bg-white shadow-sm p-4 rounded mt-4">
-                    <h4 class="text-dark">Popüler Postlar</h4>
-                    <ul class="list-unstyled">
-                        @if (Model.PopularPosts != null && Model.PopularPosts.Any())
-                        {
-                            foreach (var popPost in Model.PopularPosts)
+                    <!-- Benzer Etiket Postları -->
+                    <div class="sidebar-box card p-3 mb-3">
+                        <h4>Benzer Etiket Postları</h4>
+                        <div class="list-group list-group-flush">
+                            @foreach (var post in Model.RelatedTagPosts.Take(5))
                             {
-                                <li class="mb-2">
-                                    <a href="/User/Home/Details/@popPost.Id" class="text-dark">@popPost.Title</a>
-                                </li>
+                                <a href="/Details/@post.Slug"
+                                   class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-tag text-success me-2"></i>
+                                    <span class="text-truncate">@post.Title</span>
+                                </a>
                             }
-                        }
-                        else
-                        {
-                            <p class="text-muted">Popüler post bulunamadı.</p>
-                        }
-                    </ul>
+                        </div>
+                    </div>
+
+                    <!-- Popüler Yazılar -->
+                    <div class="sidebar-box card p-3">
+                        <h4>Popüler Yazılar</h4>
+                        <div class="list-group list-group-flush">
+                            @foreach (var post in Model.PopularPosts.Take(5))
+                            {
+                                <a href="/Details/@post.Slug"
+                                   class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-fire text-danger me-2"></i>
+                                    <span class="text-truncate">@post.Title</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,12 +367,8 @@
 </section>
 
 <script>
-    function replyToComment(commentId) {
-        document.getElementById("parentCommentId").value = commentId;
-        document.querySelector(".comment-form-wrap h4").textContent = "Yanıt Yaz";
-    }
 
-    function playVideo() {
+    function playYouTubeVideo() {
         var videoUrl = "@Model.VideoUrl".replace("watch?v=", "embed/");
         var embeddedVideo = document.getElementById("embeddedVideo");
         var videoThumbnail = document.getElementById("videoThumbnail");
@@ -242,5 +377,26 @@
         embeddedVideo.src = videoUrl + "?rel=0&showinfo=0&autoplay=1";
         videoThumbnail.parentElement.classList.add("d-none");
         videoFrame.classList.remove("d-none");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var localVideo = document.getElementById("localVideo");
+
+        if (localVideo) {
+            localVideo.onerror = function () {
+                alert("Bu video açılamıyor! Lütfen video formatını veya yolunu kontrol edin.");
+            };
+        }
+    });
+
+
+
+    function replyToComment(commentId) {
+        document.getElementById("parentCommentId").value = commentId;
+        document.querySelector('.comment-form-wrap h4').textContent = "Yanıt Yazıyorsunuz";
+        window.scrollTo({
+            top: document.querySelector('.comment-form-wrap').offsetTop - 100,
+            behavior: 'smooth'
+        });
     }
 </script>

@@ -22,11 +22,15 @@ namespace Business.Services.CommentsServices
         }
         public async Task<IResult> AddAsync(CommentCreateDTO commentCreateDTO)
         {
-            var newComment = commentCreateDTO.Adapt<Comment>();
             try
             {
+                var newComment = commentCreateDTO.Adapt<Comment>();
+
+                newComment.UserId = commentCreateDTO.UserId;
+
                 await _commentRepository.AddAsync(newComment);
                 await _commentRepository.SaveChangeAsync();
+
                 return new SuccessResult("Yorum Ekleme Başarılı.");
             }
             catch (Exception ex)
@@ -34,6 +38,7 @@ namespace Business.Services.CommentsServices
                 return new ErrorResult("Hata: " + ex.Message);
             }
         }
+
 
         public async Task<IDataResult<object>> CheckIfUserCommentedAsync(Guid postId, Guid userId)
         {
@@ -94,11 +99,27 @@ namespace Business.Services.CommentsServices
         }
         public async Task<IDataResult<List<CommentListDTO>>> GetByPostIdAsync(Guid postId)
         {
-            var comments = await _commentRepository.GetAllAsync(c => c.PostId == postId && c.ParentCommentId == null);
-            var commentDTOs = comments.Select(c => c.Adapt<CommentListDTO>()).ToList();
+            var comments = await _commentRepository.GetAllIncludingAsync(
+                c => c.PostId == postId && c.ParentCommentId == null,
+                c => c.User // Kullanıcı bilgilerini dahil ediyoruz
+            );
 
-            return new SuccessDataResult<List<CommentListDTO>>(commentDTOs, "Yorum Başarılıyla Getirildi.");
+            var commentDTOs = comments.Select(c => new CommentListDTO
+            {
+                Id = c.Id,
+                PostId = c.PostId,
+                AuthorName = c.User?.FullName ?? "Anonim Kullanıcı",
+                AuthorProfileImage = !string.IsNullOrEmpty(c.User?.ProfileImage) ? c.User.ProfileImage : "/images/default-avatar.png",
+                Content = c.Content,
+                CreatedDate = c.CreatedAt,
+                ParentCommentId = c.ParentCommentId
+            }).ToList();
+
+            return new SuccessDataResult<List<CommentListDTO>>(commentDTOs, "Yorumlar başarıyla getirildi.");
         }
+
+
+
 
         public async Task<IDataResult<List<CommentListDTO>>> GetByUserIdAsync(Guid userId)
         {

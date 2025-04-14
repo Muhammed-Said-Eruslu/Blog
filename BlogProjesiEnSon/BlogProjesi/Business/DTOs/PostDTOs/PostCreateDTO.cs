@@ -13,6 +13,7 @@ namespace Business.DTOs.PostDTOs
         public string Content { get; set; }
         //public string Url { get; set; }
         public string Excerpt { get; set; }
+        public string Slug { get; set; }
         public string? FeaturedImage { get; set; }
         public Guid UserId { get; set; }
         public Guid CategoryId { get; set; }

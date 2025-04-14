@@ -12,7 +12,7 @@ namespace Domain.Entites
         public Post()
         {
             Comments = new List<Comment>();
-         
+            LikedUsers = new List<AppUserPost>();
         }
         public string Title { get; set; }
         public string Content { get; set; }
@@ -29,7 +29,9 @@ namespace Domain.Entites
         public virtual AppUser? User { get; set; }
         public virtual Category Category { get; set; }
         public Guid CategoryId { get; set; }
+
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<PostTag> PostTag { get; set; } = new List<PostTag>();
+        public virtual ICollection<AppUserPost> LikedUsers { get; set; } = new List<AppUserPost>();
     }
 }

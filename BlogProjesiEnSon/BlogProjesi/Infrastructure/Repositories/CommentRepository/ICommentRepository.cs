@@ -17,5 +17,8 @@ namespace Infrastructure.Repositories.CommentRepository
        int? skip = null,
        int? take = null);
         Task<int> CountAsync(Expression<Func<Comment, bool>> filter = null);
+        Task<List<Comment>> GetAllIncludingAsync(Expression<Func<Comment, bool>> filter, params Expression<Func<Comment, object>>[] includes);
+
+
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using UI.Areas.User.Models.AccountVMs;
 using static Infrastructure.Helpers.NotyfHelper;
 
@@ -77,7 +78,7 @@ namespace UI.Areas.User.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 🛑 1. Kullanıcı daha önce kayıtlı mı kontrol et
+               
                 var existingUser = await _accountService.FindByEmail(model.Email);
                 if (existingUser != null)
                 {
@@ -85,7 +86,7 @@ namespace UI.Areas.User.Controllers
                     return View(model);
                 }
 
-                // 🛑 2. E-Posta doğrulama kodu oluştur ve gönder
+                
                 var confirmCode = await _accountService.SendConfirmMail(model.Email);
                 if (string.IsNullOrEmpty(confirmCode) || confirmCode == "0")
                 {
@@ -93,7 +94,7 @@ namespace UI.Areas.User.Controllers
                     return View(model);
                 }
 
-                // 🛑 3. Kullanıcı bilgilerini TempData'da sakla
+                
                 TempData["ConfirmCode"] = confirmCode;
                 TempData["RegisterData"] = JsonConvert.SerializeObject(model);
 
@@ -114,7 +115,7 @@ namespace UI.Areas.User.Controllers
             }
 
             var registerVM = JsonConvert.DeserializeObject<RegisterVM>(TempData["RegisterData"].ToString());
-            TempData.Keep("RegisterData"); // TempData'yı POST metodu için sakla
+            TempData.Keep("RegisterData"); 
 
             SendMailVM sendMailVM = new SendMailVM
             {
@@ -136,7 +137,7 @@ namespace UI.Areas.User.Controllers
 
             try
             {
-                // Kullanıcı oluştur
+              
                 var appUser = new AppUser
                 {
                     UserName = model.RegisterVM.Email,
@@ -161,15 +162,6 @@ namespace UI.Areas.User.Controllers
                 appUser.NormalizedEmail = appUser.Email.ToUpperInvariant();
                 await _accountService.UpdateUserAsync(appUser);
 
-                //// 🛑 Eğer `UserManager.UpdateAsync` başarısız olursa hata mesajı döndür
-                //var updatedUser = await _accountService.FindByEmail(appUser.Email );
-                //if (updatedUser.Email == null)
-                //{
-                //    ErrorNotyf("NormalizedEmail güncellenemedi!");
-                //    return View(model);
-                //}
-
-                // Başarı mesajı göster ve yönlendir
                 SuccessNotyf("E-Posta doğrulandı ve hesabınız oluşturuldu! Şimdi giriş yapabilirsiniz.");
                 return RedirectToAction("Login");
             }
@@ -292,6 +284,82 @@ namespace UI.Areas.User.Controllers
 
             return RedirectToAction("Profile");
         }
+        [AllowAnonymous]
+        public IActionResult GoogleLogin()
+        {
+            // Geri dönüş adresini açık ve net olarak belirtiyoruz (area dahil!)
+            string redirectUrl = Url.Action("GoogleResponse", "Account", new { area = "User" });
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return Challenge(properties, "Google");
+        }
+
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ErrorNotyf("Google ile giriş sırasında bir hata oluştu.");
+                return RedirectToAction("Login", "Account", new { area = "User" });
+            }
+
+            // Google hesabıyla daha önce giriş yapılmış mı?
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+            {
+                await SetUserSession(info);
+                SuccessNotyf("Google ile başarıyla giriş yapıldı.");
+                return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+
+            // Yeni kullanıcıysa
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    FullName = info.Principal.FindFirstValue(ClaimTypes.Name) ?? "Google Kullanıcısı",
+                    Role = Roles.User,
+                    ProfileImage = info.Principal.FindFirstValue("urn:google:picture") ?? "default-avatar.jpg"
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    ErrorNotyf("Kullanıcı oluşturulamadı: " + string.Join(", ", createResult.Errors.Select(e => e.Description)));
+                    return RedirectToAction("Login", "Account", new { area = "User" });
+                }
+
+                await _userManager.AddLoginAsync(user, info);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            await SetUserSession(user);
+
+            SuccessNotyf("Google hesabıyla giriş başarılı.");
+            return RedirectToAction("Index", "Home", new { area = "User" });
+        }
+
+        private async Task SetUserSession(ExternalLoginInfo info)
+        {
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            await SetUserSession(user);
+        }
+
+        private async Task SetUserSession(AppUser user)
+        {
+            var settings = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+            var json = JsonConvert.SerializeObject(user, settings);
+            HttpContext.Session.SetString("UserSession", json);
+        }
+
 
     }
 }

@@ -18,6 +18,7 @@ namespace Business.DTOs.CommentsDTOs
         public DateTime? UpdatedDate { get; set; }
         public Guid UserId { get; set; }
         public string UserName { get; set; }
+        public string AuthorProfileImage { get; set; }
         public ICollection<CommentDTO> Replies { get; set; } = new List<CommentDTO>(); // Yorumun yanıtlarını içeren koleksiyon
     }
 }

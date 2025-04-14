@@ -16,5 +16,7 @@ namespace Domain.Entites
         public string? ProfileImage { get; set; }
         public Roles Role { get; set; } = Roles.User;
         public virtual ICollection<Post>? Posts { get; set; } = new List<Post>();
+        public virtual ICollection<AppUserPost>? LikedPosts { get; set; } = new List<AppUserPost>();
+        public virtual ICollection<Comment>? Comments { get; set; } = new List<Comment>();
     }
 }

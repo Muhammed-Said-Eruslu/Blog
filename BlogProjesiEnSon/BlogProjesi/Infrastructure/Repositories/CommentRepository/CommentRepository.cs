@@ -64,5 +64,18 @@ namespace Infrastructure.Repositories.CommentRepository
             // Asenkron olarak verileri getir
             return await query.ToListAsync();
         }
+
+        public async Task<List<Comment>> GetAllIncludingAsync(Expression<Func<Comment, bool>> filter, params Expression<Func<Comment, object>>[] includes)
+        {
+            IQueryable<Comment> query = _context.Set<Comment>().Where(filter);
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }

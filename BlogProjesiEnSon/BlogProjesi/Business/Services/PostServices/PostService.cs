@@ -142,7 +142,7 @@ namespace Business.Services.PostServices
                 CategoryName = p.Category != null ? p.Category.Name : "Bilinmiyor",
                 UserId = p.Id,
                 Slug = p.Slug,
-                FullName = p.User != null ? p.User.FullName : "Bilinmiyor"
+                FullName = p.User != null ? p.User.UserName : "Bilinmiyor"
             }).ToList();
 
             if (!postListDTOs.Any())
@@ -164,46 +164,39 @@ namespace Business.Services.PostServices
             return new SuccessDataResult<T>(post, "Post details retrieved successfully.");
         }
 
-        public async Task<IDataResult<PostDTO>> GetByIdAsync(Guid id)
+        public async Task<IDataResult<PostDTO>> GetByIdAsync(Guid postId)
         {
-            var post = await _postRepository.GetByIdAsync(id);
+            var post = await _postRepository.GetByIdAsync(postId);
             if (post == null)
-                return new ErrorDataResult<PostDTO>(null, "Post not found.");
+                return new ErrorDataResult<PostDTO>(null, "Gönderi bulunamadı.");
 
-            var postDTO = post.Adapt<PostDTO>();
-            return new SuccessDataResult<PostDTO>(postDTO, "Post retrieved successfully.");
+            var dto = post.Adapt<PostDTO>(); // LikeCount, ViewCount vs. var
+            return new SuccessDataResult<PostDTO>(dto, "Gönderi başarıyla bulundu.");
         }
 
         public async Task<IDataResult<List<PostListDTO>>> GetPopularPostsAsync(int count)
         {
-            var popularPosts = await _postRepository.GetAllAsync(
-                predicate: p => true,
-                include: q => q.Include(p => p.User)
-                                .OrderByDescending(p => p.ViewCount)
-                                .Take(count)
+            // Sıralama: en çok görüntülenme, istersen (Like + View + Comment)
+            var posts = await _postRepository.GetAllAsync(
+                include: q => q
+                    .Include(p => p.User)
+                    .Include(p => p.Category)
+                    .Include(p => p.Comments),
+                orderBy: q => q.OrderByDescending(p => p.ViewCount),
+                take: count
             );
 
-            // Eğer Post.User doluysa, dictionary oluşturup kullanıcı adlarını alıyoruz:
-            var userDictionary = popularPosts
-                .Where(p => p.User != null)
-                .Select(p => p.User)
-                .Distinct()
-                .ToDictionary(u => u.Id, u => u.FullName);
-
-            var postListDTOs = popularPosts.Select(p => new PostListDTO
+            var postListDTOs = posts.Select(p => new PostListDTO
             {
                 Id = p.Id,
                 Title = p.Title,
-                VideoUrl = p.VideoUrl,
-                // Dictionary üzerinden kullanıcı adını çekiyoruz:
-                FullName = (p.User != null && userDictionary.ContainsKey(p.User.Id)) ? userDictionary[p.User.Id] : string.Empty,
-                Excerpt = p.Excerpt, // Post entity'nizde varsa
-                Slug = p.Slug,
+                Excerpt = p.Excerpt,
                 FeaturedImage = p.FeaturedImage,
-                CategoryId = p.CategoryId,
-                // Eğer kategori bilgisi de ekleniyorsa, yine benzer şekilde atayabilirsin:
-                CategoryName = p.Category != null ? p.Category.Name : string.Empty,
-                UserId = p.User != null ? p.User.Id : Guid.Empty
+                CategoryName = p.Category?.Name ?? "",
+                Slug = p.Slug,
+                LikeCount = p.LikeCount,
+                ViewCount = p.ViewCount,
+                CommentCount = p.Comments.Count()
             }).ToList();
 
             return new SuccessDataResult<List<PostListDTO>>(postListDTOs, "Popular posts retrieved successfully.");
@@ -471,13 +464,14 @@ namespace Business.Services.PostServices
 
         }
 
-        public async Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync()
+        public async Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync(Guid userId)
         {
             var posts = await _postRepository.GetAllAsync(
                 include: query => query
                     .Include(p => p.Comments)
                     .Include(p => p.User)
                     .Include(p => p.Category)
+                    .Include(p => p.LikedUsers)
             );
 
             var postListDTOs = posts.Select(p => new PostListDTO
@@ -492,11 +486,11 @@ namespace Business.Services.PostServices
                 UserId = p.UserId ?? Guid.Empty,
                 FullName = p.User != null ? p.User.FullName : "Bilinmiyor",
                 Slug = p.Slug,
-
-                // **Eksik Alanları Ekleyelim**
-                ViewCount = p.ViewCount,            // **Görüntülenme Sayısı**
-                LikeCount = p.LikeCount,            // **Beğeni Sayısı**
-                CommentCount = p.Comments.Count()   // **Yorum Sayısı**
+                ViewCount = p.ViewCount,
+                LikeCount = p.LikeCount,
+                IsLiked = p.LikedUsers.Any(lu => lu.UserId == userId),
+                CommentCount = p.Comments.Count(),
+                CreatedDate = p.CreatedDate
             }).ToList();
 
             return new SuccessDataResult<List<PostListDTO>>(postListDTOs, "Posts retrieved successfully.");
@@ -507,7 +501,7 @@ namespace Business.Services.PostServices
             if (post == null)
                 return new ErrorResult("Post bulunamadı.");
 
-            post.ViewCount++;  // Görüntülenme sayısını arttır
+            post.ViewCount++;  // DB'de kalıcı
             await _postRepository.UpdateAsync(post);
             await _postRepository.SaveChangeAsync();
 
@@ -519,26 +513,140 @@ namespace Business.Services.PostServices
             if (post == null)
                 return new ErrorResult("Post bulunamadı.");
 
-            post.LikeCount++;
+            post.LikeCount++; // DB'de kalıcı
             await _postRepository.UpdateAsync(post);
             await _postRepository.SaveChangeAsync();
 
             return new SuccessResult("Beğeni sayısı arttırıldı.");
         }
 
-        public async Task<IDataResult<T>> GetPostWithIncludesAsync<T>(string slug, Func<IQueryable<T>, IQueryable<T>> include) where T : class, IEntity
+        public async Task<IDataResult<T>> GetPostWithIncludesAsync<T>(string slug, Func<IQueryable<T>, IQueryable<T>> include) where T : class, Domain.Core.İnterfaces.IEntity
         {
             var query = await _postRepository.GetAllWithIncludesAsync<T>(
-                p => EF.Property<string>(p, "Slug") == slug, 
+                p => EF.Property<string>(p, "Slug") == slug,
                 include
             );
 
             var post = query.FirstOrDefault();
-
             return post != null
                 ? new SuccessDataResult<T>(post, "Post başarıyla getirildi.")
                 : new ErrorDataResult<T>("Post bulunamadı.");
         }
+        public async Task<IDataResult<List<PostListDTO>>> GetAllWithCountAsync(string searchQuery)
+        {
+            var posts = await _postRepository.GetAllAsync(
+                predicate: p => string.IsNullOrEmpty(searchQuery) ||
+                                p.Title.Contains(searchQuery) ||
+                                p.Excerpt.Contains(searchQuery),
+                include: query => query
+                    .Include(p => p.Comments)
+                    .Include(p => p.User)
+                    .Include(p => p.Category)
+            );
+
+            // DTO'ya map
+            var postListDTOs = posts.Select(p => new PostListDTO
+            {
+                Id = p.Id,
+                Title = p.Title,
+                VideoUrl = p.VideoUrl,
+                Excerpt = p.Excerpt,
+                FeaturedImage = p.FeaturedImage,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category != null ? p.Category.Name : "Bilinmiyor",
+                UserId = p.UserId ?? Guid.Empty,
+                FullName = p.User != null ? p.User.FullName : "Bilinmiyor",
+                Slug = p.Slug,
+                // Kalıcı sayılar
+                ViewCount = p.ViewCount,
+                LikeCount = p.LikeCount,
+                CommentCount = p.Comments.Count(),
+                CreatedDate = p.CreatedDate // Bu alan veritabanında varsa
+            }).ToList();
+
+            return new SuccessDataResult<List<PostListDTO>>(postListDTOs, "Filtered posts retrieved successfully.");
+        }
+
+        
+
+        public async Task<IDataResult<List<PostListDTO>>> GetRelatedTagPostsAsync(Guid postId, int count = 5)
+        {
+            var currentPost = await _postRepository.GetByIdAsync(postId);
+            if (currentPost == null)
+                return new ErrorDataResult<List<PostListDTO>>(null, "Post bulunamadı."); // ✅ Fix
+
+            var tagIds = currentPost.PostTag.Select(pt => pt.TagId).ToList();
+
+            // Aynı etiketlere sahip postlar (mevcut post hariç)
+            var posts = await _postRepository.GetAllAsync(
+                predicate: p => p.Id != postId && p.PostTag.Any(pt => tagIds.Contains(pt.TagId)),
+                include: q => q.Include(p => p.User).Include(p => p.Category),
+                take: count
+            );
+
+            var dtos = posts.Select(p => p.Adapt<PostListDTO>()).ToList();
+            return new SuccessDataResult<List<PostListDTO>>(dtos, "Related posts retrieved successfully.");
+        }
+
+        // Benzer Kategorideki Postlar
+        public async Task<IDataResult<List<PostListDTO>>> GetRelatedCategoryPostsAsync(Guid postId, int count = 5)
+        {
+            var currentPost = await _postRepository.GetByIdAsync(postId);
+            if (currentPost == null)
+                return new ErrorDataResult<List<PostListDTO>>(null, "Post bulunamadı."); // ✅ Fix
+
+            var categoryId = currentPost.CategoryId;
+
+            // Aynı kategorideki postlar (mevcut post hariç)
+            var posts = await _postRepository.GetAllAsync(
+                predicate: p => p.CategoryId == categoryId && p.Id != postId,
+                include: q => q.Include(p => p.User).Include(p => p.Category),
+                take: count
+            );
+
+            var dtos = posts.Select(p => p.Adapt<PostListDTO>()).ToList();
+            return new SuccessDataResult<List<PostListDTO>>(dtos, "Related posts retrieved successfully.");
+        }
+
+        public async Task<AppUser> GetUserWithLikedPostsAsync(Guid userId)
+        {
+            return await _postRepository.GetUserWithLikedPostsAsync(userId);
+        }
+
+        public async Task<IDataResult<Post>> ToggleLikeAsync(Guid userId, Guid postId)
+        {
+            // Kullanıcıyı ve postu çek
+            var user = await _postRepository.GetUserWithLikedPostsAsync(userId);
+            var post = await _postRepository.GetByIdAsync(postId);
+
+            if (user == null)
+                return new ErrorDataResult<Post>("Kullanıcı bulunamadı.");
+
+            if (post == null)
+                return new ErrorDataResult<Post>("Post bulunamadı.");
+
+            // Kullanıcının bu postu beğenip beğenmediğini kontrol et
+            var existingLike = await _postRepository.GetAppUserPostAsync(userId, postId);
+
+            if (existingLike != null)
+            {
+                // Eğer daha önce beğenmişse, beğeniyi kaldır
+                await _postRepository.RemoveLikeAsync(existingLike);
+                post.LikeCount--;
+            }
+            else
+            {
+                // Eğer beğenmemişse, beğeni ekle
+                await _postRepository.AddLikeAsync(new AppUserPost { UserId = userId, PostId = postId });
+                post.LikeCount++;
+            }
+
+            // Değişiklikleri kaydet
+            await _postRepository.SaveChangeAsync();
+
+            return new SuccessDataResult<Post>(post, "Beğeni durumu değiştirildi.");
+        }
+
 
 
     }

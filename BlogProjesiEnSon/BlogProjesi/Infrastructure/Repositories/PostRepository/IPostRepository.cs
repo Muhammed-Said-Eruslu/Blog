@@ -1,5 +1,6 @@
 ﻿using Domain.Core.İnterfaces;
 using Domain.Entites;
+using Domain.Utilities.Interfaces;
 using Infrastructure.DataAccess.Interface;
 using System;
 using System.Collections.Generic;
@@ -26,5 +27,10 @@ namespace Infrastructure.Repositories.PostRepository
         );
 
         Task<List<T>> GetAllWithIncludesAsync<T>(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>> include) where T : class, IEntity;
+        Task<AppUser> GetUserWithLikedPostsAsync(Guid userId);
+        Task<IDataResult<Post>> ToggleLikeAsync(Guid userId, Guid postId);
+        Task<AppUserPost> GetAppUserPostAsync(Guid userId, Guid postId);
+        Task AddLikeAsync(AppUserPost like);
+        Task RemoveLikeAsync(AppUserPost like);
     }
 }
