@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,11 @@ namespace Infrastructure.AppContext
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("AppConnectionString"));
 
-            return new AppDbContext(optionsBuilder.Options);
+            // Create a logger factory
+            var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
+            var logger = loggerFactory.CreateLogger<AppDbContext>();
+
+            return new AppDbContext(optionsBuilder.Options,logger);
         }
     }
 }

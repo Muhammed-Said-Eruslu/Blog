@@ -135,7 +135,7 @@
                     <h2 class="mb-4">Yazı Düzenle</h2>
                     <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         <input type="hidden" asp-for="Id" />
-
+                        <input type="hidden" asp-for="RowVersion" />
                         <!-- Başlık ve URL -->
                         <div class="row mb-3">
                             <div class="col-md-6">
