@@ -266,11 +266,11 @@ namespace Business.Services.PostServices
             if (post == null)
                 return new ErrorDataResult<PostDetailDTO>(null, "Post not found.");
 
-            // Mapster ile dönüştürme
             var postDetailDTO = post.Adapt<PostDetailDTO>();
 
-            // Manuel olarak yazar adını ekleyelim
-            postDetailDTO.AuthorName = post.User != null ? post.User.UserName : "Bilinmiyor";
+            // UserId ve TagIds'i manuel olarak ata
+            postDetailDTO.UserId = post.UserId ?? Guid.Empty;
+            postDetailDTO.TagIds = post.PostTag?.Select(pt => pt.TagId).ToList() ?? new List<Guid>();
 
             return new SuccessDataResult<PostDetailDTO>(postDetailDTO, "Post details retrieved successfully.");
         }

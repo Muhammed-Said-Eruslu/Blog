@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} | Yeni Blog Yazısı</title>
+    <style>
+        /* Base Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background-color: #121212;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        .email-header {
+            background-color: #121212;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #FF6D00;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .header-text {
+            color: #FF6D00;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Content */
+        .email-content {
+            padding: 30px;
+        }
+
+        .post-title {
+            color: #FF6D00;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .post-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #9e9e9e;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+        }
+
+            .meta-item i {
+                margin-right: 8px;
+                color: #FF6D00;
+            }
+
+        .featured-image {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+        }
+
+        .post-excerpt {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #e0e0e0;
+        }
+
+        .post-content {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        /* Stats */
+        .post-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #252525;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            color: #FF6D00;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #9e9e9e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: block;
+            background-color: #FF6D00;
+            color: #121212 !important;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 700;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+        }
+
+            .cta-button:hover {
+                background-color: #FF9100;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 109, 0, 0.3);
+            }
+
+        /* Tags */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            background-color: #252525;
+            color: #FF6D00;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #121212;
+            padding: 25px;
+            text-align: center;
+            font-size: 12px;
+            color: #9e9e9e;
+        }
+
+        .social-links {
+            margin: 15px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 8px;
+        }
+
+        .unsubscribe {
+            color: #9e9e9e;
+            font-size: 11px;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 480px) {
+            .email-content {
+                padding: 20px;
+            }
+
+            .post-title {
+                font-size: 24px;
+            }
+
+            .post-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <img src="https://yourdomain.com/logo.png" alt="Logo" class="logo">
+            <div class="header-text">YENİ İÇERİK ALERT</div>
+        </div>
+
+        <!-- Content -->
+        <div class="email-content">
+            <h1 class="post-title">{{TITLE}}</h1>
+
+            <div class="post-meta">
+                <div class="meta-item">
+                    <i>👤</i> {{AUTHOR}}
+                </div>
+                <div class="meta-item">
+                    <i>🗂️</i> {{CATEGORY}}
+                </div>
+                <div class="meta-item">
+                    <i>📅</i> {{DATE}}
+                </div>
+            </div>
+
+            {{#if FEATURED_IMAGE}}
+            <img src="{{FEATURED_IMAGE}}" alt="{{TITLE}}" class="featured-image">
+            {{/if}}
+
+            <div class="post-excerpt">
+                {{EXCERPT}}
+            </div>
+
+            <div class="post-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{VIEW_COUNT}}</div>
+                    <div class="stat-label">Görüntülenme</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{LIKE_COUNT}}</div>
+                    <div class="stat-label">Beğeni</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{COMMENT_COUNT}}</div>
+                    <div class="stat-label">Yorum</div>
+                </div>
+            </div>
+
+            {{#if TAGS}}
+            <div class="post-tags">
+                {{#each TAGS}}
+                <span class="tag">{{this}}</span>
+                {{/each}}
+            </div>
+            {{/if}}
+
+            <a href="{{POST_URL}}" class="cta-button">YAZIYI OKUMAYA DEVAM ET</a>
+
+            {{#if VIDEO_URL}}
+            <p style="text-align: center; margin-bottom: 20px;">
+                <a href="{{VIDEO_URL}}" style="color: #FF6D00; text-decoration: none;">
+                    <i>▶️</i> Videoyu izle
+                </a>
+            </p>
+            {{/if}}
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <div class="social-links">
+                <a href="#" class="social-link"><img src="https://yourdomain.com/icons/twitter.png" alt="Twitter" width="24"></a>
+                <a href="#" class="social-link"><img src="https://yourdomain.com/icons/instagram.png" alt="Instagram" width="24"></a>
+                <a href="#" class="social-link"><img src="https://yourdomain.com/icons/youtube.png" alt="YouTube" width="24"></a>
+            </div>
+            <div>© {{CURRENT_YEAR}} Tüm hakları saklıdır.</div>
+            <div class="unsubscribe">
+                <a href="{{UNSUBSCRIBE_LINK}}" style="color: #9e9e9e;">Bildirimleri almak istemiyorum</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

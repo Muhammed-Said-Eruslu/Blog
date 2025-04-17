@@ -13,7 +13,7 @@
                 <p class="text-muted">Blogumuza Hoş Geldiniz</p>
             </div>
 
-            <form  asp-action="Login" method="post">
+            <form asp-action="Login" method="post">
 
                 <!-- Email Girişi -->
                 <div class="mb-3 text-start">
@@ -71,14 +71,17 @@
                 </div>
 
                 <!-- Giriş Yap Butonu -->
-                <button type="submit"  class="btn btn-primary w-100 mb-2">Giriş Yap</button>
+                <button type="submit" class="btn btn-primary w-100 mb-2">Giriş Yap</button>
 
                 <!-- Kayıt Ol Butonu -->
                 <a asp-action="Register" class="btn btn-outline-secondary w-100">Kayıt Ol</a>
 
                 <!-- Şifremi Unuttum -->
                 <div class="text-center mt-3">
-                    <a href="#">Şifreni mi unuttun?</a>
+                    <!-- Şifremi Unuttum -->
+                    <div class="text-center mt-3">
+                        <a asp-action="ForgotPassword" class="text-decoration-none">Şifremi Unuttum</a>
+                    </div>
                 </div>
 
             </form>

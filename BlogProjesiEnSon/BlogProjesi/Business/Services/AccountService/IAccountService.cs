@@ -35,5 +35,8 @@ namespace Business.Services.AccountService
         Task<string> SendConfirmMail(string to);
         Task<IResult> SendMail(string to, string subject, string body);
         Task<IResult> SendMail(string to, string subject);
+        Task<string> GeneratePasswordResetTokenAsync(AppUser user);
+        Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword);
+        Task<bool> SendPasswordResetEmail(string email, string resetLink);
     }
 }

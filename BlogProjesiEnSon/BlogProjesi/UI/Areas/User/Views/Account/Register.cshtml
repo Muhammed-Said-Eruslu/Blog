@@ -41,17 +41,18 @@
                         <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Şifrenizi giriniz" required />
 
                         <!-- Valorant Tarzı Caps Lock Uyarısı -->
-                        <div class="caps-lock-warning d-none" id="capsLockWarning">
+                        <div class="caps-lock-warning" id="capsLockWarning">
                             <i class="fas fa-arrow-up"></i>
                         </div>
 
                         <!-- Şifre Göster/Gizle Butonu -->
                         <button type="button" class="input-group-text toggle-password bg-white border-start-0 px-3"
+                                style="position: absolute; right: 0; z-index: 5; height: calc(100% - 2px); width: 45px;"
                                 data-target="password">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
-                    
+
                     <!-- Şifre Kriterleri -->
                     <div class="password-rules mt-2 text-muted">
                         <div class="rule" data-rule="length"><i class="fas fa-circle"></i> En az 8 karakter</div>
@@ -68,7 +69,6 @@
                     <select asp-for="Gender" class="form-select">
                         <option value="Male">Erkek</option>
                         <option value="Female">Kadın</option>
-                        <option value="Other">Belirtmek İstemiyorum</option>
                     </select>
                 </div>
 
@@ -105,19 +105,21 @@
 }
 
 <style>
-    /* Şifre Alanı */
+    /* ====== Şifre Alanı Düzenlemeleri ====== */
     .password-container {
         position: relative;
     }
+
     .input-group-text.toggle-password {
         cursor: pointer;
     }
+
     /* Valorant Tarzı Caps Lock Uyarısı */
     .caps-lock-warning {
-        display: flex;
+        display: none;
         position: absolute;
         top: 50%;
-        right: 50px;
+        right: 50px; /* Göz butonundan biraz solda */
         transform: translateY(-50%);
         width: 24px;
         height: 24px;
@@ -130,30 +132,40 @@
         align-items: center;
         justify-content: center;
     }
-    .caps-lock-warning i {
-        color: white;
-        font-size: 10px;
-        transform: translateY(-1px) rotate(45deg);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
+
+        .caps-lock-warning i {
+            color: white;
+            font-size: 10px;
+            transform: translateY(-1px) rotate(45deg);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
     /* Şifre Kriterleri */
     .password-rules {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         font-size: 0.9rem;
     }
+
     .rule[data-fulfilled="true"] {
         color: #28a745;
     }
+
     .rule i {
         margin-right: 5px;
     }
+
     @@keyframes valorant-pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(255, 70, 85, 0.6);
+            box-shadow: 0 0 0 0 rgba(255, 70, 85, 0.6), inset 0 0 0 0 rgba(255,255,255,0.1);
         }
+
         70% {
-            box-shadow: 0 0 0 8px rgba(255, 70, 85, 0);
+            box-shadow: 0 0 0 8px rgba(255, 70, 85, 0), inset 0 0 4px 2px rgba(255,255,255,0.2);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 70, 85, 0), inset 0 0 0 0 rgba(255,255,255,0);
         }
     }
 </style>
@@ -161,21 +173,34 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
 
-        // Şifre Göster/Gizle Butonu
-        document.querySelector(".toggle-password").addEventListener("click", function() {
-            const targetInput = document.getElementById(this.dataset.target);
-            const icon = this.querySelector("i");
-            targetInput.type = (targetInput.type === "password") ? "text" : "password";
-            icon.classList.toggle("fa-eye-slash");
+        // 1) Şifre Göster/Gizle (Göz)
+        document.querySelectorAll(".toggle-password").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const targetInput = document.getElementById(this.dataset.target);
+                const icon = this.querySelector("i");
+                if (targetInput.type === "password") {
+                    targetInput.type = "text";
+                    icon.classList.replace("fa-eye", "fa-eye-slash");
+                } else {
+                    targetInput.type = "password";
+                    icon.classList.replace("fa-eye-slash", "fa-eye");
+                }
+            });
         });
 
-        // Caps Lock Uyarısı
-        document.getElementById("password").addEventListener("keyup", (e) => {
-            document.getElementById("capsLockWarning").classList.toggle("d-none", !e.getModifierState("CapsLock"));
-        });
+        // 2) Valorant Tarzı Caps Lock Uyarısı
+        function showHideCapsLock(e) {
+            const isCaps = e.getModifierState && e.getModifierState("CapsLock");
+            const warningEl = document.getElementById("capsLockWarning");
+            if (warningEl) {
+                warningEl.style.display = isCaps ? 'flex' : 'none';
+            }
+        }
 
-        // Şifre Kriterleri Kontrolü
-        const passwordField = document.getElementById("password");
+        const passwordInput = document.getElementById("password");
+        passwordInput.addEventListener("keyup", showHideCapsLock);
+
+        // 3) Şifre Kriterleri Kontrolü
         const rules = {
             length: val => val.length >= 8,
             uppercase: val => /[A-Z]/.test(val),
@@ -190,14 +215,14 @@
                 const elem = document.querySelector(`[data-rule="${ruleKey}"]`);
                 if (!elem) continue;
                 const icon = elem.querySelector("i");
-                icon.className = isValid ? "fas fa-check-circle text-success" : "fas fa-circle text-danger";
+                icon.className = isValid ? "fas fa-check-circle text-success" : "fas fa-circle text-muted";
                 // Set attribute to mark rule status
                 elem.setAttribute("data-fulfilled", isValid);
             }
         }
 
-        passwordField.addEventListener("input", () => {
-            checkPasswordRules(passwordField.value);
+        passwordInput.addEventListener("input", () => {
+            checkPasswordRules(passwordInput.value);
         });
     });
 </script>

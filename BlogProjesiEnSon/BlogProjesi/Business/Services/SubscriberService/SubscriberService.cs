@@ -34,5 +34,10 @@ namespace Business.Services.SubscriberService
         {
             return await _subscriberRepository.AnyAsync(s => s.Email == email);
         }
+        public async Task<List<Subscriber>> GetAllSubscribersAsync()
+        {
+            var subscribers = await _subscriberRepository.GetAllAsync();
+            return subscribers.ToList();
+        }
     }
 }

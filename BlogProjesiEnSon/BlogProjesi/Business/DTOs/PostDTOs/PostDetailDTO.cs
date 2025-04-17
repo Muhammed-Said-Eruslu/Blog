@@ -45,7 +45,9 @@ namespace Business.DTOs.PostDTOs
 
         public bool IsLiked { get; set; }
 
-
+        public Guid UserId { get; set; } // Kullanıcı ID'si
+        public List<Guid> TagIds { get; set; } = new List<Guid>(); // Etiket ID'leri
+        public List<string> TagNames { get; set; } = new List<string>();
 
     }
 }
