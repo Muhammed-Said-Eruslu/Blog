@@ -266,11 +266,11 @@ namespace Business.Services.PostServices
             if (post == null)
                 return new ErrorDataResult<PostDetailDTO>(null, "Post not found.");
 
-            // Mapster ile dönüştürme
             var postDetailDTO = post.Adapt<PostDetailDTO>();
 
-            // Manuel olarak yazar adını ekleyelim
-            postDetailDTO.AuthorName = post.User != null ? post.User.UserName : "Bilinmiyor";
+            // UserId ve TagIds'i manuel olarak ata
+            postDetailDTO.UserId = post.UserId ?? Guid.Empty;
+            postDetailDTO.TagIds = post.PostTag?.Select(pt => pt.TagId).ToList() ?? new List<Guid>();
 
             return new SuccessDataResult<PostDetailDTO>(postDetailDTO, "Post details retrieved successfully.");
         }
@@ -395,32 +395,56 @@ namespace Business.Services.PostServices
 
         public async Task<IResult> UpdateAsync(PostUpdateDTO postUpdateDTO)
         {
-            // Post'u bul
-            var existingPost = await _postRepository.GetByIdAsync(postUpdateDTO.Id);
-            if (existingPost == null)
-                return new ErrorResult("Post not found.");
-
-            // Post bilgilerini güncelle
-            postUpdateDTO.Adapt(existingPost);
-            existingPost.UpdatedDate = DateTime.UtcNow;
-
-            // Mevcut etiketleri kaldır
-            existingPost.PostTag.Clear();
-
-            // Yeni etiketleri tek bir sorguda al
-            var tags = await _tagRepository.GetAllAsync(t => postUpdateDTO.TagIds.Contains(t.Id));
-
-            // Yeni etiketleri ekle
-            foreach (var tag in tags)
+            try
             {
-                existingPost.PostTag.Add(new PostTag { PostId = existingPost.Id, TagId = tag.Id });
+                var existingPost = await _postRepository.GetByIdAsync(postUpdateDTO.Id);
+                if (existingPost == null)
+                    return new ErrorResult("Post not found.");
+
+                // Orijinal RowVersion'i sakla
+                var originalRowVersion = existingPost.RowVersion;
+
+                postUpdateDTO.Adapt(existingPost);
+                existingPost.UpdatedDate = DateTime.UtcNow;
+
+                // Etiket işlemleri
+                existingPost.PostTag.Clear();
+                if (postUpdateDTO.TagIds != null && postUpdateDTO.TagIds.Any())
+                {
+                    var tags = await _tagRepository.GetAllAsync(t => postUpdateDTO.TagIds.Contains(t.Id));
+                    foreach (var tag in tags)
+                    {
+                        existingPost.PostTag.Add(new PostTag { PostId = existingPost.Id, TagId = tag.Id });
+                    }
+                }
+
+                try
+                {
+                    await _postRepository.UpdateAsync(existingPost);
+                    await _postRepository.SaveChangeAsync();
+
+                    return new SuccessResult("Post updated successfully.");
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    var entry = ex.Entries.Single();
+                    var databaseValues = await entry.GetDatabaseValuesAsync();
+
+                    if (databaseValues == null)
+                    {
+                        return new ErrorResult("Bu post başka bir kullanıcı tarafından silindi.");
+                    }
+                    else
+                    {
+                        var databasePost = (Post)databaseValues.ToObject();
+                        return new ErrorResult($"Bu kayıt {databasePost.UpdatedDate} tarihinde başka bir kullanıcı tarafından değiştirildi.");
+                    }
+                }
             }
-
-            // Post'u güncelle
-            await _postRepository.UpdateAsync(existingPost);
-            await _postRepository.SaveChangeAsync();
-
-            return new SuccessResult("Post updated successfully.");
+            catch (Exception ex)
+            {
+                return new ErrorResult("Post güncellenirken bir hata oluştu: " + ex.Message);
+            }
         }
 
         public async Task<IResult> UpdatePostStatusAsync(Guid postId, Status status)

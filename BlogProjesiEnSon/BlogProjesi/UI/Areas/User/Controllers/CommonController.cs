@@ -2,6 +2,9 @@
 using Business.Services.SubscriberService;
 using Infrastructure.Repositories.MailRepository;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace UI.Areas.User.Controllers
 {
@@ -11,12 +14,14 @@ namespace UI.Areas.User.Controllers
         private readonly ISubscriberService _subscriberService;
         private readonly INotyfService _notyf;
         private readonly IAsyncSendMailRepository _mailService;
+
         public CommonController(ISubscriberService subscriberService, INotyfService notyf, IAsyncSendMailRepository mailService)
         {
             _subscriberService = subscriberService;
             _notyf = notyf;
             _mailService = mailService;
         }
+
         [HttpPost]
         public async Task<IActionResult> Subscribe(string email)
         {
@@ -34,20 +39,30 @@ namespace UI.Areas.User.Controllers
                 TempData["SubscribeStatus"] = "success";
                 TempData["SubscribeMessage"] = "Abonelik başarılı! Teşekkür ederiz.";
 
-                
-                string templateName = "Subs.html";
-                var replacements = new Dictionary<string, string>
-        {
-            { "{{EMAIL}}", email }
-        };
+                try
+                {
+                    string templateName = "Subs.html"; // Template dosyasının adı
+                    var replacements = new Dictionary<string, string>
+                    {
+                        { "{{EMAIL}}", email },
+                        { "{{CURRENT_YEAR}}", DateTime.Now.Year.ToString() }
+                    };
 
-                string emailBody = await _mailService.GetEmailTemplate(templateName, replacements);
+                    // Email içeriği template ile oluşturuluyor
+                    string emailBody = await _mailService.GetEmailTemplate(templateName, replacements);
 
-                await _mailService.SendMail(
-                    to: email,
-                    subject: "Bülten Aboneliğiniz Başarılı",
-                    body: emailBody
-                );
+                    // Mail gönderimi yapılıyor
+                    await _mailService.SendMail(
+                        to: email,
+                        subject: "Bülten Aboneliğiniz Başarılı",
+                        body: emailBody
+                    );
+                }
+                catch (Exception ex)
+                {
+                    TempData["SubscribeStatus"] = "error";
+                    TempData["SubscribeMessage"] = $"Mail gönderimi sırasında bir hata oluştu: {ex.Message}";
+                }
             }
             else
             {
@@ -57,8 +72,5 @@ namespace UI.Areas.User.Controllers
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
-
-
-
     }
 }

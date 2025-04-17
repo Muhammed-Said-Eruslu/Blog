@@ -19,7 +19,7 @@ namespace Business.Helpers
                     Content = c.Content,
                     CreatedAt = c.CreatedAt,
                     AuthorName = !string.IsNullOrEmpty(c.User?.FullName) ? c.User.FullName : c.AuthorName ?? "Anonim",
-                    AuthorProfileImage = !string.IsNullOrEmpty(c.User?.ProfileImage) ? c.User.ProfileImage : "/images/default-avatar.png",
+                    ProfileImage = !string.IsNullOrEmpty(c.User?.ProfileImage) ? c.User.ProfileImage : "/images/default-avatar.png",
                     UserName = !string.IsNullOrEmpty(c.User?.UserName) ? c.User.UserName : "Anonim",
                     Replies = allComments
                         .Where(r => r.ParentCommentId == c.Id)
@@ -29,7 +29,7 @@ namespace Business.Helpers
                             Content = r.Content,
                             CreatedAt = r.CreatedAt,
                             AuthorName = !string.IsNullOrEmpty(r.User?.FullName) ? r.User.FullName : r.AuthorName ?? "Anonim",
-                            AuthorProfileImage = !string.IsNullOrEmpty(r.User?.ProfileImage) ? r.User.ProfileImage : "/images/default-avatar.png",
+                            ProfileImage = !string.IsNullOrEmpty(r.User?.ProfileImage) ? r.User.ProfileImage : "/images/default-avatar.png",
                             UserName = !string.IsNullOrEmpty(r.User?.UserName) ? r.User.UserName : "Anonim"
                         }).ToList()
                 })

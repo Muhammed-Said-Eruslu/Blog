@@ -23,5 +23,6 @@ namespace Business.DTOs.PostDTOs
         public int CommentCount { get; set; }
         public int LikeCount { get; set; }
         public bool IsLiked { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

@@ -73,7 +73,7 @@ namespace UI.Areas.User.Controllers
         /// Detay sayfası (Slug bazlı)
         /// </summary>
         // HomeController.cs - Details Metodu
-        [HttpGet("Postdetayları/{slug}")]
+        [HttpGet("Details/{slug}")]
         public async Task<IActionResult> Details(string slug)
         {
             var result = await _postService.GetPostWithIncludesAsync<Post>(
@@ -116,7 +116,7 @@ namespace UI.Areas.User.Controllers
         [HttpPost("User/Post/AddComment")]
         public async Task<IActionResult> AddComment(CommentCreateDTO model)
         {
-            // Kullanıcının kimliğini al
+
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (!Guid.TryParse(userIdClaim, out Guid userId))
@@ -125,13 +125,19 @@ namespace UI.Areas.User.Controllers
                 return RedirectToAction("Details", new { slug = model.PostSlug });
             }
 
-            // DTO'ya UserId ata
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Details", new { slug = model.PostSlug });
+            }
+
+
             model.UserId = userId;
+            model.AuthorProfileImage = user.ProfileImage ?? "default-avatar.png";
+            model.AuthorEmail = model.AuthorName;
 
-            // Geri kalan bilgiler
-            model.AuthorEmail = model.AuthorName; // belki kaldırabilirsin, ihtiyaç yoksa
 
-            // Model validation
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Lütfen tüm alanları doldurun.";

@@ -1,41 +1,185 @@
 ﻿@model List<Business.DTOs.PhotoDTOs.PhotoListDTO>
-
 @{
     Layout = "_UserLayout";
-    ViewBag.Title = "Galeri";
 }
 
-<!-- FSLightbox CSS yok, sadece JS yeterli -->
-
 <style>
-    .photo-gallery {
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --text-dark: #2b2d42;
+        --text-light: #8d99ae;
+        --background-light: #f8f9fa;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Sayfa düzeni için temel ayarlar */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gallery-container {
+        padding: 2rem 1rem;
+        max-width: 1800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+        flex: 1;
+    }
+
+    /* Footer ayarı */
+    .site-footer {
+        margin-top: auto;
+        background: #f8f9fa;
+        padding: 2rem 1rem;
+        width: 100%;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .footer-section {
+        margin-bottom: 1.5rem;
+    }
+
+        .footer-section h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+            .footer-section a:hover {
+                color: var(--primary-color);
+            }
+
+    .subscribe-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+        .subscribe-form input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .subscribe-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .subscribe-form button:hover {
+                background: var(--secondary-color);
+            }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+        border-top: 1px solid #eee;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    /* Galeri stilleri */
+    .gallery-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
+    }
+
+    .gallery-title {
+        font-size: 2rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+
+    .gallery-subtitle {
+        color: var(--text-light);
+        font-size: 1rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .photo-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 20px;
+        padding: 0;
+        width: 100%;
     }
 
     .photo-card {
         position: relative;
-        overflow: hidden;
         border-radius: 8px;
-        width: 280px;
-        height: 220px;
-        transition: all 0.3s ease;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        background-color: #fff;
     }
 
-        .photo-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.4s ease;
-            border-radius: 8px;
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .photo-card:hover img {
-            transform: scale(1.05);
-        }
+    .photo-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.4s ease;
+    }
+
+    .photo-card:hover .photo-image {
+        transform: scale(1.05);
+    }
 
     .photo-info {
         position: absolute;
@@ -54,56 +198,151 @@
         opacity: 1;
     }
 
+    .photo-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .photo-date {
+        font-size: 0.8rem;
+        opacity: 0.9;
+    }
+
+    /* Boş galeri mesajı */
+    .no-photos-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 50vh;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .no-photos-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .no-photos-title {
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .no-photos-text {
+        color: var(--text-light);
+        font-size: 1rem;
+        max-width: 500px;
+        line-height: 1.5;
+    }
+
+    /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .photo-card {
-            height: 180px;
-            width: 90%;
+        .gallery-title {
+            font-size: 1.8rem;
+        }
+
+        .gallery-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .photo-gallery {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
         }
 
         .photo-info {
-            font-size: 12px;
             padding: 10px;
+            font-size: 13px;
+        }
+
+        .footer-content {
+            grid-template-columns: 1fr;
+        }
+
+        .footer-section {
+            text-align: center;
         }
     }
 
-    .no-photos {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 40px;
-        text-align: center;
-        font-size: 18px;
-        color: #555;
-        margin-top: 50px;
+    @@media (max-width: 576px) {
+        .gallery-container {
+            padding: 1.5rem 0.5rem;
+        }
+
+        .photo-gallery {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .photo-card {
+            height: 220px;
+        }
+
+        .site-footer {
+            padding: 1.5rem 0.5rem;
+        }
     }
 </style>
 
-<div class="container py-5">
-    @if (Model == null || !Model.Any())
-    {
-        <div class="no-photos">
-            Henüz fotoğraf eklenmemiş.
+<div class="main-content">
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1 class="gallery-title">Fotoğraf Galerisi</h1>
+            <p class="gallery-subtitle">Kurumumuzun etkinliklerinden ve faaliyetlerinden en güzel kareler</p>
         </div>
-    }
-    else
-    {
-        <div class="photo-gallery">
-            @{
-                var index = 1;
-            }
-            @foreach (var photo in Model)
-            {
-                <a data-fslightbox="gallery" href="@photo.ImageUrl" class="photo-card">
-                    <img src="@photo.ImageUrl" alt="@photo.Title" />
-                    <div class="photo-info">
-                        <strong>@photo.Title</strong><br />
-                        @photo.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")
-                    </div>
-                </a>
-                index++;
-            }
-        </div>
-    }
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="no-photos-container">
+                <div class="no-photos-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3 class="no-photos-title">Galeri Boş</h3>
+                <p class="no-photos-text">
+                    Henüz fotoğraf eklenmemiştir. Yeni fotoğraflar eklendiğinde burada görüntülenecektir.
+                    Lütfen daha sonra tekrar kontrol ediniz.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="photo-gallery">
+                @foreach (var photo in Model)
+                {
+                    <a data-fslightbox="gallery" href="@photo.ImageUrl" class="photo-card">
+                        <img src="@photo.ImageUrl" alt="@photo.Title" loading="lazy" class="photo-image" />
+                        <div class="photo-info">
+                            <div class="photo-title">@photo.Title</div>
+                            <div class="photo-date">@photo.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
 </div>
 
-<!-- ✅ FSLightbox JS -->
-<script src="https://cdn.jsdelivr.net/npm/fslightbox/index.js"></script>
+
+
+<!-- FSLightbox JS -->
+<script src="https://cdn.jsdelivr.net/npm/fslightbox@3.3.1/index.min.js"></script>
+
+<script>
+    // Initialize smooth loading for images
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll('.photo-image');
+
+        images.forEach(img => {
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', function() {
+                    this.classList.add('loaded');
+                });
+            }
+        });
+    });
+</script>

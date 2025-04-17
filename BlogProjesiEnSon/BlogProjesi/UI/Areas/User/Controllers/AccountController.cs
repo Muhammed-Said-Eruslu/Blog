@@ -1,11 +1,14 @@
-﻿using Business.DTOs.UserDTOs;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Business.DTOs.UserDTOs;
 using Business.Services.AccountService;
 using Domain.Entites;
 
 using Domain.Enums;
+using Infrastructure.Repositories.MailRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using UI.Areas.User.Models.AccountVMs;
@@ -19,12 +22,16 @@ namespace UI.Areas.User.Controllers
         private readonly IAccountService _accountService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly INotyfService _notyf;
+        private readonly IAsyncSendMailRepository _mailService;
 
-        public AccountController(IAccountService accountService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public AccountController(IAccountService accountService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, INotyfService notyf, IAsyncSendMailRepository mailService)
         {
             _accountService = accountService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _notyf = notyf;
+            _mailService = mailService;
         }
 
         public IActionResult Login()
@@ -78,7 +85,7 @@ namespace UI.Areas.User.Controllers
         {
             if (ModelState.IsValid)
             {
-               
+
                 var existingUser = await _accountService.FindByEmail(model.Email);
                 if (existingUser != null)
                 {
@@ -86,7 +93,7 @@ namespace UI.Areas.User.Controllers
                     return View(model);
                 }
 
-                
+
                 var confirmCode = await _accountService.SendConfirmMail(model.Email);
                 if (string.IsNullOrEmpty(confirmCode) || confirmCode == "0")
                 {
@@ -94,7 +101,7 @@ namespace UI.Areas.User.Controllers
                     return View(model);
                 }
 
-                
+
                 TempData["ConfirmCode"] = confirmCode;
                 TempData["RegisterData"] = JsonConvert.SerializeObject(model);
 
@@ -115,7 +122,7 @@ namespace UI.Areas.User.Controllers
             }
 
             var registerVM = JsonConvert.DeserializeObject<RegisterVM>(TempData["RegisterData"].ToString());
-            TempData.Keep("RegisterData"); 
+            TempData.Keep("RegisterData");
 
             SendMailVM sendMailVM = new SendMailVM
             {
@@ -137,7 +144,7 @@ namespace UI.Areas.User.Controllers
 
             try
             {
-              
+
                 var appUser = new AppUser
                 {
                     UserName = model.RegisterVM.Email,
@@ -251,39 +258,33 @@ namespace UI.Areas.User.Controllers
         public async Task<IActionResult> UploadProfileImage(IFormFile ProfileImage)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound("Kullanıcı bulunamadı.");
+            if (user == null) return NotFound("Kullanıcı bulunamadı.");
 
             if (ProfileImage != null && ProfileImage.Length > 0)
             {
-                // Uzantıyı al
-                var extension = Path.GetExtension(ProfileImage.FileName);
-
-                // Kendimize özel bir dosya adı oluşturalım
-                var fileName = $"{user.Id}_{Guid.NewGuid()}{extension}";
-
-                // Kaydedilecek fiziksel yol
+                // Resmi kaydet
+                var fileName = $"{user.Id}_{Guid.NewGuid()}{Path.GetExtension(ProfileImage.FileName)}"; // ✅ Uzantıyı ekledik
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "avatar", fileName);
 
-                // Dosyayı kopyala
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await ProfileImage.CopyToAsync(stream);
                 }
 
-                // Kullanıcının profil resmini güncelle
+                // Veritabanını güncelle
                 user.ProfileImage = fileName;
                 await _userManager.UpdateAsync(user);
-
-                TempData["Success"] = "Profil resmi başarıyla güncellendi!";
+                TempData["Success"] = "Profil resmi güncellendi!";
             }
             else
             {
-                TempData["Error"] = "Lütfen geçerli bir resim dosyası seçin.";
+                TempData["Error"] = "Geçersiz dosya!";
             }
 
             return RedirectToAction("Profile");
         }
+
+
         [AllowAnonymous]
         public IActionResult GoogleLogin()
         {
@@ -360,6 +361,114 @@ namespace UI.Areas.User.Controllers
             HttpContext.Session.SetString("UserSession", json);
         }
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _accountService.FindByEmail(model.Email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Kullanıcı yoksa da aynı mesajı ver (güvenlik için)
+                SuccessNotyf("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account",
+                new { area = "User", email = model.Email, token }, Request.Scheme);
+
+            // Template replacements
+            var replacements = new Dictionary<string, string>
+    {
+        { "{{RESET_LINK}}", callbackUrl },
+        { "{{CURRENT_YEAR}}", DateTime.Now.Year.ToString() },
+        { "{{EMAIL}}", model.Email }
+    };
+
+            // Email gönderimi
+            try
+            {
+                string emailBody = await _mailService.GetEmailTemplate("PasswordResetTemplate.html", replacements);
+
+                await _mailService.SendMail(
+                    to: model.Email,
+                    subject: "Şifre Sıfırlama Talebi",
+                    body: emailBody
+                );
+
+                SuccessNotyf("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+            catch (Exception ex)
+            {
+                ErrorNotyf("E-posta gönderilirken bir hata oluştu: " + ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                ErrorNotyf("Geçersiz şifre sıfırlama bağlantısı.");
+                return RedirectToAction("Login");
+            }
+
+            var model = new ResetPasswordVM { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _accountService.FindByEmail(model.Email);
+            if (user == null)
+            {
+                // Kullanıcı yoksa da aynı mesajı ver (güvenlik için)
+                SuccessNotyf("Şifreniz başarıyla sıfırlandı.");
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                SuccessNotyf("Şifreniz başarıyla sıfırlandı.");
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
     }
 }

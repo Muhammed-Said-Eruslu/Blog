@@ -186,7 +186,7 @@
                             {
                                 <li class="comment card mb-3 p-3 bg-light border-start border-3 border-primary">
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="@(!string.IsNullOrEmpty(comment.AuthorProfileImage) ? comment.AuthorProfileImage : "/images/default-avatar.png")"
+                                        <img src="@(!string.IsNullOrEmpty(comment.ProfileImage) ? comment.ProfileImage : "/images/default-avatar.png")"
                                              class="rounded-circle me-3 avatar-img"
                                              width="60"
                                              height="60"
@@ -209,11 +209,11 @@
                                             {
                                                 <li class="comment card p-3 mt-2 bg-white border-start border-3 border-secondary">
                                                     <div class="d-flex align-items-center">
-                                                        <img src="@(!string.IsNullOrEmpty(reply.AuthorProfileImage) ? reply.AuthorProfileImage : "/images/default-avatar.png")"
-                                                             class="rounded-circle me-2 avatar-img"
-                                                             width="40"
-                                                             height="40"
-                                                             alt="@reply.AuthorName">
+                                                        <img src="@(!string.IsNullOrEmpty(comment.ProfileImage) ? comment.ProfileImage : "/images/default-avatar.png")"
+                                                             class="rounded-circle me-3 avatar-img"
+                                                             width="60"
+                                                             height="60"
+                                                             alt="@comment.AuthorName">
                                                         <div class="comment-author">
                                                             <h6 class="mb-0 fw-bold" title="@reply.AuthorName">@reply.AuthorName</h6>
                                                             <small class="text-muted">@reply.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
@@ -247,7 +247,7 @@
                                 <input type="hidden" name="PostId" value="@Model.Id" /> <!-- ✅ Post ID -->
                                 <input type="hidden" name="PostSlug" value="@Model.Slug" /> <!-- ✅ Slug bilgisini de ekledik -->
                                 <input type="hidden" name="ParentCommentId" id="parentCommentId" value="" />
-
+                                <input type="hidden" asp-for="Author.ProfilePhotoUrl" />
                                 <div class="mb-3">
                                     <input type="text" name="AuthorName" class="form-control" value="@User.Identity.Name" readonly>
                                 </div>

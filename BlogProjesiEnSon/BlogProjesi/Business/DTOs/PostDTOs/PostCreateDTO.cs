@@ -22,5 +22,6 @@ namespace Business.DTOs.PostDTOs
 
         public IFormFile? FeaturedImageFile { get; set; }
         public IFormFile? VideoFile { get; set; }
+        public byte[]? RowVersion { get; set; }
     }
 }

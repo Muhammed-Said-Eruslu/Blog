@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Business.Services.SubscriberService
     {
         Task<bool> AddAsync(string email);
         Task<bool> IsSubscribed(string email);
+        Task<List<Subscriber>> GetAllSubscribersAsync();
     }
 }

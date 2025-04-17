@@ -20,6 +20,7 @@ namespace Business.DTOs.PostDTOs
 
         public Guid UserId { get; set; }
         public Guid CategoryId { get; set; }
-        public ICollection<Guid> TagIds { get; set; } = new List<Guid>();  
+        public ICollection<Guid> TagIds { get; set; } = new List<Guid>();
+        public byte[]? RowVersion { get; set; }
     }
 }

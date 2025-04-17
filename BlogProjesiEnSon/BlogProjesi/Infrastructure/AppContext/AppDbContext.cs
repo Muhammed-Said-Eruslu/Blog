@@ -10,12 +10,18 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.AppContext
 {
     public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+        private readonly ILogger<AppDbContext> _logger; // Logger tanımlaması
+
+        public AppDbContext(DbContextOptions<AppDbContext> options, ILogger<AppDbContext> logger) : base(options)
+        {
+            _logger = logger; // Logger'ı constructor üzerinden inject ediyoruz
+        }
 
         public virtual DbSet<AppUser> Users { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -68,6 +74,25 @@ namespace Infrastructure.AppContext
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.SetNull); // ✅ Kullanıcı silinirse yorumun UserId NULL olur.
 
+            builder.Entity<Post>(entity =>
+            {
+                entity.Property(p => p.RowVersion)
+                      .IsRowVersion()
+                      .IsConcurrencyToken();
+            });
+
+            builder.Entity<PostTag>()
+    .HasKey(pt => new { pt.PostId, pt.TagId });
+
+            builder.Entity<PostTag>()
+                .HasOne(pt => pt.Post)
+                .WithMany(p => p.PostTag)
+                .HasForeignKey(pt => pt.PostId);
+
+            builder.Entity<PostTag>()
+                .HasOne(pt => pt.Tag)
+                .WithMany(t => t.PostTags)
+                .HasForeignKey(pt => pt.TagId);
 
         }
 
@@ -80,8 +105,47 @@ namespace Infrastructure.AppContext
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            SetBaseProperties();
-            return await base.SaveChangesAsync(cancellationToken);
+            const int maxRetryCount = 99;
+            int retryCount = 0;
+
+            while (true)
+            {
+                try
+                {
+                    SetBaseProperties();
+                    return await base.SaveChangesAsync(cancellationToken);
+                }
+                catch (DbUpdateConcurrencyException ex) when (retryCount < maxRetryCount)
+                {
+                    retryCount++;
+                    foreach (var entry in ex.Entries)
+                    {
+                        var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+                        if (databaseValues == null)
+                        {
+                            entry.State = EntityState.Detached;
+                            continue;
+                        }
+
+                        // Client wins stratejisi
+                        entry.OriginalValues.SetValues(databaseValues);
+                    }
+
+                    // 100ms bekleyip tekrar dene
+                    await Task.Delay(100, cancellationToken);
+                }
+                catch (DbUpdateException ex)
+                {
+                    _logger.LogError(ex, "Veritabanı güncelleme hatası");
+                    throw new ApplicationException("Veritabanı işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.", ex);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Beklenmeyen veritabanı hatası");
+                    throw new ApplicationException("Sistem hatası oluştu. Lütfen daha sonra tekrar deneyin.", ex);
+                }
+            }
         }
         private void SetBaseProperties()
         {

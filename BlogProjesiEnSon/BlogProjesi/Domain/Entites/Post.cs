@@ -1,6 +1,7 @@
 ﻿using Domain.Core.BaseEntity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,5 +34,8 @@ namespace Domain.Entites
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<PostTag> PostTag { get; set; } = new List<PostTag>();
         public virtual ICollection<AppUserPost> LikedUsers { get; set; } = new List<AppUserPost>();
+        [Timestamp]
+        [ConcurrencyCheck]
+        public byte[] RowVersion { get; set; }
     }
 }

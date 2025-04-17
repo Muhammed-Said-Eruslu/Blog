@@ -162,27 +162,18 @@ namespace UI.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            // Eskiden: var result = await _postService.GetByIdAsync(id);
-            // Yerine etiketler dahil gelen metodu çağırıyoruz:
             var result = await _postService.GetPostDetailsWithIncludesAsync(id);
-
             if (!result.IsSucces || result.Data == null)
             {
                 TempData["ErrorMessage"] = "Düzenlenecek yazı bulunamadı.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // PostDetailDTO --> PostUpdateDTO
             var updateDTO = result.Data.Adapt<PostUpdateDTO>();
 
-            // Mevcut etiketleri PostUpdateDTO içindeki TagIds'e atayalım
-            if (result.Data.Tags != null && result.Data.Tags.Any())
-            {
-                // PostDetailDTO içindeki her bir etiketin TagId'sini al
-                updateDTO.TagIds = result.Data.Tags.Select(t => t.TagId).ToList();
-            }
+            // TagIds null ise boş liste kullan
+            updateDTO.TagIds = result.Data.TagIds ?? new List<Guid>();
 
-            // Kullanıcılar, Kategoriler ve Etiketler
             var users = await _userManager.Users.ToListAsync();
             var categories = await _categoryService.GetAllAsync();
             var tags = await _tagService.GetAllAsync();

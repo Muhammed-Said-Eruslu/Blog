@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <title>Elen - Free Bootstrap 4 Template by Colorlib</title>
+    <title>Elen - Blog Template</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -26,13 +26,14 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- Notyf CSS (isteğe bağlı) -->
+    <!-- Notyf CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
     <!-- Colorlib Template CSS -->
     <link rel="stylesheet" href="~/elen-master/css/flaticon.css">
     <link rel="stylesheet" href="~/elen-master/css/icomoon.css">
     <link rel="stylesheet" href="~/elen-master/css/style.css">
+    
 
     @inject AspNetCoreHero.ToastNotification.Abstractions.INotyfService Notyf
 
@@ -42,8 +43,8 @@
         /* Dropdown menü */
         .dropdown-menu {
             min-width: 200px;
-            border: 1px solid rgba(0,0,0,.15);
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+            border: 1px solid rgba(0, 0, 0, .15);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .175);
             margin-top: 0.5rem !important;
         }
 
@@ -59,9 +60,44 @@
             }
 
         /* Kullanıcı Paneli (Giriş / Kayıt / Profil butonları) */
-        .user-panel {
-            margin-bottom: 1.5rem;
-            padding: 0 15px;
+        /* Kullanıcı panelindeki mail kısmı için düzenlemeler */
+        .user-panel .dropdown-toggle {
+            width: 100%; /* Mail kısmının tam genişlikte görünmesini sağlar */
+            text-align: left; /* E-posta adresini sola hizalar */
+            padding: 8px 15px; /* Buton etrafına padding ekler */
+            border-radius: 25px; /* Çevreyi yuvarlatmak için */
+            background-color: #2e2e2e; /* Arka plan rengini koyu yapar */
+            color: white; /* Yazı rengini beyaz yapar */
+            font-size: 14px; /* Yazı boyutunu ayarlayabilirsiniz */
+            overflow: hidden; /* Taşmaları engeller */
+        }
+
+            .user-panel .dropdown-toggle::after {
+                display: inline-block !important;
+                margin-left: 0.255em !important;
+                vertical-align: 0.255em !important;
+                content: "" !important;
+                border-top: 0.3em solid !important;
+                border-right: 0.3em solid transparent !important;
+                border-bottom: 0 !important;
+                border-left: 0.3em solid transparent !important;
+                transition: transform 0.3s ease !important;
+            }
+
+        .user-panel .show .dropdown-toggle::after {
+            transform: rotate(-180deg) !important;
+        }
+
+        /* Mobilde mail kısmının düzgün gözükmesi için */
+        @@media (max-width: 576px) {
+            .user-panel .dropdown-toggle
+
+        {
+            width: 100%; /* Mobilde de tam genişlikte gösterir */
+            font-size: 12px; /* Mobilde yazı boyutunu küçültür */
+            padding: 8px 10px; /* Mobilde butonun içine daha fazla alan ekler */
+        }
+
         }
 
         .user-btn {
@@ -75,34 +111,181 @@
             padding: 4rem 0;
         }
 
-        /* Abone Ol (Subscribe) alanı */
-        .subscribe-form .form-control {
-            border-radius: 0.25rem 0 0 0.25rem;
+        /* Abone Ol (Subscribe) alanı - FİX */
+        /* Abone Ol (Subscribe) alanı - FİX */
+        /* Abone Ol (Subscribe) alanı - FİX */
+        .subscribe-form {
+            margin-top: 15px;
+            position: relative;
+            width: 100%; /* Tam genişlik için */
         }
 
-        .subscribe-form .btn {
-            border-radius: 0 0.25rem 0.25rem 0;
+            .subscribe-form .form-control {
+                border-radius: 0.25rem 0 0 0.25rem;
+                height: 46px;
+                flex: 1; /* Genişlik için flex-grow */
+                padding-left: 10px; /* Sol tarafta biraz boşluk bırak */
+            }
+
+            .subscribe-form .btn {
+                border-radius: 0 0.25rem 0.25rem 0;
+                height: 46px; /* Buton ile input'un aynı boyutta olmasını sağlar */
+                padding: 0 15px;
+                background-color: #6c5ce7; /* Varsayılan arka plan rengini ayarladık */
+                color: white; /* Yazı rengini beyaz yaptık */
+                transition: background-color 0.3s ease; /* Hover animasyonu */
+            }
+
+                .subscribe-form .btn:hover {
+                    background-color: #5a4dc7; /* Hover rengini değiştirdik */
+                }
+
+            .subscribe-form .form-group {
+                width: 100%;
+                display: flex;
+            }
+
+        .subscribe-heading {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #fff;
+            display: block;
         }
 
-        /* Burger Menu Toggle Fix */
-        .colorlib-nav-toggle {
-            cursor: pointer;
-            z-index: 999;
+
+        /* Orjinal Burger Menu Stili */
+        .colorlib-nav {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            padding: 30px 0;
         }
-        /* Menünün kapalıyken solda kaybolması */
+
+        .colorlib-nav-toggle {
+            position: fixed;
+            right: 15px;
+            top: 20px;
+            z-index: 9999;
+            display: none; /* Menü ikonu başlangıçta gizli */
+        }
+
+            .colorlib-nav-toggle i {
+                position: relative;
+                display: inline-block;
+                width: 30px;
+                height: 2px;
+                color: #000;
+                font: bold 14px/.4 Helvetica;
+                text-transform: uppercase;
+                text-indent: -55px;
+                background: #000;
+                transition: all .2s ease-out;
+            }
+
+            .colorlib-nav-toggle.active i {
+                background: transparent;
+            }
+
+                .colorlib-nav-toggle.active i::before {
+                    top: 0;
+                    transform: rotateZ(45deg);
+                }
+
+                .colorlib-nav-toggle.active i::after {
+                    bottom: 0;
+                    transform: rotateZ(-45deg);
+                }
+
+                .colorlib-nav-toggle.active i::before,
+                .colorlib-nav-toggle.active i::after {
+                    background: #000;
+                }
+
+        /* Menü aktif durumunu düzelt - FİX */
+        #colorlib-main-menu ul li a {
+            position: relative;
+            color: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+            #colorlib-main-menu ul li a:after {
+                content: "";
+                position: absolute;
+                height: 2px;
+                bottom: 7px;
+                left: 0;
+                right: 0;
+                background-color: #000;
+                visibility: hidden;
+                transform: scaleX(0);
+                transition: all 0.3s ease;
+            }
+
+            #colorlib-main-menu ul li a:hover {
+                color: #000;
+            }
+
+                #colorlib-main-menu ul li a:hover:after,
+                #colorlib-main-menu ul li.active > a:after {
+                    visibility: visible;
+                    transform: scaleX(1);
+                }
+
+        #colorlib-main-menu ul li.colorlib-active a {
+            color: #000;
+            font-weight: 500;
+        }
+
+            #colorlib-main-menu ul li.colorlib-active a:after {
+                visibility: visible;
+                transform: scaleX(1);
+            }
+
+        /* Responsive menu */
+        @@media (max-width: 768px) {
+            .colorlib-nav-toggle
+
+        {
+            display: block; /* Menü ikonu görünür yapıldı */
+        }
+
         #colorlib-aside {
-            transition: transform 0.3s;
+            width: 300px;
+            transform: translateX(-300px);
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 9998;
+            background: #fff;
+            overflow-y: auto;
+            transition: 0.5s;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
             #colorlib-aside.active {
                 transform: translateX(0);
             }
-        /* Başlangıçta aside kapalı olacaksa:
-                   #colorlib-aside { transform: translateX(-250px); }
-                   (opsiyonel) */
+
+        #colorlib-main {
+            margin-left: 0;
+        }
+
+        }
+
+        /* Mobilde bildirim butonu düzeltmesi */
+        .notification-btn {
+            top: 14px;
+            right: 60px; /* Hamburger menüsüyle çakışmaması için */
+            width: 38px;
+            height: 38px;
+        }
+
         /* Yukarı Çık Butonu */
         .scroll-to-top {
             position: fixed;
@@ -110,7 +293,7 @@
             right: 20px;
             width: 50px;
             height: 50px;
-            background-color: #6c5ce7; /* Mor tonları */
+            background-color: #6c5ce7;
             color: white;
             border: none;
             border-radius: 50%;
@@ -129,6 +312,7 @@
                 transform: scale(1.1);
             }
 
+        /* Bildirim butonu stil */
         .notification-btn {
             position: fixed;
             top: 20px;
@@ -142,7 +326,7 @@
             font-size: 18px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
             cursor: pointer;
-            z-index: 1050;
+            z-index: 1060; /* Artırılmış z-index */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -154,101 +338,120 @@
                 transform: scale(1.1);
             }
 
+            /* Bildirim butonu kaydırma durumu */
+            .notification-btn.scrolled {
+                top: auto;
+                bottom: 80px; /* Yukarı çık butonunun üstünde */
+                opacity: 0.8;
+            }
+
+        /* Sayfa geçişi ok düzenlemesi */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+
+        .carousel-control-prev {
+            left: 20px;
+        }
+
+        .carousel-control-next {
+            right: 20px;
+        }
+
+            .carousel-control-prev:hover,
+            .carousel-control-next:hover {
+                background: rgba(0, 0, 0, 0.7);
+                opacity: 1;
+            }
+
+        /* Abone ol alanı düzeltmeleri */
+        .subscribe-form input[type="email"] {
+            width: 100%;
+            flex: 1;
+            border-radius: 0.25rem 0 0 0.25rem !important;
+        }
+
+        .subscribe-form .form-group {
+            display: flex;
+            width: 100%;
+        }
+
+        .subscribe-form .btn {
+            border-radius: 0 0.25rem 0.25rem 0;
+            height: 46px;
+            padding: 0 15px;
+            background-color: #6c5ce7; /* Add this line to ensure color */
+            color: white; /* Add this line to ensure text color */
+        }
+
+        /* Responsive abone ol formu */
+        @@media (max-width: 576px) {
+            .subscribe-form .form-group
+
+        {
+            width: 100%;
+        }
+
+        }
+
+        #colorlib-logo a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #000; /* Ana metin siyah */
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+            /* "Yolculuk" kelimesi için turuncu stil */
+            #colorlib-logo a span.yolculuk {
+                color: #FF6A00; /* Canlı turuncu */
+                font-weight: 700;
+                margin-left: 5px;
+                padding: 5px 10px; /* Yazının etrafına padding ekliyoruz */
+                border-radius: 20px; /* "Yolculuk" kelimesine yuvarlak köşe ekliyoruz */
+            }
+
+            /* Hover efekti */
+            #colorlib-logo a:hover {
+                opacity: 0.8;
+            }
+
+        /* Mobilde font boyutunu küçültüyoruz */
+        @@media (max-width: 768px) {
+            #colorlib-logo a
+
+        {
+            font-size: 20px;
+        }
+
+        }
+        
     </style>
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const notificationBtn = document.getElementById("notificationToggleBtn");
-        const notificationIcon = document.getElementById("notificationIcon");
-
-        // Başlangıçta bildirim izni ve localStorage kontrolü
-        let isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
-        updateIcon(isSubscribed);
-
-        // Scroll olayıyla göster/gizle
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 150) {
-                notificationBtn.style.display = "none";
-            } else {
-                notificationBtn.style.display = "flex";
-            }
-        });
-
-        // Butona tıklama
-        notificationBtn.addEventListener("click", async () => {
-            if (!("Notification" in window)) {
-                Swal.fire("Tarayıcınız bildirimleri desteklemiyor.");
-                return;
-            }
-
-            const currentPermission = Notification.permission;
-
-            if (currentPermission === "granted") {
-                isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
-
-                if (isSubscribed) {
-                    const result = await Swal.fire({
-                        title: "Bildirimleri kapatmak istiyor musun?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Kapat",
-                        cancelButtonText: "Vazgeç"
-                    });
-
-                    if (result.isConfirmed) {
-                        localStorage.setItem("notificationsEnabled", "false");
-                        updateIcon(false);
-                        Swal.fire("Bildirimler pasif hale getirildi ❌");
-                    }
-                } else {
-                    localStorage.setItem("notificationsEnabled", "true");
-                    updateIcon(true);
-                    new Notification("Bildirimler aktif!", {
-                        body: "Yeni içeriklerden haberdar olacaksın!",
-                        icon: "/favicon.ico"
-                    });
-                    Swal.fire("Bildirimler aktif hale getirildi 🔔");
-                }
-
-            } else if (currentPermission === "default") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        localStorage.setItem("notificationsEnabled", "true");
-                        updateIcon(true);
-                        new Notification("Bildirimler aktif!", {
-                            body: "Yeni içeriklerden haberdar olacaksın!",
-                            icon: "/favicon.ico"
-                        });
-                        Swal.fire("Bildirim izni verildi ve aktif edildi 🎉");
-                    } else {
-                        Swal.fire("Bildirim izni verilmedi 😢");
-                    }
-                });
-            } else if (currentPermission === "denied") {
-                Swal.fire({
-                    icon: "error",
-                    title: "Bildirim engellenmiş",
-                    text: "Tarayıcı ayarlarından bildirim izni vermen gerekiyor."
-                });
-            }
-        });
-
-        function updateIcon(isEnabled) {
-            notificationIcon.className = isEnabled ? "fas fa-bell" : "fas fa-bell-slash";
-        }
-    });
-</script>
-
-
 <body>
     <div id="colorlib-page">
-
+        <!-- Burger Menu Toggle (Orijinal Stil) -->
+        <a href="#" class="colorlib-nav-toggle"><i></i></a>
 
         <!-- ASIDE (Sol Sidebar) -->
         <aside id="colorlib-aside" role="complementary" class="js-fullheight text-center">
             <h1 id="colorlib-logo">
-                <a href="~/">elen<span>.</span></a>
+                <a href="~/">Şüphelenen Hakikate <span class="yolculuk">Yolculuk</span><span>.</span></a>
             </h1>
+
 
             <!-- Kullanıcı Paneli -->
             <div class="user-panel">
@@ -273,17 +476,11 @@
                                     <i class="fas fa-heart me-2"></i>Beğendiklerim
                                 </a>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="@Url.Action("MyComments","Home")">
-                                    <i class="fas fa-comment me-2"></i>Yorumlarım
-                                </a>
-                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="@Url.Action("Logout","Account")" onclick="clearUserData()">
                                     <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
                                 </a>
-
                             </li>
                         </ul>
                     </div>
@@ -301,13 +498,21 @@
                 }
             </div>
 
-            <!-- Ana Menü -->
+            <!-- Ana Menü - FİX: Active link durumu düzeltildi -->
             <nav id="colorlib-main-menu" role="navigation">
                 <ul>
-                    <li class="colorlib-active"><a href="@Url.Action("Index","Home")">Ana Sayfa</a></li>
-                    <li><a href="@Url.Action("Photo","Home")">Fotoğraflar</a></li>
-                    <li><a href="@Url.Action("About","Home")">Hakkımda</a></li>
-                    <li><a href="@Url.Action("Contact","Home")">İletişim</a></li>
+                    <li @(ViewContext.RouteData.Values["action"].ToString() == "Index" ? "class=colorlib-active" : "")>
+                        <a href="@Url.Action("Index","Home")">Ana Sayfa</a>
+                    </li>
+                    <li @(ViewContext.RouteData.Values["action"].ToString() == "Photo" ? "class=colorlib-active" : "")>
+                        <a href="@Url.Action("Photo","Home")">Fotoğraflar</a>
+                    </li>
+                    <li @(ViewContext.RouteData.Values["action"].ToString() == "About" ? "class=colorlib-active" : "")>
+                        <a href="@Url.Action("About","Home")">Hakkımda</a>
+                    </li>
+                    <li @(ViewContext.RouteData.Values["action"].ToString() == "Contact" ? "class=colorlib-active" : "")>
+                        <a href="@Url.Action("Contact","Home")">İletişim</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -325,7 +530,7 @@
                 </ul>
             </div>
         </aside>
-        <a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle"><i></i></a> 
+
         <!-- Yukarı Çık Butonu -->
         <button id="scrollToTopBtn" class="scroll-to-top">
             <i class="fas fa-chevron-up"></i>
@@ -369,23 +574,27 @@
                                     <ul>
                                         <li>
                                             <span class="icon icon-envelope"></span>
-                                            <span class="text">info@example.com</span>
+                                            <span class="text">silentsite@gmail.com</span>
                                         </li>
                                     </ul>
                                 </div>
+                                <!-- FİX: Abone Ol bölümü daima görünür olacak -->
                                 <div class="subscribe-form">
-                                    <h3 class="h6 mb-3">Bültenimize Abone Olun</h3>
-                                    <form asp-controller="Common" asp-action="Subscribe" method="post" class="d-flex">
-                                        <input type="email" name="email" class="form-control me-2" placeholder="E-posta adresiniz" required />
-                                        <button type="submit" class="btn btn-primary">Abone Ol</button>
+                                    <span class="subscribe-heading">Bültenimize Abone Olun</span>
+                                    <form asp-controller="Common" asp-action="Subscribe" method="post">
+                                        <div class="form-group d-flex" >
+                                            <input type="email" name="email" class="form-control" placeholder="E-posta adresiniz" required />
+                                            <button type="submit" class="btn btn-dark">
+                                                <i class="fa fa-paper-plane"></i>
+                                            </button>
+                                        </div>
                                     </form>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 text-center">
                             <p>
                                 &copy; @DateTime.Now.Year - Her hakkı saklıdır |
                                 Created by Muhammed Said Eruslu
@@ -396,7 +605,7 @@
             </footer>
         </div><!-- END colorlib-main -->
     </div><!-- END colorlib-page -->
-    <!-- Bildirim Butonu -->
+    <!-- Bildirim Butonu - FİX -->
     <button id="notificationToggleBtn" class="notification-btn">
         <i id="notificationIcon" class="fas fa-bell-slash"></i>
     </button>
@@ -421,22 +630,55 @@
     <script src="~/elen-master/js/jquery.timepicker.min.js"></script>
     <script src="~/elen-master/js/scrollax.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&sensor=false"></script>
-    <script src="~/elen-master/js/google-map.js"></script> -->
     <script src="~/elen-master/js/main.js"></script>
 
     @RenderSection("Scripts", required: false)
 
     <script>
-        // BURGER MENU AÇ/KAPA
+        // BURGER MENU AÇ/KAPA (Orijinal Fonksiyon)
         $(document).ready(function () {
-            $('.js-colorlib-nav-toggle').on('click', function (e) {
+            var toggle = $('.colorlib-nav-toggle');
+            toggle.on('click', function(e) {
                 e.preventDefault();
-                $(this).toggleClass('active');
-                $('#colorlib-aside').toggleClass('active');
+                var aside = $('#colorlib-aside');
+                if (aside.hasClass('active')) {
+                    aside.removeClass('active');
+                    toggle.removeClass('active');
+                } else {
+                    aside.addClass('active');
+                    toggle.addClass('active');
+                }
             });
+
+            // Ekran boyutu değiştiğinde kontrol et
+            $(window).resize(function() {
+                if ($(window).width() > 768) {
+                    $('#colorlib-aside').removeClass('active');
+                    $('.colorlib-nav-toggle').removeClass('active');
+                }
+            });
+
+            // Sayfa yüklendiğinde aktif menü öğesini işaretle
+            highlightActiveMenuItem();
         });
-                document.addEventListener("DOMContentLoaded", function () {
+
+        // FİX: Aktif menü öğesini işaretleme
+        function highlightActiveMenuItem() {
+            var currentPath = window.location.pathname;
+            var menuItems = $('#colorlib-main-menu li');
+
+            menuItems.removeClass('colorlib-active');
+
+            menuItems.each(function() {
+                var link = $(this).find('a').attr('href');
+                if (currentPath === link || currentPath.indexOf(link) > -1) {
+                    $(this).addClass('colorlib-active');
+                }
+            });
+        }
+
+        // Yukarı çık butonunu göster/gizle
+        document.addEventListener("DOMContentLoaded", function () {
             var scrollToTopBtn = document.getElementById("scrollToTopBtn");
 
             window.onscroll = function () {
@@ -454,12 +696,134 @@
                 });
             });
         });
-              function clearUserData() {
+
+        // Çıkış yaparken verileri temizleme
+        function clearUserData() {
             localStorage.removeItem("likedPosts"); // Beğenilen postları temizle
             localStorage.removeItem("userComments"); // Kullanıcı yorumlarını temizle
+            localStorage.removeItem("notificationsEnabled"); // Bildirim ayarını temizle
         }
-    </script>
 
+            // FİX: Bildirim butonunun işlevselliği iyileştirildi
+        document.addEventListener("DOMContentLoaded", function () {
+            const notificationBtn = document.getElementById("notificationToggleBtn");
+            const notificationIcon = document.getElementById("notificationIcon");
+
+            // Başlangıçta bildirim izni ve localStorage kontrolü
+            let isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
+            updateIcon(isSubscribed);
+
+            // Scroll olayıyla göster/gizle ve konumu değiştir
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 200) {
+                    notificationBtn.classList.add("scrolled");
+                } else {
+                    notificationBtn.classList.remove("scrolled");
+                }
+            });
+
+            // Butona tıklama
+            notificationBtn.addEventListener("click", async () => {
+                if (!("Notification" in window)) {
+                    Swal.fire({
+                        title: "Uyarı",
+                        text: "Tarayıcınız bildirimleri desteklemiyor.",
+                        icon: "warning"
+                    });
+                    return;
+                }
+
+                const currentPermission = Notification.permission;
+
+                if (currentPermission === "granted") {
+                    isSubscribed = localStorage.getItem("notificationsEnabled") === "true";
+
+                    if (isSubscribed) {
+                        const result = await Swal.fire({
+                            title: "Bildirimleri kapatmak istiyor musun?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Kapat",
+                            cancelButtonText: "Vazgeç",
+                            confirmButtonColor: "#6c5ce7"
+                        });
+
+                        if (result.isConfirmed) {
+                            localStorage.setItem("notificationsEnabled", "false");
+                            updateIcon(false);
+                            Swal.fire({
+                                title: "Bildirimler kapatıldı",
+                                icon: "success",
+                                text: "Artık bildirim almayacaksınız.",
+                                confirmButtonColor: "#6c5ce7"
+                            });
+                        }
+                    } else {
+                        localStorage.setItem("notificationsEnabled", "true");
+                        updateIcon(true);
+                        new Notification("Bildirimler aktif!", {
+                            body: "Yeni içeriklerden haberdar olacaksın!",
+                            icon: "/favicon.ico"
+                        });
+                        Swal.fire({
+                            title: "Bildirimler açıldı",
+                            icon: "success",
+                            text: "Artık yeni içeriklerden haberdar olacaksınız.",
+                            confirmButtonColor: "#6c5ce7"
+                        });
+                    }
+
+                } else if (currentPermission === "default") {
+                    Swal.fire({
+                        title: "Bildirim İzni",
+                        text: "Yeni içeriklerden haberdar olmak için bildirim izni verin.",
+                        icon: "info",
+                        confirmButtonText: "İzin Ver",
+                        cancelButtonText: "Vazgeç",
+                        showCancelButton: true,
+                        confirmButtonColor: "#6c5ce7"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Notification.requestPermission().then(permission => {
+                                if (permission === "granted") {
+                                    localStorage.setItem("notificationsEnabled", "true");
+                                    updateIcon(true);
+                                    new Notification("Bildirimler aktif!", {
+                                        body: "Yeni içeriklerden haberdar olacaksın!",
+                                        icon: "/favicon.ico"
+                                    });
+                                    Swal.fire({
+                                        title: "Bildirimler açıldı",
+                                        icon: "success",
+                                        text: "Artık yeni içeriklerden haberdar olacaksınız.",
+                                        confirmButtonColor: "#6c5ce7"
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "Bildirim izni verilmedi",
+                                        icon: "error",
+                                        confirmButtonColor: "#6c5ce7"
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else if (currentPermission === "denied") {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Bildirim engellendi",
+                        text: "Tarayıcı ayarlarından bildirim izni vermeniz gerekiyor.",
+                        confirmButtonColor: "#6c5ce7"
+                    });
+                }
+            });
+
+            function updateIcon(isEnabled) {
+                notificationIcon.className = isEnabled ? "fas fa-bell" : "fas fa-bell-slash";
+            }
+        });
+
+    </script>
 
     @if (TempData["SubscribeStatus"] != null && TempData["SubscribeMessage"] != null)
     {
@@ -467,13 +831,13 @@
             document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: '@TempData["SubscribeStatus"]',
+                    title: '@(TempData["SubscribeStatus"].ToString() == "success" ? "Başarılı!" : "Hata!")',
                     text: @Html.Raw($"'{TempData["SubscribeMessage"]}'"),
-                    confirmButtonColor: '#3085d6',
+                    confirmButtonColor: '#6c5ce7',
                     confirmButtonText: 'Tamam'
                 });
             });
         </script>
     }
-
 </body>
 </html>

@@ -295,7 +295,31 @@ namespace Business.Services.AccountService
                 return new ErrorResult("Dogrulama Kodu Gönderilemedi");
             }
         }
+        public async Task<string> GeneratePasswordResetTokenAsync(AppUser user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
 
-     
+        public async Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+        public async Task<bool> SendPasswordResetEmail(string email, string resetLink)
+        {
+            try
+            {
+                var subject = "Şifre Sıfırlama Talebi";
+                var body = $"Şifrenizi sıfırlamak için <a href='{resetLink}'>buraya tıklayın</a>. " +
+                           $"Bağlantı 1 saat boyunca geçerlidir.";
+
+                var result = await _asyncSendMailRepository.SendMail(email, subject, body);
+                return result.IsSucces;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
