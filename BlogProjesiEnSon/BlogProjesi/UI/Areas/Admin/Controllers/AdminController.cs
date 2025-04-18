@@ -139,7 +139,11 @@ namespace UI.Areas.Admin.Controllers
             ModelState.AddModelError("", result.Message);
             return View(model);
         }
-
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.LogoutAsync();
+            return RedirectToAction(nameof(Login));
+        }
 
     }
 }

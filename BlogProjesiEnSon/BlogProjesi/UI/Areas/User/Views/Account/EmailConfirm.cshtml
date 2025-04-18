@@ -9,45 +9,74 @@
     /* Kart Gölgelendirme ve Yumuşak Kenarlar */
     .verify-card {
         animation: fadeInUp 0.6s ease-in-out;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
         background: white;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
 
-        /* Başlık için Arkaplan ve Animasyon */
+        /* Başlık için Arkaplan - Turuncu-Siyah Gradyan */
         .verify-card .card-header {
-            background: linear-gradient(45deg, #007bff, #17a2b8);
+            background: linear-gradient(45deg, #FF6A00, #333333);
             animation: headerFade 1.2s ease-in-out;
+            border-bottom: none;
         }
 
-    /* Input İçin Rahatlatıcı Animasyon */
+    /* Input Stilleriniz */
     .form-control {
-        border-radius: 8px;
-        border: 2px solid #ddd;
-        transition: all 0.3s ease-in-out;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
     }
 
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
-            transform: scale(1.02);
+            border-color: #FF6A00;
+            box-shadow: 0 0 8px rgba(255, 106, 0, 0.25);
         }
 
-    /* Onayla Butonu Hover Animasyonu */
+    /* Onayla Butonu - Turuncu Tema */
     .btn-verify {
-        transition: all 0.3s ease-in-out;
-        background: #17a2b8;
+        transition: all 0.3s ease;
+        background: #FF6A00;
         color: white;
-        font-weight: bold;
-        border-radius: 8px;
+        font-weight: 500;
+        border-radius: 4px;
+        border: none;
+        padding: 10px;
     }
 
         .btn-verify:hover {
-            background: #007bff;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-            transform: scale(1.05);
+            background: #e55f00;
         }
+
+    /* Tekrar Gönder Butonu */
+    .btn-link {
+        color: #FF6A00;
+        text-decoration: none;
+    }
+
+        .btn-link:hover {
+            color: #e55f00;
+            text-decoration: underline;
+        }
+
+    /* Karanlık Tem için Footer */
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #eee;
+    }
+
+    /* Sayaç Stili */
+    .countdown {
+        font-weight: bold;
+        color: #FF6A00;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .countdown-icon {
+        margin-right: 5px;
+    }
 
     /* Animasyonlar */
     @@keyframes fadeInUp {
@@ -65,12 +94,21 @@
     @@keyframes headerFade {
         from {
             opacity: 0;
-            transform: scale(0.8);
         }
 
         to {
             opacity: 1;
-            transform: scale(1);
+        }
+    }
+
+    /* Responsive Düzenlemeler */
+    @@media (max-width: 768px) {
+        .container {
+            padding: 0 15px;
+        }
+
+        .verify-card {
+            margin-bottom: 20px;
         }
     }
 </style>
@@ -79,11 +117,11 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card verify-card">
-                <div class="card-header text-white text-center">
+                <div class="card-header text-white text-center py-3">
                     <h3 class="mb-0">E-Posta Doğrulama</h3>
                 </div>
-                <div class="card-body">
-                    <p class="text-center text-muted">
+                <div class="card-body p-4">
+                    <p class="text-center text-muted mb-4">
                         E-Posta adresinize gönderilen doğrulama kodunu girin.
                     </p>
                     <form asp-action="EmailConfirm" method="post">
@@ -105,16 +143,95 @@
 
                         <button type="submit" class="btn btn-verify w-100">Onayla</button>
                     </form>
-
                 </div>
-                <div class="card-footer text-center">
+                <div class="card-footer text-center py-3">
                     <p class="mb-1">Doğrulama kodu ulaşmadı mı?</p>
-                    <form asp-action="ResendConfirmMail" method="post">
+                    <form asp-action="ResendConfirmMail" method="post" id="resendForm">
                         <input type="hidden" asp-for="RegisterVM.Email" />
-                        <button type="submit" class="btn btn-link text-primary">Tekrar Gönder</button>
+                        <button type="submit" class="btn btn-link" id="resendButton">
+                            Tekrar Gönder
+                        </button>
+                        <span id="countdown" class="countdown d-none">
+                            <i class="fas fa-clock countdown-icon"></i>
+                            <span id="countdown-text"></span>
+                        </span>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            // Sayfa yüklendiğinde zaman kontrolü yap
+            checkResendTime();
+
+            // Form gönderildiğinde
+            $('#resendForm').submit(function (e) {
+                e.preventDefault();
+
+                // Butonu devre dışı bırak
+                $('#resendButton').prop('disabled', true).addClass('disabled');
+
+                // Formu gönder
+                $.post($(this).attr('action'), $(this).serialize(), function (response) {
+                    if (response.success) {
+                        // Başarılı gönderimden sonra sayaç başlat
+                        startCountdown(180);
+                        alert("Yeni doğrulama kodu gönderildi. Eski kod artık geçersizdir.");
+                    } else {
+                        alert(response.message);
+                        $('#resendButton').prop('disabled', false).removeClass('disabled');
+                    }
+                }).fail(function () {
+                    $('#resendButton').prop('disabled', false).removeClass('disabled');
+                });
+            });
+
+            function checkResendTime() {
+                // TempData'dan son gönderim zamanını al
+                var lastSendTime = '@(TempData["LastSendTime"]?.ToString())';
+                if (lastSendTime) {
+                    var sendTime = new Date(lastSendTime);
+                    var now = new Date();
+                    var diffInSeconds = Math.floor((now - sendTime) / 1000);
+
+                    if (diffInSeconds < 180) {
+                        startCountdown(180 - diffInSeconds);
+                    }
+                }
+            }
+
+            function startCountdown(seconds) {
+                var countdown = $('#countdown');
+                var countdownText = $('#countdown-text');
+                var button = $('#resendButton');
+
+                button.addClass('d-none');
+                countdown.removeClass('d-none');
+                updateCountdownText(seconds);
+
+                var timer = setInterval(function () {
+                    seconds--;
+                    updateCountdownText(seconds);
+
+                    if (seconds <= 0) {
+                        clearInterval(timer);
+                        countdown.addClass('d-none');
+                        button.removeClass('d-none').prop('disabled', false);
+                    }
+                }, 1000);
+
+                function updateCountdownText(secs) {
+                    var minutes = Math.floor(secs / 60);
+                    var remainingSeconds = secs % 60;
+                    var timeString = minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+                    countdownText.text(timeString + " sonra tekrar deneyebilirsiniz");
+                }
+            }
+        });
+    </script>
+}

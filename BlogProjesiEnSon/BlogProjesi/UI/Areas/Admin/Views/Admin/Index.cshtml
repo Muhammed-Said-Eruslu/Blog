@@ -242,4 +242,70 @@
     .list-group-item:hover {
         background-color: #f0f0f0;
     }
+
+    /* **Responsive Kartlar** - Kolonların ekran boyutlarına göre değişmesi */
+    @@media (max-width: 1200px) {
+        .col-xl-3
+
+    {
+        width: 50%; /* Daha büyük ekranlarda kartlar %50 genişlikte */
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .col-xl-3
+
+    {
+        width: 50%; /* Tabletlerde de 2 kart aynı satırda */
+    }
+
+    .col-sm-6 {
+        width: 100%; /* Küçük ekranlarda her kart tek satırda */
+    }
+
+    .chart-container {
+        height: 300px; /* Grafik boyutunu küçült */
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .col-xl-3, .col-sm-6
+
+    {
+        width: 100%; /* Mobilde her kart full genişlikte olacak */
+    }
+
+    .chart-container {
+        height: 250px; /* Grafik boyutunu mobilde küçült */
+    }
+
+    /* Hızlı erişim butonları daha küçük ekranlarda */
+    .btn-block {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    }
+
+    /* 576px ve daha küçük ekranlar için tüm düzeni optimize et */
+    @@media (max-width: 576px) {
+        .card-header h5
+
+    {
+        font-size: 16px; /* Başlık font boyutunu küçült */
+    }
+
+    .btn-block {
+        font-size: 12px; /* Butonları küçük ekranlara uygun hale getir */
+    }
+
+    /* Grafik boyutunu daha da küçült */
+    .chart-container {
+        height: 200px;
+    }
+
+    }
 </style>
+

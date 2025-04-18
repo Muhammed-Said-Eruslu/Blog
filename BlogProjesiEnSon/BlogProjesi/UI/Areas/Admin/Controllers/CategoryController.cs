@@ -87,7 +87,10 @@ namespace UI.Areas.Admin.Controllers
             {
                 Id = result.Data.Id,
                 Name = result.Data.Name,
-                Description = result.Data.Description
+                Description = result.Data.Description,
+                PostCount = result.Data.PostCount,
+                CreatedDate = DateTime.Now,
+                Slug = result.Data.Slug,
             };
 
             return View(updateDto);

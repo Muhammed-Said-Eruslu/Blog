@@ -102,14 +102,18 @@ namespace Business.Services.PhotoServices
             await _photoRepository.SaveChangeAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var photo = await _photoRepository.GetAsync(x => x.Id == id);
             if (photo != null)
             {
                 await _photoRepository.DeleteAsync(photo);
                 await _photoRepository.SaveChangeAsync();
+                return true;  // Silme başarılı
             }
+
+            return false;  // Fotoğraf bulunamadı veya silinemedi
         }
+
     }
 }

@@ -405,28 +405,28 @@
 
         }
 
+        /* Şüphelenen Hakikate Yolculuk için logo stilleri */
+        /* Özel logo stilleri - Bu kodu style tagları arasına ekleyin */
         #colorlib-logo a {
             font-family: 'Montserrat', sans-serif;
             font-size: 24px;
             font-weight: 600;
-            color: #000; /* Ana metin siyah */
+            color: #FFFFFF; /* Ana metin beyaz */
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
         }
 
-            /* "Yolculuk" kelimesi için turuncu stil */
-            #colorlib-logo a span.yolculuk {
-                color: #FF6A00; /* Canlı turuncu */
-                font-weight: 700;
-                margin-left: 5px;
-                padding: 5px 10px; /* Yazının etrafına padding ekliyoruz */
-                border-radius: 20px; /* "Yolculuk" kelimesine yuvarlak köşe ekliyoruz */
+            /* "Yolculuk" kelimesi için turuncu stil - !important eklendi */
+            #colorlib-logo a .yolculuk {
+                color: #FF6A00 !important; /* Turuncu renk - !important ile zorunlu kılındı */
+                font-weight: 700 !important;
+                text-shadow: 0 0 1px rgba(255, 106, 0, 0.2); /* Hafif parlaklık ekler */
             }
 
             /* Hover efekti */
             #colorlib-logo a:hover {
-                opacity: 0.8;
+                opacity: 0.9;
             }
 
         /* Mobilde font boyutunu küçültüyoruz */
@@ -449,7 +449,9 @@
         <!-- ASIDE (Sol Sidebar) -->
         <aside id="colorlib-aside" role="complementary" class="js-fullheight text-center">
             <h1 id="colorlib-logo">
-                <a href="~/">Şüphelenen Hakikate <span class="yolculuk">Yolculuk</span><span>.</span></a>
+                <a href="~/">
+                    Şüphelenen Hakikate <span class="yolculuk">Yolculuk</span><span>.</span>
+                </a>
             </h1>
 
 
