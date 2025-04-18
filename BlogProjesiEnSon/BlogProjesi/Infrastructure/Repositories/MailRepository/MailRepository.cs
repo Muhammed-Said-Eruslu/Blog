@@ -133,5 +133,38 @@ namespace Infrastructure.Repositories.MailRepository
             return emailBody;
         }
 
+        public async Task<bool> SendConfirmMail(string to, string confirmCode)
+        {
+            try
+            {
+                // E-posta şablonunu al
+                string emailBody = await GetEmailTemplate("ConfirmEmailTemplate.html", new Dictionary<string, string>
+        {
+            { "{{CONFIRM_CODE}}", confirmCode },
+            { "{{EMAIL}}", to },
+            { "{{CURRENT_YEAR}}", DateTime.Now.Year.ToString() }
+        });
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress(_senderName, _senderEmail));
+                message.To.Add(new MailboxAddress("Kullanıcı", to));
+                message.Subject = "E-Posta Doğrulama Kodu";
+                message.Body = new TextPart(TextFormat.Html) { Text = emailBody };
+
+                using var client = new SmtpClient();
+                await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(_apiKeyPublic, _apiKeyPrivate);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Hata oluştu: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

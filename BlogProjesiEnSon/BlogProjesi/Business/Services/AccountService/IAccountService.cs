@@ -38,5 +38,6 @@ namespace Business.Services.AccountService
         Task<string> GeneratePasswordResetTokenAsync(AppUser user);
         Task<IdentityResult> ResetPasswordAsync(AppUser user, string token, string newPassword);
         Task<bool> SendPasswordResetEmail(string email, string resetLink);
+        Task<string> SendConfirmMail(string email, string confirmCode);
     }
 }

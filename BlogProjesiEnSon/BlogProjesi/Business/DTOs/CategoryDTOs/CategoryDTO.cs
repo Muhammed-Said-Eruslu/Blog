@@ -16,7 +16,7 @@ namespace Business.DTOs.CategoryDTOs
         public DateTime CreatedDate { get; set; }
         // Kategorideki toplam post sayısı
         public int PostCount { get; set; }
-
+        public DateTime? ModifiedDate { get; set; }
         public ICollection<Guid> PostIds { get; set; } = new List<Guid>(); // Postların Id'lerini içeren bir koleksiyon
         public List<PostDTO> Posts { get; set; }
     }

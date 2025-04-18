@@ -271,6 +271,27 @@ namespace Business.Services.AccountService
                 return "Dogrulama Kodu Gönderilemedi";
             }
         }
+        public async Task<string> SendConfirmMail(string email, string confirmCode)
+        {
+            try
+            {
+                // Cache'e kaydet (3 dakika geçerli)
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(3));
+
+                _memoryCache.Set($"ConfirmCode_{email}", confirmCode, cacheOptions);
+                _memoryCache.Set($"ResendCooldown_{email}", DateTime.Now, cacheOptions);
+
+                // E-posta gönder
+                var sendResult = await _asyncSendMailRepository.SendConfirmMail(email, confirmCode);
+
+                return sendResult ? confirmCode : null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public async Task<IResult> SendMail(string to, string subject, string body)
         {

@@ -69,11 +69,22 @@ namespace UI.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _photoService.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            var result = await _photoService.DeleteAsync(id);
+
+            if (result)
+            {
+                // Başarıyla silindiğinde, JSON formatında bir yanıt döndürüyoruz.
+                return Json(new { success = true, message = "Fotoğraf başarıyla silindi." });
+            }
+            else
+            {
+                // Hata durumunda, JSON formatında bir hata mesajı döndürüyoruz.
+                return Json(new { success = false, message = "Fotoğraf silinirken bir hata oluştu." });
+            }
         }
+
     }
 }

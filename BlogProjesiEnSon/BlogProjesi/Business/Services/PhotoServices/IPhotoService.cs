@@ -15,6 +15,6 @@ namespace Business.Services.PhotoServices
         Task<PhotoListDTO> GetByIdAsync(Guid id);
         Task CreateAsync(PhotoCreateDTO photoCreateDTO);
         Task UpdateAsync(PhotoUpdateDTO photoUpdateDTO);
-        Task DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

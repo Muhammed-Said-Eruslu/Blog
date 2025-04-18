@@ -5,88 +5,489 @@
     Layout = "_AdminLayout";
 }
 
-<!-- SweetAlert CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
+    <style>
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --info-color: #00cfe8;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
+        }
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">İletişim Mesajları</h6>
+        body {
+            background-color: #f5f5f9;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+                font-size: 1.5rem;
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .table {
+            margin-bottom: 0;
+            background-color: #fff;
+            width: 100%;
+        }
+
+            .table th {
+                border-top: none;
+                font-weight: 600;
+                color: #6e6b7b;
+                background-color: #f8f8f8;
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+            }
+
+            .table td {
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border-top: 1px solid rgba(34, 41, 47, 0.05);
+            }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 1rem;
+            }
+
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+            .btn-info:hover {
+                background-color: #00a1b5;
+                transform: translateY(-2px);
+            }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #e42728;
+                transform: translateY(-2px);
+            }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+
+        .badge-new {
+            background-color: rgba(115, 103, 240, 0.12);
+            color: var(--primary-color);
+        }
+
+        .message-preview {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+        }
+
+        /* DataTables specific styling */
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 1rem;
+        }
+
+            .dataTables_wrapper .dataTables_filter input {
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 0.4rem 0.75rem;
+            }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            color: #fff !important;
+            border: 1px solid var(--primary-color) !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f5f5f9 !important;
+            color: var(--primary-color) !important;
+        }
+
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+        table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+            background-color: var(--primary-color);
+        }
+
+        /* Mobile view card styling */
+        .contact-card {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .contact-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .contact-card-body {
+            margin-bottom: 15px;
+        }
+
+        .contact-card-item {
+            margin-bottom: 8px;
+        }
+
+        .contact-card-label {
+            font-weight: 500;
+            color: #6e6b7b;
+            font-size: 0.9rem;
+        }
+
+        .contact-card-value {
+            font-weight: 400;
+            color: #5e5873;
+        }
+
+        .contact-card-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+            .contact-card-footer .btn {
+                flex: 1;
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 991.98px) {
+            .card-header
+
+        {
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .message-preview {
+            max-width: 150px;
+        }
+
+        }
+
+        @@media (max-width: 767.98px) {
+            .table-container
+
+        {
+            display: none;
+        }
+
+        .contact-card {
+            display: block;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+        .card-header {
+            padding: 1rem;
+        }
+
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">
+            <i class="mdi mdi-email-outline"></i>@ViewData["Title"]
+        </h4>
+        <div class="badge badge-new">
+            <i class="mdi mdi-email-check me-1"></i>@Model.Count Mesaj
+        </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Ad Soyad</th>
-                        <th>Email</th>
-                        <th>Konu</th>
-                        <th>Mesaj</th>
-                        <th>Tarih</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var contact in Model)
-                    {
+        <!-- Table view (desktop) -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover" id="contactTable" style="width:100%">
+                    <thead>
                         <tr>
-                            <td>@contact.FullName</td>
-                            <td>@contact.Email</td>
-                            <td>@contact.Subject</td>
-                            <td>@(contact.Message.Length > 50 ? contact.Message.Substring(0, 50) + "..." : contact.Message)</td>
-                            <td>@contact.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>
-                                <a href="@Url.Action("Details", new { id = contact.Id })" class="btn btn-info btn-sm">Detay</a>
-                                <button onclick="deleteContact('@contact.Id')" class="btn btn-danger btn-sm">Sil</button>
-                            </td>
+                            <th>Ad Soyad</th>
+                            <th>Email</th>
+                            <th>Konu</th>
+                            <th>Mesaj</th>
+                            <th>Tarih</th>
+                            <th style="width: 150px;">İşlemler</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var contact in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="badge badge-new rounded-pill me-2" style="min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="mdi mdi-account-outline fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="fw-semibold">@contact.FullName</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="mailto:@contact.Email" class="text-primary">@contact.Email</a>
+                                </td>
+                                <td>@contact.Subject</td>
+                                <td>
+                                    <span class="message-preview" title="@contact.Message">
+                                        @(contact.Message.Length > 50 ? contact.Message.Substring(0, 50) + "..." : contact.Message)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light-secondary">
+                                        @contact.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons d-flex">
+                                        <a href="@Url.Action("Details", new { id = contact.Id })" class="btn btn-info btn-sm me-2">
+                                            <i class="mdi mdi-eye"></i> Detay
+                                        </a>
+                                        <button onclick="deleteContact('@contact.Id', '@contact.FullName')" class="btn btn-danger btn-sm">
+                                            <i class="mdi mdi-delete"></i> Sil
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Card view (mobile) -->
+        <div class="mobile-view">
+            @foreach (var contact in Model)
+            {
+                <div class="contact-card">
+                    <div class="contact-card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="badge badge-new rounded-pill me-2" style="min-width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                                <i class="mdi mdi-account-outline fs-5"></i>
+                            </div>
+                            <div>
+                                <span class="fw-semibold">@contact.FullName</span>
+                            </div>
+                        </div>
+                        <span class="badge bg-light-secondary">
+                            @contact.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                        </span>
+                    </div>
+                    <div class="contact-card-body">
+                        <div class="contact-card-item">
+                            <div class="contact-card-label">Email:</div>
+                            <div class="contact-card-value">
+                                <a href="mailto:@contact.Email" class="text-primary">@contact.Email</a>
+                            </div>
+                        </div>
+                        <div class="contact-card-item">
+                            <div class="contact-card-label">Konu:</div>
+                            <div class="contact-card-value">@contact.Subject</div>
+                        </div>
+                        <div class="contact-card-item">
+                            <div class="contact-card-label">Mesaj:</div>
+                            <div class="contact-card-value">
+                                @(contact.Message.Length > 100 ? contact.Message.Substring(0, 100) + "..." : contact.Message)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card-footer">
+                        <a href="@Url.Action("Details", new { id = contact.Id })" class="btn btn-info btn-sm">
+                            <i class="mdi mdi-eye"></i> Detay
+                        </a>
+                        <button onclick="deleteContact('@contact.Id', '@contact.FullName')" class="btn btn-danger btn-sm">
+                            <i class="mdi mdi-delete"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
 
-<!-- SweetAlert JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-    function deleteContact(contactId) {
-        Swal.fire({
-            title: 'Emin misiniz?',
-            text: "Bu mesajı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'İptal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Form oluştur ve gönder
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '@Url.Action("Delete", "Contact", new { area = "Admin" })';
-
-                const hiddenField = document.createElement('input');
-                hiddenField.type = 'hidden';
-                hiddenField.name = 'id';
-                hiddenField.value = contactId;
-
-                form.appendChild(hiddenField);
-                document.body.appendChild(form);
-                form.submit();
-
-                // Silme işlemi başladığında loading göster
-                Swal.fire({
-                    title: 'Siliniyor...',
-                    html: 'Mesaj siliniyor, lütfen bekleyin.',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable for desktop
+            if ($(window).width() > 767) {
+                $('#contactTable').DataTable({
+                    responsive: true,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json'
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: [5] },
+                        { searchable: false, targets: [5] }
+                    ]
                 });
             }
+
+            // Handle window resize
+            $(window).resize(function() {
+                if ($(window).width() <= 767) {
+                    if ($.fn.DataTable.isDataTable('#contactTable')) {
+                        $('#contactTable').DataTable().destroy();
+                    }
+                    $('.table-container').hide();
+                    $('.mobile-view').show();
+                } else {
+                    if (!$.fn.DataTable.isDataTable('#contactTable')) {
+                        $('#contactTable').DataTable({
+                            responsive: true,
+                            language: {
+                                url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json'
+                            },
+                            columnDefs: [
+                                { orderable: false, targets: [5] },
+                                { searchable: false, targets: [5] }
+                            ]
+                        });
+                    }
+                    $('.table-container').show();
+                    $('.mobile-view').hide();
+                }
+            });
+
+            // Initial check for display mode
+            if ($(window).width() <= 767) {
+                $('.table-container').hide();
+                $('.mobile-view').show();
+            } else {
+                $('.mobile-view').hide();
+            }
         });
-    }
-</script>
+
+        function deleteContact(contactId, contactName) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                html: `<b>${contactName}</b> adlı kişinin mesajı silinecek. Bu işlem geri alınamaz!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal',
+                confirmButtonColor: '#ea5455',
+                cancelButtonColor: '#7367f0',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-danger me-2',
+                    cancelButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create form and submit
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '@Url.Action("Delete", "Contact", new { area = "Admin" })';
+
+                    const hiddenField = document.createElement('input');
+                    hiddenField.type = 'hidden';
+                    hiddenField.name = 'id';
+                    hiddenField.value = contactId;
+
+                    const token = document.createElement('input');
+                    token.type = 'hidden';
+                    token.name = '__RequestVerificationToken';
+                    token.value = $('input[name="__RequestVerificationToken"]').val();
+
+                    form.appendChild(hiddenField);
+                    form.appendChild(token);
+                    document.body.appendChild(form);
+
+                    // Show loading indicator
+                    Swal.fire({
+                        title: 'Siliniyor...',
+                        html: 'Mesaj siliniyor, lütfen bekleyin.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                        willClose: () => {
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

@@ -92,6 +92,7 @@ namespace Business.Services.CategoryServices
                 Name = category.Name,
                 Slug = category.Slug,
                 Description = category.Description,
+                PostCount = category.Posts?.Count() ?? 0 ,
                 Posts = category.Posts?.Select(p => new PostDTO
                 {
                     Id = p.Id,

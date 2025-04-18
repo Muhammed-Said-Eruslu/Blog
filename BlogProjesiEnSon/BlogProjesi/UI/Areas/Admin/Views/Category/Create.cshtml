@@ -4,36 +4,211 @@
     Layout = "_AdminLayout";
 }
 
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --success-color: #28c76f;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
+        }
+
+        body {
+            background-color: #f5f5f9;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+                font-size: 1.5rem;
+            }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #5e5873;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+        }
+
+            .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.1);
+            }
+
+        .text-danger {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: var(--transition);
+            padding: 0.75rem 1.5rem;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+            .btn-primary:hover {
+                background-color: #5d50e6;
+                border-color: #5d50e6;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background-color: #82868b;
+            border-color: #82868b;
+        }
+
+            .btn-secondary:hover {
+                background-color: #6c757d;
+                border-color: #6c757d;
+                transform: translateY(-2px);
+            }
+
+        .form-footer {
+            border-top: 1px solid rgba(34, 41, 47, 0.05);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Slug field styling */
+        .slug-container {
+            position: relative;
+        }
+
+        .slug-preview {
+            background-color: #f8f8f8;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #6e6b7b;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 767.98px) {
+            .card-body
+
+        {
+            padding: 1.5rem;
+        }
+
+        .form-footer {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        }
+    </style>
+}
+
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">@ViewData["Title"]</h4>
+        <h4 class="card-title">
+            <i class="mdi mdi-tag-plus"></i>@ViewData["Title"]
+        </h4>
     </div>
     <div class="card-body">
         <form asp-action="Create" method="post">
             <div class="row">
-                <div class="col-md-8">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-lg-8">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4">
+                        <i class="mdi mdi-alert-circle-outline me-2"></i>Lütfen formdaki hataları düzeltin.
+                    </div>
 
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" class="form-control" />
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label">Kategori Adı *</label>
+                        <input asp-for="Name" class="form-control" placeholder="Kategori adını giriniz" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Kategori açıklamasını giriniz"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Slug" class="control-label"></label>
-                        <textarea asp-for="Slug" class="form-control" rows="4"></textarea>
+
+                    <div class="mb-4">
+                        <label asp-for="Slug" class="form-label">SEO URL</label>
+                        <div class="slug-container">
+                            <input asp-for="Slug" type="hidden" />
+                            <div id="slugPreview" class="slug-preview">Kategori adı girildiğinde otomatik oluşturulacak</div>
+                        </div>
+                        <small class="text-muted">SEO URL kategori adından otomatik oluşturulur</small>
                         <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-3"><i class="mdi mdi-information-outline me-2"></i>SEO İpuçları</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="mdi mdi-check-circle text-success me-2"></i>Kısa ve açıklayıcı başlıklar kullanın</li>
+                                <li class="mb-2"><i class="mdi mdi-check-circle text-success me-2"></i>Anahtar kelimeleri doğal şekilde kullanın</li>
+                                <li><i class="mdi mdi-check-circle text-success me-2"></i>URL'lerde Türkçe karakter kullanmayın</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group mt-4">
+            <div class="form-footer">
                 <button type="submit" class="btn btn-primary">
                     <i class="mdi mdi-content-save"></i> Kaydet
                 </button>
@@ -49,4 +224,32 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function() {
+            // Auto-generate slug from name
+            $('#Name').on('input', function() {
+                const name = $(this).val();
+                if (name) {
+                    const slug = name.toLowerCase()
+                        .replace(/ /g, '-')
+                        .replace(/[ğüşıöçĞÜŞİÖÇ]/g, function(c) {
+                            const map = {'ğ':'g','ü':'u','ş':'s','ı':'i','ö':'o','ç':'c','Ğ':'g','Ü':'u','Ş':'s','İ':'i','Ö':'o','Ç':'c'};
+                            return map[c] || c;
+                        })
+                        .replace(/[^\w-]+/g, '');
+
+                    $('#Slug').val(slug);
+                    $('#slugPreview').text('/blog/' + slug);
+                } else {
+                    $('#Slug').val('');
+                    $('#slugPreview').text('Kategori adı girildiğinde otomatik oluşturulacak');
+                }
+            });
+
+            // Initialize slug preview if there's existing value
+            if ($('#Slug').val().trim() !== '') {
+                $('#slugPreview').text('/blog/' + $('#Slug').val());
+            }
+        });
+    </script>
 }
