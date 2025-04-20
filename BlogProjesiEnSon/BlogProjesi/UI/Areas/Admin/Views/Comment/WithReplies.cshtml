@@ -5,34 +5,412 @@
     Layout = "_AdminLayout";
 }
 
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h6>
+@section Styles {
+    <style>
+        :root {
+            --primary: #7367f0;
+            --primary-light: rgba(115, 103, 240, 0.1);
+            --secondary: #82868b;
+            --success: #28c76f;
+            --info: #00cfe8;
+            --warning: #ff9f43;
+            --danger: #ea5455;
+            --light: #f6f6f6;
+            --dark: #4b4b4b;
+            --border: #e0e0e0;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+
+        .comment-replies-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .replies-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .replies-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+            .replies-title i {
+                margin-right: 1rem;
+                color: var(--primary);
+            }
+
+        .replies-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .replies-card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #9c8aff 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .replies-card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .replies-card-title i {
+                margin-right: 0.75rem;
+            }
+
+        .replies-card-body {
+            padding: 2rem;
+        }
+
+        .main-comment {
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .main-comment-header {
+            background-color: var(--primary-light);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-comment-title {
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .main-comment-body {
+            padding: 1.5rem;
+        }
+
+        .main-comment-content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .main-comment-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .replies-section {
+            margin-top: 2rem;
+        }
+
+        .replies-title-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+            .replies-title-section i {
+                margin-right: 0.75rem;
+                color: var(--primary);
+            }
+
+        .reply-item {
+            border-left: 3px solid var(--primary);
+            border-radius: 6px;
+            background-color: white;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            margin-left: 2rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .reply-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(34, 41, 47, 0.15);
+            }
+
+        .reply-header {
+            padding: 1rem 1.5rem;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reply-author {
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .reply-author i {
+                margin-right: 0.5rem;
+                color: var(--secondary);
+            }
+
+        .reply-date {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        .reply-body {
+            padding: 1.5rem;
+        }
+
+        .reply-content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .no-replies {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(115, 103, 240, 0.3);
+            }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background-color: #6c757d;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+            }
+
+        .badge-count {
+            background-color: rgba(115, 103, 240, 0.1);
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .badge-count i {
+                margin-right: 0.5rem;
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .replies-card-body {
+                padding: 1.5rem;
+            }
+
+            .reply-item {
+                margin-left: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+                .action-buttons .btn {
+                    width: 100%;
+                }
+        }
+
+        @@media (max-width: 576px) {
+            .replies-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .replies-card-body {
+                padding: 1rem;
+            }
+
+            .main-comment-header,
+            .reply-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .reply-item {
+                margin-left: 0.5rem;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid comment-replies-container">
+    <!-- Header -->
+    <div class="replies-header">
+        <h1 class="replies-title">
+            <i class="bi bi-chat-left-text"></i> @ViewData["Title"]
+        </h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card replies-card">
+        <div class="replies-card-header">
+            <h2 class="replies-card-title">
+                <i class="bi bi-chat-square-quote"></i> Yorum ve Cevaplar
+            </h2>
+            <span class="badge-count">
+                <i class="bi bi-chat-left-text"></i> @Model.Replies.Count Cevap
+            </span>
         </div>
-        <div class="card-body">
-            <div class="comment-main">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">@Model.AuthorName</h5>
-                        <p class="card-text">@Model.Content</p>
-                        <p class="text-muted">@Model.CreatedAt.ToString("f")</p>
+
+        <div class="replies-card-body">
+            <!-- Main Comment -->
+            <div class="main-comment">
+                <div class="main-comment-header">
+                    <h3 class="main-comment-title">
+                        <i class="bi bi-person-circle"></i> @Model.AuthorName
+                    </h3>
+                    <span class="text-muted">
+                        <i class="bi bi-calendar"></i> @Model.CreatedAt
+                    </span>
+                </div>
+                <div class="main-comment-body">
+                    <div class="main-comment-content">@Model.Content</div>
+                    <div class="main-comment-meta">
+                        <span>
+                            <i class="bi bi-file-text"></i> Yazı ID: @Model.Id
+                        </span>
+                        @if (Model.CreatedAt.HasValue)
+                        {
+                            <span>
+                                <i class="bi bi-arrow-repeat"></i> Son güncelleme: @Model.CreatedAt.Value.ToString("f")
+                            </span>
+                        }
                     </div>
                 </div>
+            </div>
 
-                <h5 class="mt-4 mb-3">Cevaplar (@Model.Replies.Count)</h5>
+            <!-- Replies Section -->
+            <div class="replies-section">
+                <div class="replies-title-section">
+                    <h3 class="replies-title">
+                        <i class="bi bi-reply"></i> Cevaplar
+                    </h3>
+                    <span class="badge bg-primary">
+                        @Model.Replies.Count
+                    </span>
+                </div>
 
-                @foreach (var reply in Model.Replies)
+                @if (Model.Replies.Any())
                 {
-                    <div class="card mb-2 ml-5">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">@reply.AuthorName</h6>
-                            <p class="card-text">@reply.Content</p>
-                            <p class="text-muted small">@reply.CreatedDate.ToString("f")</p>
+                    @foreach (var reply in Model.Replies)
+                    {
+                        <div class="reply-item">
+                            <div class="reply-header">
+                                <h4 class="reply-author">
+                                    <i class="bi bi-person"></i> @reply.AuthorName
+                                </h4>
+                                <span class="reply-date">
+                                    <i class="bi bi-clock"></i> @reply.CreatedDate.ToString("f")
+                                </span>
+                            </div>
+                            <div class="reply-body">
+                                <div class="reply-content">@reply.Content</div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-envelope"></i> @reply.AuthorName
+                                </div>
+                            </div>
                         </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-replies">
+                        <i class="bi bi-chat-square" style="font-size: 2rem;"></i>
+                        <h4 class="mt-3">Henüz cevap yok</h4>
+                        <p class="text-muted">Bu yorum için henüz cevap yazılmamış</p>
                     </div>
                 }
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-list-ul"></i> Listeye Dön
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Yorumu Düzenle
+                </a>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">

@@ -43,33 +43,36 @@
         </ol>
 
         <div class="carousel-inner">
+            <!-- Ana Sayfa Slaytı -->
             <div class="carousel-item active">
                 <div class="carousel-overlay"></div>
-                <img src="~/images/carousel1.jpg" class="d-block w-100" alt="Tech Trends">
+                @* <img src="~/images/carousel1.jpg" class="d-block w-100" alt="Ana Sayfa"> *@
                 <div class="carousel-caption animate__animated animate__fadeInUp">
-                    <h2 class="display-4">Teknoloji Dünyası</h2>
-                    <p class="lead">En son teknoloji haberleri ve yenilikler</p>
-                    <a href="#" class="btn btn-outline-light btn-lg">Keşfet</a>
+                    <h2 class="display-4">Blog'uma Hoş Geldiniz</h2>
+                    <p class="lead">En son yazılarım ve paylaşımlarım</p>
+                    <a href="@Url.Action("Index", "Home", new { area = "User" })" class="btn btn-outline-light btn-lg">Ana Sayfa</a>
                 </div>
             </div>
 
+            <!-- Hakkımda Slaytı -->
             <div class="carousel-item">
                 <div class="carousel-overlay"></div>
-                <img src="~/images/carousel2.jpg" class="d-block w-100" alt="Travel Guide">
+                @* <img src="~/images/carousel2.jpg" class="d-block w-100" alt="Hakkımda"> *@
                 <div class="carousel-caption animate__animated animate__fadeInUp">
-                    <h2 class="display-4">Seyahat Rehberi</h2>
-                    <p class="lead">Dünyayı keşfetmek için ilham alın</p>
-                    <a href="#" class="btn btn-outline-light btn-lg">Rotasyon</a>
+                    <h2 class="display-4">Ben Kimim?</h2>
+                    <p class="lead">Deneyimlerim ve tutkularım hakkında bilgi edinin</p>
+                    <a href="@Url.Action("About", "Home", new { area = "User" })" class="btn btn-outline-light btn-lg">Hakkımda</a>
                 </div>
             </div>
 
+            <!-- İletişim Slaytı -->
             <div class="carousel-item">
                 <div class="carousel-overlay"></div>
-                <img src="~/images/carousel3.jpg" class="d-block w-100" alt="Lifestyle">
+                @* <img src="~/images/carousel3.jpg" class="d-block w-100" alt="İletişim"> *@
                 <div class="carousel-caption animate__animated animate__fadeInUp">
-                    <h2 class="display-4">Yaşam Tarzı</h2>
-                    <p class="lead">Modern yaşam için ipuçları</p>
-                    <a href="#" class="btn btn-outline-light btn-lg">İlham Al</a>
+                    <h2 class="display-4">İletişime Geçin</h2>
+                    <p class="lead">Sorularınız veya işbirliği teklifleriniz için bana ulaşın</p>
+                    <a href="@Url.Action("Contact", "Home", new { area = "User" })" class="btn btn-outline-light btn-lg">İletişim</a>
                 </div>
             </div>
         </div>

@@ -2,30 +2,139 @@
 @model List<CommentListDTO>
 
 @{
-    ViewData["Title"] = "Yorumlar";
+    ViewData["Title"] = "Yorum Yönetimi";
+    Layout = "_AdminLayout"; // Make sure this matches your layout file
 }
 
-<div class="container">
-    <h2>@ViewData["Title"]</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Yazar</th>
-                <th>İçerik</th>
-                <th>Tarih</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var comment in Model)
-            {
-                <tr>
-                    <td>@comment.Id</td>
-                    <td>@comment.AuthorName</td>
-                    <td>@comment.Content</td>
-                    <td>@comment.CreatedDate.ToString("dd MMM yyyy ss")</td>
-                </tr>
+<style>
+    .comment-table {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+        .comment-table thead th {
+            background-color: #4e73df;
+            color: white;
+            font-weight: 600;
+            padding: 12px 15px;
+            border: none;
+        }
+
+        .comment-table tbody tr {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+            .comment-table tbody tr:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
-        </tbody>
-    </table>
+
+        .comment-table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-top: none;
+        }
+
+    .comment-id {
+        font-weight: 600;
+        color: #4e73df;
+    }
+
+    .comment-author {
+        display: flex;
+        align-items: center;
+    }
+
+    .author-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #4e73df;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .comment-content {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .comment-content:hover {
+            white-space: normal;
+        }
+
+    .comment-date {
+        white-space: nowrap;
+    }
+
+    .action-buttons .btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        margin-right: 5px;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+        <span class="badge badge-primary">Toplam @Model.Count Yorum</span>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table comment-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Yazar</th>
+                            <th>İçerik</th>
+                            <th>Tarih</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var comment in Model)
+                        {
+                            <tr>
+                                <td class="comment-id">@comment.Id.ToString().Substring(0, 8)...</td>
+                                <td>
+                                    <div class="comment-author">
+                                        <div class="author-avatar">
+                                            @comment.AuthorName.Substring(0, 1).ToUpper()
+                                        </div>
+                                        @comment.AuthorName
+                                    </div>
+                                </td>
+                                <td class="comment-content" title="@comment.Content">
+                                    @comment.Content
+                                </td>
+                                <td class="comment-date">
+                                    @comment.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                </td>
+                                <td class="action-buttons">
+                                    <a href="#" class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i> Görüntüle
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

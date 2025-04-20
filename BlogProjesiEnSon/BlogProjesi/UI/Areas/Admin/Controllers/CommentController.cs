@@ -1,6 +1,7 @@
 ﻿using Business.DTOs.CommentsDTOs;
 using Business.Services.PostServices;
 using Domain.Utilities.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace UI.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class CommentController : Controller
     {
@@ -126,10 +128,10 @@ namespace UI.Areas.Admin.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _commentService.DeleteAsync(id);
-            if (result.IsSucces) return RedirectToAction(nameof(Index));
-
-            TempData["Error"] = result.Message;
-            return RedirectToAction(nameof(Details), new { id });
+            if (result.IsSucces)
+                return Json(new { success = true, message = result.Message });
+            else
+                return Json(new { success = false, message = result.Message });
         }
 
         public async Task<IActionResult> ByPost(Guid postId)

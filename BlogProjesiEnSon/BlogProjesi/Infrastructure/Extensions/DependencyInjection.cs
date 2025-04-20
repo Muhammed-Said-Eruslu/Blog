@@ -51,7 +51,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IContactRepistory, ContactRepository>();
             services.AddScoped<ISubscriberRepository, SubscriberRepository>();
             services.AddScoped<IPhotoRepository, PhotoRepository>();
-
+            
             using (var scope = services.BuildServiceProvider().CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

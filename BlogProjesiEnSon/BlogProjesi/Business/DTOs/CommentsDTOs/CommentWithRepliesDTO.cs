@@ -13,7 +13,7 @@ namespace Business.DTOs.CommentsDTOs
         public Guid Id { get; set; }
         public string Content { get; set; }
         public string AuthorName { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public List<CommentListDTO> Replies { get; set; }
     }
 }

@@ -5,207 +5,289 @@
 }
 
 <div class="content-wrapper">
-    <!-- Başlık -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="text-white">Yönetim Paneli</h1>
-            <p class="text-muted">Genel istatistikler ve hızlı erişim kısayolları</p>
-        </div>
+    <!-- Page Header -->
+    <div class="page-header">
+        <h3 class="page-title">
+            <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <i class="mdi mdi-speedometer"></i>
+            </span>
+            Yönetim Paneli
+        </h3>
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Genel İstatistikler
+                </li>
+            </ul>
+        </nav>
     </div>
 
-    <!-- İstatistik Kartları (Toplam Yazı, Kategori, Yorum, Kullanıcı) -->
-    <div class="row mb-4">
+    <!-- İstatistik Kartları -->
+    <div class="row">
         <!-- Toplam Yazı -->
-        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-            <div class="card bg-primary text-white">
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="card card-statistics">
                 <div class="card-body">
-                    <h4 class="mb-2">Toplam Yazı</h4>
-                    <h2>@Model.TotalPosts</h2>
-                    <p class="mt-2">Son 24 saatte @Model.NewPostsLast24Hours yeni yazı eklendi.</p>
-                    <i class="mdi mdi-file-document-box mdi-48px float-right"></i>
-                </div>
-            </div>
-        </div>
-        <!-- Toplam Kategori -->
-        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h4 class="mb-2">Toplam Kategori</h4>
-                    <h2>@Model.TotalCategories</h2>
-                    <p class="mt-2">Kategori sayısı güncel.</p>
-                    <i class="mdi mdi-tag-multiple mdi-48px float-right"></i>
-                </div>
-            </div>
-        </div>
-        <!-- Toplam Yorum -->
-        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h4 class="mb-2">Toplam Yorum</h4>
-                    <h2>@Model.TotalComments</h2>
-                    <p class="mt-2">Son 24 saatte @Model.NewCommentsLast24Hours yeni yorum.</p>
-                    <i class="mdi mdi-comment-multiple-outline mdi-48px float-right"></i>
-                </div>
-            </div>
-        </div>
-        <!-- Toplam Kullanıcı -->
-        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h4 class="mb-2">Toplam Kullanıcı</h4>
-                    <h2>@Model.TotalUsers</h2>
-                    <p class="mt-2">Identity üzerinden çekildi.</p>
-                    <i class="mdi mdi-account-multiple mdi-48px float-right"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Örnek "Gelir" Kartı -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="d-flex align-items-center align-self-start">
-                                <h3 class="mb-0">$12.34</h3>
-                            </div>
+                    <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                        <div class="float-left">
+                            <i class="mdi mdi-file-document-box text-primary icon-lg"></i>
                         </div>
-                        <div class="col-3">
-                            <div class="icon icon-box-success">
-                                <span class="mdi mdi-arrow-top-right icon-item"></span>
+                        <div class="float-right">
+                            <p class="mb-0 text-right">Toplam Yazı</p>
+                            <div class="fluid-container">
+                                <h3 class="font-weight-medium text-right mb-0">@Model.TotalPosts</h3>
                             </div>
+                            <p class="text-muted mt-2 mb-0 text-right small">
+                                <i class="mdi mdi-clock-outline mr-1"></i>
+                                Son 24 saat: @Model.NewPostsLast24Hours
+                            </p>
                         </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Toplam Gelir</h6>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Kategori -->
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                        <div class="float-left">
+                            <i class="mdi mdi-tag-multiple text-success icon-lg"></i>
+                        </div>
+                        <div class="float-right">
+                            <p class="mb-0 text-right">Toplam Kategori</p>
+                            <div class="fluid-container">
+                                <h3 class="font-weight-medium text-right mb-0">@Model.TotalCategories</h3>
+                            </div>
+                            <p class="text-muted mt-2 mb-0 text-right small">
+                                <i class="mdi mdi-reload mr-1"></i>
+                                Güncel Durum
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Yorum -->
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                        <div class="float-left">
+                            <i class="mdi mdi-comment-multiple-outline text-info icon-lg"></i>
+                        </div>
+                        <div class="float-right">
+                            <p class="mb-0 text-right">Toplam Yorum</p>
+                            <div class="fluid-container">
+                                <h3 class="font-weight-medium text-right mb-0">@Model.TotalComments</h3>
+                            </div>
+                            <p class="text-muted mt-2 mb-0 text-right small">
+                                <i class="mdi mdi-clock-outline mr-1"></i>
+                                Son 24 saat: @Model.NewCommentsLast24Hours
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Kullanıcı -->
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <div class="d-flex flex-md-column flex-xl-row flex-wrap justify-content-between align-items-md-center justify-content-xl-between">
+                        <div class="float-left">
+                            <i class="mdi mdi-account-multiple text-warning icon-lg"></i>
+                        </div>
+                        <div class="float-right">
+                            <p class="mb-0 text-right">Toplam Kullanıcı</p>
+                            <div class="fluid-container">
+                                <h3 class="font-weight-medium text-right mb-0">@Model.TotalUsers</h3>
+                            </div>
+                            <p class="text-muted mt-2 mb-0 text-right small">
+                                <i class="mdi mdi-account-key mr-1"></i>
+                                Identity Yönetimi
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Aylık Yazı Grafiği (Chart.js) + Hızlı Erişim -->
-    <div class="row mb-4">
+    <!-- Grafik ve Hızlı Erişim -->
+    <div class="row">
         <!-- Grafik Alanı -->
-        <div class="col-md-8">
+        <div class="col-lg-8 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Aylık Yazı İstatistikleri</h5>
-                </div>
                 <div class="card-body">
+                    <h4 class="card-title">Aylık Yazı İstatistikleri</h4>
                     <div class="chart-container">
-                        <canvas id="monthlyPostsChart"></canvas>
+                        <canvas id="monthlyPostsChart" height="250"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Hızlı Erişim -->
-        <div class="col-md-4">
+        <div class="col-lg-4 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Hızlı Erişim</h5>
-                </div>
                 <div class="card-body">
-                    <a href="@Url.Action("Create", "Post")" class="btn btn-primary btn-block mb-2">
-                        <i class="mdi mdi-plus"></i> Yeni Yazı Ekle
-                    </a>
-                    <a href="@Url.Action("Index", "Comment")" class="btn btn-info btn-block mb-2">
-                        <i class="mdi mdi-comment"></i> Yorum Yönetimi
-                    </a>
-                    <a href="@Url.Action("Index", "Category")" class="btn btn-success btn-block mb-2">
-                        <i class="mdi mdi-tag"></i> Kategori Yönetimi
-                    </a>
-                    <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="btn btn-warning btn-block">
-                        <i class="mdi mdi-account"></i> Kullanıcı Yönetimi
-                    </a>
+                    <h4 class="card-title">Hızlı Erişim</h4>
+                    <div class="quick-access-buttons">
+                        <a href="@Url.Action("Create", "Post")" class="btn btn-block btn-gradient-primary btn-lg mb-3">
+                            <i class="mdi mdi-plus-circle-outline mr-2"></i> Yeni Yazı Ekle
+                        </a>
+                        <a href="@Url.Action("Index", "Comment")" class="btn btn-block btn-gradient-info btn-lg mb-3">
+                            <i class="mdi mdi-comment-processing-outline mr-2"></i> Yorum Yönetimi
+                        </a>
+                        <a href="@Url.Action("Index", "Category")" class="btn btn-block btn-gradient-success btn-lg mb-3">
+                            <i class="mdi mdi-tag-outline mr-2"></i> Kategori Yönetimi
+                        </a>
+                        <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="btn btn-block btn-gradient-warning btn-lg">
+                            <i class="mdi mdi-account-settings-variant mr-2"></i> Kullanıcı Yönetimi
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- En Popüler ve Son Yazılar -->
-    <div class="row mb-4">
-        <div class="col-md-6 mb-2">
+    <!-- Popüler ve Son Yazılar -->
+    <div class="row">
+        <!-- En Popüler Yazılar -->
+        <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">En Popüler Yazılar</h5>
-                </div>
                 <div class="card-body">
-                    @if (Model.PopularPosts != null && Model.PopularPosts.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var postTitle in Model.PopularPosts)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @postTitle
-                                    <span class="badge badge-primary badge-pill">1000+ Görüntüleme</span>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>Popüler yazı bulunamadı.</p>
-                    }
+                    <h4 class="card-title">En Popüler Yazılar</h4>
+                    <div class="table-responsive">
+                        @if (Model.PopularPosts != null && Model.PopularPosts.Any())
+                        {
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Yazı Başlığı</th>
+                                        <th>Görüntülenme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var postTitle in Model.PopularPosts)
+                                    {
+                                        <tr>
+                                            <td>@postTitle</td>
+                                            <td><span class="badge badge-primary badge-pill">1000+</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Popüler yazı bulunamadı.</div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 mb-2">
+
+        <!-- Son Eklenen Yazılar -->
+        <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Son Eklenen Yazılar</h5>
-                </div>
                 <div class="card-body">
-                    @if (Model.RecentPosts != null && Model.RecentPosts.Any())
-                    {
-                        <ul class="list-group">
-                            @foreach (var postTitle in Model.RecentPosts)
-                            {
-                                <li class="list-group-item">
-                                    @postTitle
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p>Henüz yeni bir yazı eklenmedi.</p>
-                    }
+                    <h4 class="card-title">Son Eklenen Yazılar</h4>
+                    <div class="list-wrapper">
+                        @if (Model.RecentPosts != null && Model.RecentPosts.Any())
+                        {
+                            <ul class="d-flex flex-column-reverse todo-list">
+                                @foreach (var postTitle in Model.RecentPosts)
+                                {
+                                    <li class="completed">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                @postTitle
+                                            </label>
+                                        </div>
+                                        <i class="remove mdi mdi-close-circle-outline"></i>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Henüz yeni bir yazı eklenmedi.</div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Chart.js Kütüphanesi -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Aylık yazı verisi (int[] dizisi)
+    // Aylık yazı verisi
     var monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyPostCounts));
 
-    // Ocak - Aralık etiketler
+    // Ay etiketleri
     var monthLabels = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-                       "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+                      "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 
+    // Grafik oluşturma
     var ctx = document.getElementById('monthlyPostsChart').getContext('2d');
     var monthlyPostsChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: monthLabels,
             datasets: [{
-                label: 'Aylık Yazı Sayısı',
+                label: 'Yazı Sayısı',
                 data: monthlyData,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2
+                backgroundColor: 'rgba(75, 73, 172, 0.2)',
+                borderColor: 'rgba(75, 73, 172, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: 'rgba(75, 73, 172, 1)',
+                pointRadius: 4,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    }
+                }
+            },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                        drawBorder: false,
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        stepSize: 5
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
                 }
             }
         }
@@ -213,99 +295,136 @@
 </script>
 
 <style>
-    /* Kart ve Layout Stilleri */
-    .card {
+    /* Özel Stiller */
+    .card-statistics {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
         border: none;
-        transition: transform 0.3s;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem; /* Kartlar arasında dikey boşluk */
     }
 
-        .card:hover {
+        .card-statistics:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-statistics .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-statistics i.icon-lg {
+            font-size: 2.5rem;
+            opacity: 0.7;
+        }
+
+        .card-statistics .font-weight-medium {
+            font-size: 1.5rem;
+            font-weight: 600 !important;
         }
 
     .chart-container {
         position: relative;
-        height: 400px;
-        width: 100%;
+        height: 100%;
+        min-height: 250px;
     }
 
-    .badge.badge-primary {
-        background: #007bff;
+    .quick-access-buttons .btn {
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
     }
 
-        .badge.badge-primary.badge-pill {
-            border-radius: 50px;
+        .quick-access-buttons .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-    .list-group-item:hover {
-        background-color: #f0f0f0;
+        .quick-access-buttons .btn i {
+            font-size: 1.25rem;
+            vertical-align: middle;
+        }
+
+    .todo-list li {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
     }
 
-    /* **Responsive Kartlar** - Kolonların ekran boyutlarına göre değişmesi */
-    @@media (max-width: 1200px) {
-        .col-xl-3
+        .todo-list li:hover {
+            background-color: #e9ecef;
+        }
 
-    {
-        width: 50%; /* Daha büyük ekranlarda kartlar %50 genişlikte */
+    .todo-list .remove {
+        opacity: 0;
+        transition: all 0.3s ease;
     }
 
+    .todo-list li:hover .remove {
+        opacity: 1;
     }
 
+    /* Responsive Adjustments */
     @@media (max-width: 992px) {
-        .col-xl-3
+        .card-statistics .card-body {
+            padding: 1.25rem;
+        }
 
-    {
-        width: 50%; /* Tabletlerde de 2 kart aynı satırda */
-    }
+        .card-statistics i.icon-lg {
+            font-size: 2rem;
+        }
 
-    .col-sm-6 {
-        width: 100%; /* Küçük ekranlarda her kart tek satırda */
-    }
+        .card-statistics .font-weight-medium {
+            font-size: 1.25rem;
+        }
 
-    .chart-container {
-        height: 300px; /* Grafik boyutunu küçült */
-    }
-
+        .quick-access-buttons .btn {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
     }
 
     @@media (max-width: 768px) {
-        .col-xl-3, .col-sm-6
+        .page-title {
+            font-size: 1.25rem;
+        }
 
-    {
-        width: 100%; /* Mobilde her kart full genişlikte olacak */
+        .card-statistics {
+            margin-bottom: 1rem;
+        }
+
+        .quick-access-buttons .btn {
+            margin-bottom: 0.5rem;
+        }
     }
 
-    .chart-container {
-        height: 250px; /* Grafik boyutunu mobilde küçült */
-    }
-
-    /* Hızlı erişim butonları daha küçük ekranlarda */
-    .btn-block {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    }
-
-    /* 576px ve daha küçük ekranlar için tüm düzeni optimize et */
     @@media (max-width: 576px) {
-        .card-header h5
+        .card-statistics .card-body {
+            padding: 1rem;
+        }
 
-    {
-        font-size: 16px; /* Başlık font boyutunu küçült */
-    }
+        .card-statistics i.icon-lg {
+            font-size: 1.75rem;
+        }
 
-    .btn-block {
-        font-size: 12px; /* Butonları küçük ekranlara uygun hale getir */
-    }
+        .card-statistics .font-weight-medium {
+            font-size: 1.1rem;
+        }
 
-    /* Grafik boyutunu daha da küçült */
-    .chart-container {
-        height: 200px;
-    }
+        .quick-access-buttons .btn {
+            padding: 0.6rem;
+            font-size: 0.8rem;
+        }
 
+        .todo-list li {
+            padding: 0.5rem;
+        }
     }
 </style>
-

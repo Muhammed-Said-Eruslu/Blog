@@ -32,5 +32,6 @@ namespace Infrastructure.Repositories.PostRepository
         Task<AppUserPost> GetAppUserPostAsync(Guid userId, Guid postId);
         Task AddLikeAsync(AppUserPost like);
         Task RemoveLikeAsync(AppUserPost like);
+        Task<Post> GetPostWithComments(string slug);
     }
 }

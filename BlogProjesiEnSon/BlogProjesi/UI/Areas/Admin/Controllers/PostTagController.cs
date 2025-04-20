@@ -6,6 +6,7 @@ using Business.Services.PostTagServices;
 using Business.Services.TagServices;
 using Domain.Utilities.Concretes;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace UI.Areas.Admin.Controllers
 {
-
+    [Authorize]
     [Area("Admin")]
 
     public class PostTagController : Controller

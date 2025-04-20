@@ -8,97 +8,435 @@
 @section Styles {
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <style>
-        .form-group {
-            margin-bottom: 1.5rem;
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --info-color: #00cfe8;
+            --success-color: #28c76f;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
         }
 
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 0.5rem;
+        body {
+            background-color: #f5f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .form-control, .form-select {
-            border-radius: 0.375rem;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            width: 100%; /* Genişlik sorununu çözmek için */
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: #86b7fe;
-                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-            }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            border-radius: 0.375rem;
-        }
-
-            .btn-primary:hover {
-                background-color: #0b5ed7;
-                border-color: #0a58ca;
-            }
 
         .card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+                font-size: 1.5rem;
+                color: var(--primary-color);
+            }
 
         .card-body {
             padding: 2rem;
         }
 
-        .text-danger {
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
+        .form-label {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0.5rem;
         }
 
-        /* Select2 için özel stiller */
-        .select2-container {
-            width: 100% !important;
+        .form-control, .form-select, .select2-selection {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
-        .select2-selection {
-            height: 38px !important;
-            border-radius: 0.375rem !important;
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.3);
+            }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: var(--transition);
+            padding: 0.75rem 1.5rem;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
         }
 
-        /* Yerel video yükleme butonu */
-        .video-upload-btn {
-            margin-left: 10px;
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(115, 103, 240, 0.4);
+            }
+
+        .btn-secondary {
+            background-color: #82868b;
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background-color: #6c757d;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(130, 134, 139, 0.4);
+            }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #e42728;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(234, 84, 85, 0.4);
+            }
+
+        .image-preview-container {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px 0 rgba(34, 41, 47, 0.1);
+            margin-top: 1rem;
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+        }
+
+            .file-input-label:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(115, 103, 240, 0.4);
+            }
+
+        .file-input {
+            display: none;
+        }
+
+        .video-preview-container {
+            margin-bottom: 1rem;
+        }
+
+        .video-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+        }
+
+        .note-editor {
+            border-radius: 6px !important;
+        }
+
+        .note-editable {
+            min-height: 300px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            min-height: 45px;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.3) !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: var(--primary-color) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white !important;
+            margin-right: 5px !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 767.98px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
         }
     </style>
 }
 
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="bi bi-pencil-square"></i> @ViewBag.Title
+                    </h4>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Geri Dön
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="RowVersion" />
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Başlık -->
+                                <div class="mb-4">
+                                    <label asp-for="Title" class="form-label">Başlık *</label>
+                                    <input asp-for="Title" class="form-control" placeholder="Yazı başlığını giriniz" required />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+
+                                <!-- İçerik -->
+                                <div class="mb-4">
+                                    <label asp-for="Content" class="form-label">İçerik *</label>
+                                    <textarea asp-for="Content" id="summernote" class="form-control" required>@Model.Content</textarea>
+                                    <span asp-validation-for="Content" class="text-danger"></span>
+                                </div>
+
+                                <!-- Özet -->
+                                <div class="mb-4">
+                                    <label asp-for="Excerpt" class="form-label">Özet</label>
+                                    <textarea asp-for="Excerpt" class="form-control" rows="4" placeholder="Yazı özetini giriniz (Opsiyonel)">@Model.Excerpt</textarea>
+                                    <small class="text-muted">Bu özet arama sonuçlarında ve kartlarda görüntülenir.</small>
+                                    <span asp-validation-for="Excerpt" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <!-- Kapak Görseli -->
+                                <div class="mb-4">
+                                    <label class="form-label">Kapak Görseli</label>
+
+                                    @if (!string.IsNullOrEmpty(Model.FeaturedImage))
+                                    {
+                                        <div class="image-preview-container">
+                                            <img src="@Model.FeaturedImage" class="image-preview" alt="Mevcut Kapak Görseli" />
+                                        </div>
+                                    }
+
+                                    <label for="FeaturedImageFile" class="file-input-label">
+                                        <i class="bi bi-image"></i> @(string.IsNullOrEmpty(Model.FeaturedImage) ? "Resim Seç" : "Resmi Değiştir")
+                                    </label>
+                                    <input type="file" id="FeaturedImageFile" name="FeaturedImageFile" class="file-input" accept="image/*" />
+                                    <input type="hidden" asp-for="FeaturedImage" />
+                                    <small class="text-muted">Önerilen boyut: 1200x630 piksel (16:9 oran)</small>
+                                </div>
+
+                                <!-- Video -->
+                                <div class="mb-4">
+                                    <label asp-for="VideoUrl" class="form-label">Video</label>
+
+                                    @if (!string.IsNullOrEmpty(Model.VideoUrl))
+                                    {
+                                        <div class="mb-2 video-preview-container">
+                                            <video controls class="video-preview">
+                                                <source src="@Model.VideoUrl" type="video/mp4">
+                                                Tarayıcınız video oynatmayı desteklemiyor.
+                                            </video>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="mb-2 video-preview-container" style="display:none;">
+                                            <video controls class="video-preview"></video>
+                                        </div>
+                                    }
+
+                                    <div class="input-group">
+                                        <input asp-for="VideoUrl" class="form-control" placeholder="Video URL'si veya yerel video yükleyin" />
+                                        <button type="button" id="uploadVideoBtn" class="btn btn-primary" style="margin-left: 10px;">
+                                            <i class="bi bi-upload"></i> Yükle
+                                        </button>
+                                        <input type="file" id="videoFileInput" style="display: none;" accept="video/*" />
+                                    </div>
+                                    <small class="text-muted">MP4 formatı önerilir. Maksimum 50MB.</small>
+                                </div>
+
+                                <!-- Kategori -->
+                                <div class="mb-4">
+                                    <label asp-for="CategoryId" class="form-label">Kategori *</label>
+                                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select" required>
+                                        <option value="">Kategori Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Yazar -->
+                                <div class="mb-4">
+                                    <label asp-for="UserId" class="form-label">Yazar *</label>
+                                    <select asp-for="UserId" asp-items="ViewBag.Users" class="form-select" required>
+                                        <option value="">Yazar Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="UserId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Etiketler -->
+                                <div class="mb-4">
+                                    <label asp-for="TagIds" class="form-label">Etiketler</label>
+                                    <select asp-for="TagIds" asp-items="ViewBag.Tags" class="form-control" multiple="multiple">
+                                    </select>
+                                    <small class="text-muted">Birden fazla etiket seçebilirsiniz.</small>
+                                    <span asp-validation-for="TagIds" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-danger" id="deleteButton">
+                                <i class="bi bi-trash"></i> Sil
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Güncelle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-tr-TR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        $(document).ready(function() {
-            $('select[multiple]').select2({
-                placeholder: "Etiket seçiniz...",
-                allowClear: true
+        $(document).ready(function () {
+            // Summernote editor initialization
+            $('#summernote').summernote({
+                height: 300,
+                lang: 'tr-TR',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
             });
-            $('select:not([multiple])').select2({
+
+            // Select2 initialization
+            $('select').select2({
                 placeholder: "Seçiniz...",
                 allowClear: true
             });
 
-            // Yerel video yükleme butonu
+            $('select[multiple]').select2({
+                placeholder: "Etiket seçiniz...",
+                allowClear: true
+            });
+
+            // Image preview
+            $('#FeaturedImageFile').change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.image-preview').attr('src', e.target.result).show();
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            // Video yükleme butonu
             $('#uploadVideoBtn').click(function() {
                 $('#videoFileInput').click();
             });
 
-            // Dosya seçildiğinde otomatik yükleme
+            // Video yükleme işlemi
             $('#videoFileInput').change(function() {
                 if (this.files && this.files[0]) {
+                    // Önce yükleme işlemi başladığını göster
+                    Swal.fire({
+                        title: 'Yükleniyor...',
+                        html: 'Video yükleniyor, lütfen bekleyin...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     var formData = new FormData();
                     formData.append('videoFile', this.files[0]);
                     formData.append('postId', '@Model.Id');
@@ -110,114 +448,75 @@
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            Swal.close();
                             if (response.success) {
-                                Swal.fire('Başarılı!', 'Video başarıyla yüklendi.', 'success');
-                                $('#VideoUrl').val(response.videoUrl); // Video URL'sini güncelle
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Başarılı!',
+                                    text: 'Video başarıyla yüklendi.',
+                                    confirmButtonColor: '#7367f0'
+                                });
+
+                                // Video URL'sini güncelle
+                                $('#VideoUrl').val(response.videoUrl);
+
+                                // Video önizlemesini göster
+                                $('.video-preview-container').show();
+                                var video = $('.video-preview-container video')[0];
+                                video.src = response.videoUrl;
+                                video.load();
                             } else {
-                                Swal.fire('Hata!', response.message, 'error');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata!',
+                                    text: response.message || 'Video yüklenirken bir hata oluştu.',
+                                    confirmButtonColor: '#ea5455'
+                                });
                             }
                         },
                         error: function() {
-                            Swal.fire('Hata!', 'Video yüklenirken bir hata oluştu.', 'error');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'Video yüklenirken bir hata oluştu.',
+                                confirmButtonColor: '#ea5455'
+                            });
                         }
                     });
                 }
             });
+
+            // Delete confirmation
+            $('#deleteButton').click(function () {
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu yazıyı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ea5455',
+                    cancelButtonColor: '#82868b',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'İptal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '@Url.Action("Delete", "Post", new { id = Model.Id })';
+                    }
+                });
+            });
+
+            // Show success message
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı',
+                            text: '@TempData["SuccessMessage"]',
+                            confirmButtonColor: '#7367f0'
+                        });
+            </text>
+        }
         });
     </script>
 }
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="mb-4">Yazı Düzenle</h2>
-                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="RowVersion" />
-                        <!-- Başlık ve URL -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="Title" class="form-label">Başlık</label>
-                                    <input asp-for="Title" class="form-control" placeholder="Başlık giriniz..." />
-                                    <span asp-validation-for="Title" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="VideoUrl" class="form-label">Video URL</label>
-                                    <div class="input-group">
-                                        <input asp-for="VideoUrl" class="form-control" placeholder="Video URL'si veya yerel video yükleyin..." />
-                                        <button type="button" id="uploadVideoBtn" class="btn btn-primary video-upload-btn">Yerel Video Yükle</button>
-                                        <input type="file" id="videoFileInput" style="display: none;" accept="video/*" />
-                                    </div>
-                                    <span asp-validation-for="VideoUrl" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- İçerik -->
-                        <div class="form-group mb-3">
-                            <label asp-for="Content" class="form-label">İçerik</label>
-                            <textarea asp-for="Content" class="form-control" rows="6" placeholder="İçeriği buraya yazın..."></textarea>
-                            <span asp-validation-for="Content" class="text-danger"></span>
-                        </div>
-
-                        <!-- Özet -->
-                        <div class="form-group mb-3">
-                            <label asp-for="Excerpt" class="form-label">Özet</label>
-                            <textarea asp-for="Excerpt" class="form-control" rows="3" placeholder="Kısa özet yazınız..."></textarea>
-                            <span asp-validation-for="Excerpt" class="text-danger"></span>
-                        </div>
-
-                        <!-- Kapak Görseli -->
-                        <div class="form-group mb-3">
-                            <label asp-for="FeaturedImage" class="form-label">Kapak Görseli</label>
-                            <input type="file" name="FeaturedImageFile" class="form-control" />
-                            <input type="hidden" asp-for="FeaturedImage" />
-                            <span asp-validation-for="FeaturedImage" class="text-danger"></span>
-                        </div>
-
-                        <!-- Yazar ve Kategori -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="UserId" class="form-label">Yazar Seçiniz</label>
-                                    <select asp-for="UserId" asp-items="ViewBag.Users" class="form-select">
-                                        <option value="">Yazar Seçiniz</option>
-                                    </select>
-                                    <span asp-validation-for="UserId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label asp-for="CategoryId" class="form-label">Kategori Seçiniz</label>
-                                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
-                                        <option value="">Kategori Seçiniz</option>
-                                    </select>
-                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Etiketler -->
-                        <div class="form-group mb-4">
-                            <label asp-for="TagIds" class="form-label">Etiketler</label>
-                            <select asp-for="TagIds" asp-items="ViewBag.Tags" class="form-select" multiple>
-                                <option value="">Etiket Seçiniz</option>
-                            </select>
-                            <span asp-validation-for="TagIds" class="text-danger"></span>
-                        </div>
-
-                        <!-- Güncelle Butonu -->
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary w-100">Güncelle</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

@@ -159,7 +159,17 @@ namespace Infrastructure.Repositories.PostRepository
             _context.Set<AppUserPost>().Remove(like);
         }
 
-
+        public async Task<Post> GetPostWithComments(string slug)
+        {
+            return await _context.Set<Post>()
+                .AsNoTracking()
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.Replies)
+                    .ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(p => p.Slug == slug);
+        }
 
 
     }

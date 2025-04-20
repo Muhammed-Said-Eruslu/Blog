@@ -1,72 +1,225 @@
 ﻿@using Business.DTOs.PostTagDTOs
 @model PostTagCreateDTO
-
 @{
-    ViewData["Title"] = "PostTag - Create";
+    ViewData["Title"] = "Yeni PostTag Ekle";
     Layout = "_AdminLayout";
 }
 
-<!-- Select2 CSS (Dropdown Arama İçin) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- CSS Libraries -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-<div class="container mt-4">
-    <div class="card shadow border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">
-                <i class="fas fa-plus-circle"></i> Yeni PostTag Ekle
+<style>
+    /* Modern Form Styling */
+    .create-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.35rem 1.5rem rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5a5c69;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+        .form-label i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+    .select2-container--default .select2-selection--single {
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 2.25rem;
+        }
+
+    /* Custom Switch */
+    .custom-switch {
+        padding-left: 2.5rem;
+    }
+
+    .custom-control-label::before {
+        left: -2.5rem;
+        width: 2rem;
+        border-radius: 1rem;
+    }
+
+    .custom-control-label::after {
+        left: calc(-2.5rem + 2px);
+        width: calc(1rem - 4px);
+        height: calc(1rem - 4px);
+        border-radius: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn-submit {
+        background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(28, 200, 138, 0.25);
+        }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(108, 117, 125, 0.25);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .header-actions {
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-submit, .btn-back {
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+</style>
+
+<div class="container-fluid fade-in">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-tags text-primary mr-2"></i> @ViewData["Title"]
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">PostTag Yönetimi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Yeni Ekle</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card create-card mb-4">
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+            <h4 class="m-0 text-white">
+                <i class="fas fa-plus-circle mr-2"></i> Yeni PostTag Oluştur
             </h4>
             <a asp-action="Index" class="btn btn-light btn-sm">
-                <i class="fas fa-arrow-left"></i> Geri
+                <i class="fas fa-arrow-left mr-1"></i> Listeye Dön
             </a>
         </div>
 
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" id="createForm">
                 @Html.AntiForgeryToken()
 
-                <!-- Post Seçimi -->
+                <!-- Post Selection -->
                 <div class="form-group">
-                    <label for="PostId"><i class="fas fa-sticky-note text-primary"></i> Post Seç</label>
-                    <select asp-for="PostId" class="form-control select2">
+                    <label class="form-label" asp-for="PostId">
+                        <i class="fas fa-sticky-note text-primary"></i> Post Seçimi
+                    </label>
+                    <select asp-for="PostId" class="form-control select2" required>
                         <option value="">Bir post seçin...</option>
                         @foreach (var post in ViewBag.Posts)
                         {
                             <option value="@post.Value">@post.Text</option>
                         }
                     </select>
-                    @Html.ValidationMessageFor(m => m.PostId, "", new { @class = "text-danger" })
+                    <span asp-validation-for="PostId" class="text-danger small d-block mt-1"></span>
                 </div>
 
-                <!-- Tag Seçimi -->
+                <!-- Tag Selection -->
                 <div class="form-group">
-                    <label for="TagId"><i class="fas fa-hashtag text-success"></i> Tag Seç</label>
-                    <select asp-for="TagId" class="form-control select2">
+                    <label class="form-label" asp-for="TagId">
+                        <i class="fas fa-tag text-success"></i> Tag Seçimi
+                    </label>
+                    <select asp-for="TagId" class="form-control select2" required>
                         <option value="">Bir tag seçin...</option>
                         @foreach (var tag in ViewBag.Tags)
                         {
                             <option value="@tag.Value">@tag.Text</option>
                         }
                     </select>
-                    @Html.ValidationMessageFor(m => m.TagId, "", new { @class = "text-danger" })
+                    <span asp-validation-for="TagId" class="text-danger small d-block mt-1"></span>
                 </div>
 
-                <!-- Aktiflik Durumu (Switch) -->
+                <!-- Status Toggle -->
                 <div class="form-group">
-                    <label for="IsActive"><i class="fas fa-toggle-on text-success"></i> Aktiflik Durumu</label>
+                    <label class="form-label">
+                        <i class="fas fa-toggle-on text-info"></i> Durum
+                    </label>
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="IsActiveSwitch" asp-for="IsActive">
-                        <label class="custom-control-label" for="IsActiveSwitch">Aktif</label>
+                        <input type="checkbox" class="custom-control-input" id="IsActive" asp-for="IsActive">
+                        <label class="custom-control-label" for="IsActive">Aktif</label>
                     </div>
+                    <small class="form-text text-muted">Pasif etiketler gösterilmeyecektir</small>
                 </div>
 
-                <!-- Butonlar -->
-                <div class="text-right">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i> Kaydet
+                <!-- Form Actions -->
+                <div class="form-group text-right mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-submit mr-2">
+                        <i class="fas fa-save mr-2"></i> Kaydet
                     </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Geri
+                    <a asp-action="Index" class="btn btn-back">
+                        <i class="fas fa-times mr-2"></i> İptal
                     </a>
                 </div>
             </form>
@@ -75,15 +228,50 @@
 </div>
 
 @section Scripts {
-    <!-- Select2 JS (Dropdown Arama İçin) -->
+    <!-- Select2 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/i18n/tr.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
+            // Initialize Select2 with search
             $('.select2').select2({
+                language: "tr",
                 placeholder: "Seçiniz...",
                 allowClear: true,
-                width: '100%'
+                width: '100%',
+                dropdownParent: $('.card-body')
+            });
+
+            // Form validation
+            $('#createForm').submit(function(e) {
+                let isValid = true;
+
+                // Validate Post selection
+                if ($('#PostId').val() === '') {
+                    $('#PostId').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('#PostId').removeClass('is-invalid');
+                }
+
+                // Validate Tag selection
+                if ($('#TagId').val() === '') {
+                    $('#TagId').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('#TagId').removeClass('is-invalid');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Eksik Bilgi',
+                        text: 'Lütfen tüm zorunlu alanları doldurunuz!',
+                        confirmButtonColor: '#d33'
+                    });
+                }
             });
         });
     </script>

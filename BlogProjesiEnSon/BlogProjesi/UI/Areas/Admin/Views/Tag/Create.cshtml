@@ -1,42 +1,197 @@
 ﻿@model Business.DTOs.TagDTOs.TagCreateDTO
-
 @{
     ViewData["Title"] = "Yeni Etiket Ekle";
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="card shadow border-0">
-        <div class="card-header bg-primary text-white">
-            <h4>Yeni Etiket Ekle</h4>
+<style>
+    .create-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+        .create-card:hover {
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5a5c69;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+        .form-label i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+    .input-group-text {
+        background-color: #f8f9fc;
+        border-right: none;
+    }
+
+    .form-control {
+        border-left: none;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            border-color: #bac8f3;
+        }
+
+            .form-control:focus + .input-group-text {
+                border-color: #bac8f3;
+                background-color: #e9ecef;
+            }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(28, 200, 138, 0.25);
+        }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(246, 194, 62, 0.25);
+        }
+
+    .slug-indicator {
+        font-size: 0.8rem;
+        color: #858796;
+        margin-top: 0.25rem;
+    }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .card-header-custom {
+            padding: 1.25rem;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+        }
+
+        .btn-submit, .btn-cancel {
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-tag mr-2"></i>@ViewData["Title"]
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Etiket Yönetimi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Yeni Etiket</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Create Card -->
+    <div class="card create-card mb-4">
+        <div class="card-header card-header-custom">
+            <div class="d-flex align-items-center">
+                <h4 class="m-0 text-white">
+                    <i class="fas fa-plus-circle mr-2"></i>Yeni Etiket Oluştur
+                </h4>
+            </div>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" id="createForm">
                 @Html.AntiForgeryToken()
 
                 <!-- Etiket Adı -->
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label">Etiket Adı</label>
-                    <input asp-for="Name" class="form-control" required placeholder="Etiket adını girin..." />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label">
+                        <i class="fas fa-tag"></i>Etiket Adı
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-heading"></i></span>
+                        <input asp-for="Name" class="form-control" required
+                               placeholder="Örnek: ASP.NET Core"
+                               aria-describedby="nameHelp" />
+                    </div>
+                    <small id="nameHelp" class="form-text text-muted mt-1">
+                        Etiketin görünen adını giriniz (Zorunlu alan)
+                    </small>
+                    <span asp-validation-for="Name" class="text-danger small d-block mt-1"></span>
                 </div>
 
-                <!-- Slug (URL Dostu Ad) -->
-                <div class="mb-3">
-                    <label asp-for="Slug" class="form-label">Slug (URL Adı)</label>
-                    <input asp-for="Slug" class="form-control" placeholder="Slug otomatik oluşturulacak..." readonly />
-                    <span asp-validation-for="Slug" class="text-danger"></span>
+                <!-- Slug (URL Adı) -->
+                <div class="mb-4">
+                    <label asp-for="Slug" class="form-label">
+                        <i class="fas fa-link"></i>URL Uyumlu Ad (Slug)
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                        <input asp-for="Slug" class="form-control"
+                               placeholder="Örnek: aspnet-core"
+                               aria-describedby="slugHelp" readonly />
+                    </div>
+                    <small id="slugHelp" class="form-text text-muted mt-1">
+                        Sadece küçük harf, rakam ve tire (-) kullanılabilir
+                    </small>
+                    <span asp-validation-for="Slug" class="text-danger small d-block mt-1"></span>
                 </div>
 
                 <!-- Açıklama -->
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Açıklama</label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Etiket hakkında açıklama girin..."></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">
+                        <i class="fas fa-align-left"></i>Açıklama
+                    </label>
+                    <textarea asp-for="Description" class="form-control" rows="4"
+                              placeholder="Bu etiketin amacını ve kapsamını açıklayınız..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
                 </div>
 
-                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Kaydet</button>
-                <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                <!-- Action Buttons -->
+                <div class="mt-4 pt-3 border-top d-flex action-buttons">
+                    <button type="submit" class="btn btn-submit mr-2">
+                        <i class="fas fa-save mr-2"></i>Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-cancel">
+                        <i class="fas fa-times mr-2"></i>İptal
+                    </a>
+                </div>
             </form>
         </div>
     </div>
@@ -44,21 +199,49 @@
 
 @section Scripts {
     <script>
-        // Etiket adını girerken otomatik slug oluşturma
-        document.getElementById("Name").addEventListener("input", function() {
-            let name = this.value.toLowerCase().trim();
-            let slug = name
-                .replace(/ğ/g, "g")
-                .replace(/ü/g, "u")
-                .replace(/ş/g, "s")
-                .replace(/ı/g, "i")
-                .replace(/ö/g, "o")
-                .replace(/ç/g, "c")
-                .replace(/[^a-z0-9\s-]/g, "") // Sadece harf ve rakam kalsın
-                .replace(/\s+/g, "-") // Boşlukları tire yap
-                .replace(/-+/g, "-"); // Çift tireleri tek tire yap
+        // Enhanced slug generation with debounce and loading indicator
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById("Name");
+            const slugInput = document.getElementById("Slug");
 
-            document.getElementById("Slug").value = slug;
+            if (nameInput && slugInput) {
+                nameInput.addEventListener("input", function() {
+                    // Debounce the slug generation
+                    clearTimeout(window.slugTimeout);
+                    window.slugTimeout = setTimeout(function() {
+                        let name = nameInput.value.toLowerCase().trim();
+                        let slug = name
+                            .replace(/ğ/g, "g")
+                            .replace(/ü/g, "u")
+                            .replace(/ş/g, "s")
+                            .replace(/ı/g, "i")
+                            .replace(/ö/g, "o")
+                            .replace(/ç/g, "c")
+                            .replace(/[^a-z0-9\s-]/g, "")
+                            .replace(/\s+/g, "-")
+                            .replace(/-+/g, "-");
+
+                        slugInput.value = slug;
+                    }, 300);
+                });
+            }
+
+            // Form validation
+            const form = document.getElementById("createForm");
+            if (form) {
+                form.addEventListener("submit", function(e) {
+                    if (!nameInput || nameInput.value.trim() === "") {
+                        e.preventDefault();
+                        nameInput.focus();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Eksik Bilgi',
+                            text: 'Etiket adı zorunlu bir alandır!',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                });
+            }
         });
     </script>
 }
