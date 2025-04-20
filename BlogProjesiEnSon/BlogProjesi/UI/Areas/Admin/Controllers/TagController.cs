@@ -2,6 +2,7 @@
 using Business.Services.TagServices;
 using Domain.Utilities.Interfaces;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace UI.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
-    [Route("Admin/Tag")]
+    [Route("Admin/[controller]")]
     public class TagController : Controller
     {
         private readonly ITagService _tagService;
@@ -66,13 +68,25 @@ namespace UI.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = result.Message;
                 return RedirectToAction(nameof(Index));
             }
-            return View(result.Adapt<TagUpdateDTO>());
+
+            // Ensure you're mapping all necessary fields
+            var model = new TagUpdateDTO
+            {
+                Id = result.Data.Id,
+                Name = result.Data.Name,
+                Slug = result.Data.Slug,
+                Description = result.Data.Description,
+                IsActive = result.Data.IsActive
+                // Map any other properties needed for the edit form
+            };
+
+            return View(model);
         }
 
         // 5️⃣ Etiketi Güncelleme İşlemi
         [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TagUpdateDTO tagUpdateDTO)
+        public async Task<IActionResult> Edit([FromForm] TagUpdateDTO tagUpdateDTO)
         {
             if (!ModelState.IsValid)
                 return View(tagUpdateDTO);
@@ -108,7 +122,7 @@ namespace UI.Areas.Admin.Controllers
             return View(result.Data);
         }
 
-        [HttpPost("DeleteConfirmed/{id}")]
+        [HttpPost("Delete/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {

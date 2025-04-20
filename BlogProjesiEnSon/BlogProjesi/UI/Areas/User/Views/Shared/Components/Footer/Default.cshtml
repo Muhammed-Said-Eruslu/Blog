@@ -1,0 +1,57 @@
+﻿@using UI.Areas.User.Models.FooterVMs
+@model FooterViewModel
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Kategoriler</h2>
+            <ul class="list-unstyled categories">
+                @foreach (var category in Model.Categories)
+                {
+                    <li>
+                        <span>@category.Name <span>(@category.PostCount)</span></span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">Arşiv</h2>
+            <ul class="list-unstyled categories">
+                @foreach (var archive in Model.Archives)
+                {
+                    <li>
+                        <a href="@Url.Action("Photo", "Home")">
+                            @archive.MonthYear
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ftco-footer-widget mb-4">
+            <h2 class="ftco-heading-2">İletişim</h2>
+            <div class="block-23 mb-4">
+                <ul>
+                    <li>
+                        <span class="icon icon-envelope"></span>
+                        <span class="text">silentsite@gmail.com</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- Abone Ol bölümü -->
+            <div class="subscribe-form">
+                <span class="subscribe-heading">Bültenimize Abone Olun</span>
+                <form asp-controller="Common" asp-action="Subscribe" method="post">
+                    <div class="form-group d-flex">
+                        <input type="email" name="email" class="form-control" placeholder="E-posta adresiniz" required />
+                        <button type="submit" class="btn btn-dark">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

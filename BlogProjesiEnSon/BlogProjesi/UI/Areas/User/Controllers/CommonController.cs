@@ -37,7 +37,7 @@ namespace UI.Areas.User.Controllers
             if (result)
             {
                 TempData["SubscribeStatus"] = "success";
-                TempData["SubscribeMessage"] = "Abonelik başarılı! Teşekkür ederiz.";
+                TempData["SubscribeMessage"] = "Abonelik başarılı! Teşekkür ederiz.Mail Kutunuzu Kontrol Ediniz";
 
                 try
                 {

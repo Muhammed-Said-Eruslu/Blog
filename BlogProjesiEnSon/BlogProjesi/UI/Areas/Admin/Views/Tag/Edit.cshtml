@@ -1,49 +1,174 @@
 ﻿@model Business.DTOs.TagDTOs.TagUpdateDTO
-
 @{
     ViewData["Title"] = "Etiket Düzenle";
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="card shadow border-0">
-        <div class="card-header bg-warning text-white">
-            <h4>Etiket Düzenle</h4>
+<style>
+    .edit-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+
+    .edit-card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1.25rem 1.5rem;
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+    }
+
+    .edit-card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5a5c69;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border-radius: 0.35rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d3e2;
+    }
+
+        .form-control:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        margin-top: 0.15em;
+    }
+
+    .form-check-label {
+        margin-left: 0.5rem;
+        cursor: pointer;
+    }
+
+    .action-buttons .btn {
+        min-width: 120px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 768px) {
+        .edit-card-body {
+            padding: 1.5rem;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    /* Loading indicator for slug generation */
+    .slug-loading {
+        display: none;
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Etiket Yönetimi</a></li>
+                <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">Detaylar</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Düzenle</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Edit Card -->
+    <div class="card edit-card mb-4">
+        <div class="card-header edit-card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="m-0 text-white">
+                    <i class="fas fa-edit mr-2"></i>Etiket Düzenleme
+                </h4>
+                <span class="badge bg-light text-dark">
+                    ID: @Model.Id
+                </span>
+            </div>
         </div>
-        <div class="card-body">
-            <form asp-action="Edit" method="post">
+        <div class="card-body edit-card-body">
+            <form action="/Admin/Tag/Edit" method="post"  id="editForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
 
                 <!-- Etiket Adı -->
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label">Etiket Adı</label>
-                    <input asp-for="Name" class="form-control" required placeholder="Etiket adını girin..." />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label">Etiket Adı *</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                        <input asp-for="Name" class="form-control" required
+                               placeholder="Etiket adını girin..."
+                               aria-describedby="nameHelp" />
+                    </div>
+                    <small id="nameHelp" class="form-text text-muted">
+                        Etiketin görünen adı (Zorunlu alan)
+                    </small>
+                    <span asp-validation-for="Name" class="text-danger small d-block mt-1"></span>
                 </div>
 
-                <!-- Slug (URL Dostu Ad) -->
-                <div class="mb-3">
-                    <label asp-for="Slug" class="form-label">Slug (URL Adı)</label>
-                    <input asp-for="Slug" class="form-control" placeholder="Slug otomatik oluşturulacak..." readonly />
-                    <span asp-validation-for="Slug" class="text-danger"></span>
+                <!-- Slug (URL Adı) -->
+                <div class="mb-4">
+                    <label asp-for="Slug" class="form-label">URL Uyumlu Ad (Slug)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-link"></i></span>
+                        <input asp-for="Slug" class="form-control"
+                               placeholder="URL için uyumlu ad otomatik oluşturulacak..."
+                               aria-describedby="slugHelp" />
+                        <div class="slug-loading spinner-border spinner-border-sm text-secondary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <small id="slugHelp" class="form-text text-muted">
+                        Sadece küçük harf, rakam ve tire (-) kullanılabilir
+                    </small>
+                    <span asp-validation-for="Slug" class="text-danger small d-block mt-1"></span>
                 </div>
-
                 <!-- Açıklama -->
-                <div class="mb-3">
+                <div class="mb-4">
                     <label asp-for="Description" class="form-label">Açıklama</label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Etiket hakkında açıklama girin..."></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <textarea asp-for="Description" class="form-control" rows="4"
+                              placeholder="Etiket hakkında açıklama girin..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
                 </div>
 
                 <!-- Aktiflik Durumu -->
-                <div class="mb-3 form-check">
-                    <input asp-for="IsActive" class="form-check-input" />
-                    <label asp-for="IsActive" class="form-check-label">Etiket Aktif</label>
+                <div class="mb-4 form-check form-switch">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch"
+                           id="flexSwitchCheckChecked" checked="@Model.IsActive">
+                    <label asp-for="IsActive" class="form-check-label" for="flexSwitchCheckChecked">
+                        Etiket Aktif
+                    </label>
+                    <small class="form-text text-muted d-block">
+                        Pasif etiketler gösterilmeyecektir
+                    </small>
                 </div>
 
-                <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Güncelle</button>
-                <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                <!-- Action Buttons -->
+                <div class="mt-4 pt-3 border-top action-buttons">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save mr-2"></i>Güncelle
+                    </button>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                        <i class="fas fa-eye mr-2"></i>Önizleme
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times mr-2"></i>İptal
+                    </a>
+                </div>
             </form>
         </div>
     </div>
@@ -51,21 +176,59 @@
 
 @section Scripts {
     <script>
-        // Etiket adını girerken otomatik slug oluşturma
-        document.getElementById("Name").addEventListener("input", function() {
-            let name = this.value.toLowerCase().trim();
-            let slug = name
-                .replace(/ğ/g, "g")
-                .replace(/ü/g, "u")
-                .replace(/ş/g, "s")
-                .replace(/ı/g, "i")
-                .replace(/ö/g, "o")
-                .replace(/ç/g, "c")
-                .replace(/[^a-z0-9\s-]/g, "") // Sadece harf ve rakam kalsın
-                .replace(/\s+/g, "-") // Boşlukları tire yap
-                .replace(/-+/g, "-"); // Çift tireleri tek tire yap
+        // DOM tam yüklendikten sonra çalışacak kodlar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slug oluşturma
+            const nameInput = document.getElementById("Name");
+            const slugInput = document.getElementById("Slug");
+            const loadingIndicator = document.querySelector(".slug-loading");
 
-            document.getElementById("Slug").value = slug;
+            if (nameInput && slugInput && loadingIndicator) {
+                nameInput.addEventListener("input", function() {
+                    loadingIndicator.style.display = "inline-block";
+
+                    clearTimeout(window.slugTimeout);
+                    window.slugTimeout = setTimeout(function() {
+                        const name = nameInput.value.toLowerCase().trim();
+                        const slug = name
+                            .replace(/ğ/g, "g")
+                            .replace(/ü/g, "u")
+                            .replace(/ş/g, "s")
+                            .replace(/ı/g, "i")
+                            .replace(/ö/g, "o")
+                            .replace(/ç/g, "c")
+                            .replace(/[^a-z0-9\s-]/g, "")
+                            .replace(/\s+/g, "-")
+                            .replace(/-+/g, "-");
+
+                        slugInput.value = slug;
+                        loadingIndicator.style.display = "none";
+                    }, 500);
+                });
+            }
+
+            // Form doğrulama
+            const form = document.getElementById("editForm");
+            if (form) {
+                form.addEventListener("submit", function(e) {
+                    if (!nameInput || nameInput.value.trim() === "") {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Etiket adı zorunlu alandır',
+                            confirmButtonColor: '#d33'
+                        });
+                    }
+                });
+            }
+
+            // Tooltip başlatma (jQuery varsa)
+            if (typeof $ !== 'undefined') {
+                $(document).ready(function(){
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+            }
         });
     </script>
 }

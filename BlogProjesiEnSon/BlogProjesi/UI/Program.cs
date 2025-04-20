@@ -14,12 +14,15 @@ using Infrastructure.DataAccess.Interface;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Business.Mapping;
+using Infrastructure.Repositories.MailRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 MappingConfig.Configure();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddOptions();
 
 // 🔔 Toast Mesajları (Notyf)
 builder.Services.AddNotyf(config =>
@@ -131,7 +134,17 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}",
         defaults: new { area = "User" }
     );
+    endpoints.MapControllerRoute(
+          name: "login",
+          pattern: "giris-yap", // URL'deki "Giris"
+          defaults: new { controller = "Account", action = "Login" });
+
+    endpoints.MapControllerRoute(
+        name: "register",
+        pattern: "kayıt-ol", // URL'deki "Giris"
+        defaults: new { controller = "Account", action = "Login" });
 });
+
 
 
 app.Run();

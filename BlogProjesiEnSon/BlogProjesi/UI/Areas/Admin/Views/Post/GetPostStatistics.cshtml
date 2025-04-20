@@ -4,97 +4,289 @@
     Layout = "_AdminLayout";
 }
 
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --info-color: #00cfe8;
+            --success-color: #28c76f;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
+        }
+
+        body {
+            background-color: #f5f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .stat-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px 0 rgba(34, 41, 47, 0.1);
+            }
+
+            .stat-card .card-header {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+            }
+
+            .stat-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .stat-card .card-title {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0;
+            }
+
+        .stat-card-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .stat-card-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .stat-card-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        .stat-card-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .stat-card i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .dropdown-menu {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            transition: var(--transition);
+        }
+
+            .dropdown-item:hover {
+                background-color: rgba(115, 103, 240, 0.1);
+            }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .table th {
+                border-top: none;
+                font-weight: 600;
+                color: #6e6b7b;
+                background-color: #f8f8f8;
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .table td {
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border-top: 1px solid rgba(34, 41, 47, 0.05);
+            }
+
+        .table-hover tbody tr:hover td {
+            background-color: #f9f9f9;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 767.98px) {
+            .stat-card .card-title {
+                font-size: 1.5rem;
+            }
+
+            .stat-card i {
+                font-size: 1.2rem;
+            }
+
+            .table td, .table th {
+                padding: 0.75rem;
+            }
+        }
+    </style>
 }
 
-<!-- Ek stil: Listeleme kısmının kaydırılabilir olması için -->
-<style>
-    .scrollable-list {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-</style>
-
-<div class="container my-5">
-    <h2 class="mb-4 text-center">Yazı İstatistikleri</h2>
-
-    <!-- Dropdown Menüleri: En Popüler Yazılar ve En Çok Yorum Alan Yazılar -->
-    <div class="d-flex justify-content-center mb-4">
-        <div class="dropdown me-3">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="popularPostsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                En Popüler Yazılar
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="popularPostsDropdown">
-                @foreach (var post in Model.PopularPosts)
-                {
-                    <li><a class="dropdown-item" href="#">@post.Title</a></li>
-                }
-            </ul>
-        </div>
-        <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" id="mostCommentedPostsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                En Çok Yorum Alan Yazılar
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="mostCommentedPostsDropdown">
-                @foreach (var post in Model.MostCommentedPosts)
-                {
-                    <li><a class="dropdown-item" href="#">@post.Title</a></li>
-                }
-            </ul>
-        </div>
-    </div>
-
-    <!-- Genel İstatistik Kartları -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Toplam Yazı</div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="bi bi-bar-chart-line"></i> @ViewBag.Title
+                    </h4>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">@Model.TotalPosts</h5>
+                    <!-- Dropdown Menüler -->
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="popularPostsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-fire"></i> En Popüler Yazılar
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="popularPostsDropdown">
+                                @foreach (var post in Model.PopularPosts)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("GetPostDetails", new { postId = post.Id })">
+                                            @post.Title <span class="badge bg-primary float-end">@post.ViewCount Görüntülenme</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-success dropdown-toggle" type="button" id="mostCommentedPostsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-chat-square-text"></i> En Çok Yorum Alan Yazılar
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="mostCommentedPostsDropdown">
+                                @foreach (var post in Model.MostCommentedPosts)
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("GetPostDetails", new { postId = post.Id })">
+                                            @post.Title <span class="badge bg-success float-end">@post.CommentCount Yorum</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Genel İstatistik Kartları -->
+                    <div class="row mb-5">
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card stat-card-primary h-100">
+                                <div class="card-header">
+                                    <i class="bi bi-file-earmark-text"></i> Toplam Yazı
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@Model.TotalPosts</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card stat-card-success h-100">
+                                <div class="card-header">
+                                    <i class="bi bi-chat-left-text"></i> Toplam Yorum
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@Model.TotalComments</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card stat-card-info h-100">
+                                <div class="card-header">
+                                    <i class="bi bi-tags"></i> Toplam Etiket
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@Model.TotalTags</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                        </div>
+                    </div>
+
+                    <!-- Kategorilere Göre Yazı Sayısı -->
+                    <div class="mb-5">
+                        <h4 class="mb-4">
+                            <i class="bi bi-bookmarks"></i> Kategorilere Göre Yazı Sayısı
+                        </h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kategori Adı</th>
+                                        <th>Yazı Sayısı</th>
+                                        <th>Yüzde</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var category in Model.PostCountByCategory)
+                                    {
+                                        var percentage = (double)category.PostCount / Model.TotalPosts * 100;
+                                        <tr>
+                                            <td>@category.CategoryName</td>
+                                            <td>@category.PostCount</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar" role="progressbar" style="width: @percentage%;"
+                                                         aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                                        @percentage.ToString("0.00")%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Toplam Yorum</div>
-                <div class="card-body">
-                    <h5 class="card-title">@Model.TotalComments</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header">Toplam Etiket</div>
-                <div class="card-body">
-                    <h5 class="card-title">@Model.TotalTags</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Kategorilere Göre Yazı Sayısı -->
-    <div class="mb-4">
-        <h3 class="mb-3">Kategorilere Göre Yazı Sayısı</h3>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Kategori</th>
-                        <th>Yazı Sayısı</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var category in Model.PostCountByCategory)
-                    {
-                        <tr>
-                            <td>@category.CategoryName</td>
-                            <td>@category.PostCount</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            // Başarı mesajı gösterimi
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarılı',
+                            text: '@TempData["SuccessMessage"]',
+                            confirmButtonColor: '#7367f0'
+                        });
+            </text>
+        }
+        });
+    </script>
+}

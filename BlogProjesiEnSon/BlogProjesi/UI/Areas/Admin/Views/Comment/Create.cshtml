@@ -5,54 +5,309 @@
     Layout = "_AdminLayout";
 }
 
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h6>
+@section Styles {
+    <style>
+        :root {
+            --primary: #7367f0;
+            --primary-light: rgba(115, 103, 240, 0.1);
+            --secondary: #82868b;
+            --success: #28c76f;
+            --info: #00cfe8;
+            --warning: #ff9f43;
+            --danger: #ea5455;
+            --light: #f6f6f6;
+            --dark: #4b4b4b;
+            --border: #e0e0e0;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --input-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-create-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .create-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .create-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+            .create-title i {
+                margin-right: 1rem;
+                color: var(--primary);
+            }
+
+        .create-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .create-card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #9c8aff 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .create-card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .create-card-title i {
+                margin-right: 0.75rem;
+            }
+
+        .create-card-body {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+            .section-title i {
+                margin-right: 0.75rem;
+                color: var(--primary);
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .form-label i {
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+                color: var(--secondary);
+            }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            box-shadow: var(--input-shadow);
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 0.25rem rgba(115, 103, 240, 0.25);
+            }
+
+        textarea.form-control {
+            min-height: 150px;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--input-shadow);
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+            .btn-success:hover {
+                background-color: #24b362;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(40, 199, 111, 0.3);
+            }
+
+        .btn-outline-secondary {
+            border: 1px solid var(--border);
+            color: var(--secondary);
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: var(--light);
+                color: var(--dark);
+            }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .character-counter {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .create-card-body {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+                .action-buttons .btn {
+                    width: 100%;
+                }
+        }
+
+        @@media (max-width: 576px) {
+            .create-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .create-card-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid comment-create-container">
+    <!-- Header -->
+    <div class="create-header">
+        <h1 class="create-title">
+            <i class="bi bi-plus-circle"></i> @ViewData["Title"]
+        </h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Listeye Dön
+        </a>
+    </div>
+
+    <!-- Create Form Card -->
+    <div class="card create-card">
+        <div class="create-card-header">
+            <h2 class="create-card-title">
+                <i class="bi bi-chat-square-text"></i> Yeni Yorum Bilgileri
+            </h2>
         </div>
-        <div class="card-body">
-            <form asp-action="Create" method="post">
-                <!-- Yorum İçeriği -->
-                <div class="form-group">
-                    <label asp-for="Content"></label>
-                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="Content" class="text-danger"></span>
-                </div>
 
-                <div class="row">
-                    <!-- Yazar Adı -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="AuthorName"></label>
-                            <input asp-for="AuthorName" class="form-control" />
-                            <span asp-validation-for="AuthorName" class="text-danger"></span>
-                        </div>
-                    </div>
+        <div class="create-card-body">
+            <form asp-action="Create" method="post" id="commentCreateForm">
+                <!-- Hidden Fields -->
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="ParentCommentId" />
 
-                    <!-- Yazar E-posta -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="AuthorEmail"></label>
-                            <input asp-for="AuthorEmail" class="form-control" />
-                            <span asp-validation-for="AuthorEmail" class="text-danger"></span>
+                <!-- Comment Content Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="bi bi-text-paragraph"></i> Yorum İçeriği
+                    </h3>
+                    <div class="form-group mb-4">
+                        <label asp-for="Content" class="form-label">
+                            <i class="bi bi-card-text"></i> İçerik
+                        </label>
+                        <textarea asp-for="Content" class="form-control" rows="6" placeholder="Yorum içeriğini buraya yazın..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                        <div class="character-counter">
+                            <span id="charCount">0</span> / 1000 karakter
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="PostId">Bağlı Olduğu Yazı</label>
-                    <select asp-for="PostId" class="form-control" asp-items="ViewBag.Posts">
-                        <option value="">Lütfen bir yazı seçin</option>
-                    </select>
-                    <span asp-validation-for="PostId" class="text-danger"></span>
+
+                <!-- Author Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="bi bi-person-badge"></i> Yazar Bilgileri
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">
+                                <label asp-for="AuthorName" class="form-label">
+                                    <i class="bi bi-person"></i> Yazar Adı
+                                </label>
+                                <input asp-for="AuthorName" class="form-control" placeholder="Yazar adını girin" />
+                                <span asp-validation-for="AuthorName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">
+                                <label asp-for="AuthorEmail" class="form-label">
+                                    <i class="bi bi-envelope"></i> Yazar E-posta
+                                </label>
+                                <input asp-for="AuthorEmail" class="form-control" placeholder="Yazar e-posta adresini girin" />
+                                <span asp-validation-for="AuthorEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Gizli Alanlar -->
-                <input type="hidden" asp-for="PostId" value="@Model.PostId" />
-                <input type="hidden" asp-for="UserId" value="@Model.UserId" />
-                <input type="hidden" asp-for="ParentCommentId" value="@Model.ParentCommentId" />
+                <!-- Post Selection Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="bi bi-file-post"></i> Yazı Seçimi
+                    </h3>
+                    <div class="form-group mb-4">
+                        <label asp-for="PostId" class="form-label">
+                            <i class="bi bi-link"></i> Bağlı Olduğu Yazı
+                        </label>
+                        <select asp-for="PostId" class="form-control" asp-items="ViewBag.Posts">
+                            <option value="">Lütfen bir yazı seçin</option>
+                        </select>
+                        <span asp-validation-for="PostId" class="text-danger"></span>
+                    </div>
+                </div>
 
-                <button type="submit" class="btn btn-success">Kaydet</button>
-                <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="reset" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Sıfırla
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Yorumu Kaydet
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -62,4 +317,53 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Character counter
+            $('#Content').on('input', function() {
+                const length = $(this).val().length;
+                $('#charCount').text(length);
+
+                if (length > 1000) {
+                    $('#charCount').css('color', 'var(--danger)');
+                } else {
+                    $('#charCount').css('color', 'var(--secondary)');
+                }
+            }).trigger('input');
+
+            // Form submission
+            $('#commentCreateForm').submit(function(e) {
+                if ($('#Content').val().length > 1000) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Uyarı!',
+                        text: 'Yorum içeriği 1000 karakteri geçemez.',
+                        icon: 'warning',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                }
+            });
+
+            // Success message
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        title: 'Başarılı!',
+                        text: '@TempData["SuccessMessage"]',
+                        icon: 'success',
+                        confirmButtonColor: 'var(--success)',
+                        willClose: () => {
+                            window.location.href = '@Url.Action("Index")';
+                        }
+                    });
+            </text>
+        }
+        });
+    </script>
 }

@@ -1,32 +1,115 @@
 ﻿@using Business.DTOs.CommentsDTOs
 @using UI.Areas.Admin.Truncate
 @model List<CommentListDTO>
-
 @{
     ViewData["Title"] = "Kullanıcı Yorumları";
     Layout = "_AdminLayout";
 }
 
+<style>
+    .comment-table {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+        .comment-table thead th {
+            background-color: #4e73df;
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 12px 15px;
+        }
+
+        .comment-table tbody tr {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+            .comment-table tbody tr:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .comment-table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+            border-top: none;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+    .comment-id {
+        font-weight: 600;
+        color: #4e73df;
+    }
+
+    .comment-content {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .comment-content:hover {
+            white-space: normal;
+        }
+
+    .comment-date {
+        white-space: nowrap;
+    }
+
+    .post-link {
+        color: #4e73df;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .post-link:hover {
+            text-decoration: underline;
+        }
+
+    .action-buttons .btn {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        margin-right: 5px;
+        border-radius: 4px;
+    }
+
+    .message-alert {
+        border-left: 4px solid #4e73df;
+    }
+</style>
+
 <div class="container-fluid">
-    <h2>@ViewData["Title"]</h2>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+    </div>
 
     @if (ViewBag.Message != null)
     {
-        <div class="alert alert-info">
+        <div class="alert alert-info message-alert alert-dismissible fade show">
             @ViewBag.Message
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     }
 
     <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Yorum Listesi</h6>
+            <span class="badge badge-primary">@Model.Count Yorum</span>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
+                <table class="table comment-table">
                     <thead>
                         <tr>
                             <th>Yorum ID</th>
                             <th>İçerik</th>
-                            <th>Oluşturulma Tarihi</th>
-                            <th>Bağlı Olduğu Yazı</th>
+                            <th>Tarih</th>
+                            <th>Yazı Bilgisi</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
@@ -34,21 +117,31 @@
                         @foreach (var comment in Model)
                         {
                             <tr>
-                                <td>@comment.Id</td>
-                                <td>@comment.Content.Truncate(50)</td>
-                                <td>@comment.CreatedDate.ToString("dd MMM yyyy")</td>
-                                <td>@comment.PostId</td>
+                                <td class="comment-id">@comment.Id.ToString().Substring(0, 8)</td>
+                                <td class="comment-content" title="@comment.Content">
+                                    @comment.Content.Truncate(50)
+                                </td>
+                                <td class="comment-date">
+                                    @comment.CreatedDate.ToString("dd MMM yyyy HH:mm")
+                                </td>
                                 <td>
-                                    <a asp-action="Details" asp-route-id="@comment.Id" class="btn btn-info btn-sm">
-                                        <i class="fas fa-info-circle"></i> Detaylar
+                                    <a href="/Admin/Post/Details/@comment.PostId" class="post-link">
+                                        Yazı #@comment.PostId
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@comment.Id" class="btn btn-warning btn-sm">
+                                </td>
+                                <td class="action-buttons">
+                                    <a asp-action="Details" asp-route-id="@comment.Id"
+                                       class="btn btn-info btn-sm" title="Detaylar">
+                                        <i class="fas fa-info-circle"></i> Detay
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@comment.Id"
+                                       class="btn btn-warning btn-sm" title="Düzenle">
                                         <i class="fas fa-edit"></i> Düzenle
                                     </a>
                                     <form asp-action="Delete" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@comment.Id" />
                                         <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Bu yorumu silmek istediğinize emin misiniz?')">
+                                                title="Sil" onclick="return confirmDelete()">
                                             <i class="fas fa-trash"></i> Sil
                                         </button>
                                     </form>
@@ -61,3 +154,11 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            return confirm('Bu yorumu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');
+        }
+    </script>
+}

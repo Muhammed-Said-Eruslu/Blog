@@ -49,7 +49,9 @@ namespace Business.Services.PostServices
         Task<IDataResult<List<PostListDTO>>> GetRelatedCategoryPostsAsync(Guid postId, int count = 5);
         Task<AppUser> GetUserWithLikedPostsAsync(Guid userId);
         Task<IDataResult<Post>> ToggleLikeAsync(Guid userId, Guid postId);
+        public  Task<IDataResult<Post>> GetPostWithIncludesAsync(string slug);
+        Task<IDataResult<PostDetailDTO>> GetPostWithFullComments(string slug);
 
-
+        Task<IDataResult<List<CommentDTO>>> GetPostCommentsWithReplies(string slug);
     }
 }

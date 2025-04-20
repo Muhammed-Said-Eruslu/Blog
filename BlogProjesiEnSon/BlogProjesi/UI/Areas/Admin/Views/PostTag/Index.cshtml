@@ -2,157 +2,588 @@
 @model IEnumerable<PostTagDTO>
 
 @{
-    ViewData["Title"] = "PostTag - Index";
+    ViewData["Title"] = "PostTag Yönetimi";
     Layout = "_AdminLayout";
 }
 
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- CSS & Font Awesome -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <style>
-    /* Tabloyu responsive yapmak için */
-    .table-responsive {
-        overflow-x: auto;
-        max-width: 100%;
+    /* Ana Tema */
+    :root {
+        --primary-color: #4e73df;
+        --success-color: #1cc88a;
+        --danger-color: #e74a3b;
+        --warning-color: #f6c23e;
+        --info-color: #36b9cc;
+        --dark-color: #5a5c69;
     }
 
-    /* Aktif & Pasif Durumları için stil */
+    /* Kart Stilleri */
+    .management-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.35rem 1.5rem rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+
+    /* Tablo Stilleri */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #postTagTable {
+        width: 100% !important;
+        font-size: 0.9rem;
+    }
+
+        #postTagTable thead th {
+            background-color: #f8f9fc;
+            color: var(--dark-color);
+            font-weight: 700;
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+
+        #postTagTable tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            #postTagTable tbody tr:hover {
+                background-color: #f8f9fc;
+                transform: translateY(-1px);
+                box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.05);
+            }
+
+        #postTagTable td {
+            vertical-align: middle;
+        }
+
+    /* Durum Badgeleri */
+    .status-badge {
+        padding: 0.35rem 0.7rem;
+        border-radius: 0.35rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
     .badge-active {
-        background-color: #28a745;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
+        background-color: rgba(28, 200, 138, 0.2);
+        color: var(--success-color);
     }
 
     .badge-inactive {
-        background-color: #dc3545;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
+        background-color: rgba(231, 74, 59, 0.2);
+        color: var(--danger-color);
     }
 
-    /* Buton grubu hizalama */
-    .top-buttons {
+    /* Tag Badge */
+    .tag-badge {
+        padding: 0.35rem 0.7rem;
+        border-radius: 0.35rem;
+        font-size: 0.8rem;
+        background-color: rgba(78, 115, 223, 0.15);
+        color: var(--primary-color);
+        display: inline-block;
+        margin-bottom: 0.2rem;
+        white-space: nowrap;
+    }
+
+    /* Buton Stilleri */
+    .btn-action {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.875rem;
+        border-radius: 0.35rem;
+        margin: 0.15rem;
+        min-width: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+
+        .btn-action i {
+            margin-right: 0.25rem;
+        }
+
+    .action-buttons {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        justify-content: flex-start;
+        gap: 0.25rem;
+    }
+
+    .btn-details {
+        background-color: rgba(54, 185, 204, 0.1);
+        color: var(--info-color);
+        border: 1px solid rgba(54, 185, 204, 0.3);
+    }
+
+    .btn-edit {
+        background-color: rgba(246, 194, 62, 0.1);
+        color: var(--warning-color);
+        border: 1px solid rgba(246, 194, 62, 0.3);
+    }
+
+    .btn-delete {
+        background-color: rgba(231, 74, 59, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(231, 74, 59, 0.3);
+    }
+
+    .btn-assign {
+        background-color: rgba(28, 200, 138, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(28, 200, 138, 0.3);
+    }
+
+    .btn-toggle {
+        background-color: rgba(110, 66, 193, 0.1);
+        color: #6e42c1;
+        border: 1px solid rgba(110, 66, 193, 0.3);
+    }
+
+    /* Hover Efektleri */
+    .btn-details:hover {
+        background-color: var(--info-color);
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background-color: var(--warning-color);
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: var(--danger-color);
+        color: white;
+    }
+
+    .btn-assign:hover {
+        background-color: var(--success-color);
+        color: white;
+    }
+
+    .btn-toggle:hover {
+        background-color: #6e42c1;
+        color: white;
+    }
+
+    /* DataTables Özelleştirme */
+    .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+
+        .dataTables_filter input {
+            border-radius: 0.35rem;
+            border: 1px solid #d1d3e2;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+            .dataTables_filter input:focus {
+                border-color: #bac8f3;
+                box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+                outline: 0;
+            }
+
+    .dataTables_info, .dataTables_paginate {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+    }
+
+        .dataTables_paginate .paginate_button {
+            border-radius: 0.35rem !important;
+            padding: 0.25rem 0.5rem !important;
+            margin: 0 0.25rem !important;
+        }
+
+            .dataTables_paginate .paginate_button.current {
+                background: var(--primary-color) !important;
+                border-color: var(--primary-color) !important;
+                color: white !important;
+            }
+
+                .dataTables_paginate .paginate_button.current:hover {
+                    background: var(--primary-color) !important;
+                    border-color: var(--primary-color) !important;
+                    color: white !important;
+                }
+
+            .dataTables_paginate .paginate_button:hover {
+                background: #eaecf4 !important;
+                border-color: #eaecf4 !important;
+                color: var(--dark-color) !important;
+            }
+
+    /* Breadcrumb Stili */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0.75rem 0;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "›";
+        font-weight: bold;
+    }
+
+    .breadcrumb-item a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+
+    .breadcrumb-item.active {
+        color: var(--dark-color);
+    }
+
+    /* Animasyonlar */
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    /* Responsive Stilleri */
+    @@media (max-width: 1200px) {
+        .card-body
+
+    {
+        padding: 1rem;
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .card-header-custom
+
+    {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .header-actions {
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .d-sm-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    nav.breadcrumb-nav {
+        margin-top: 0.5rem;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 0.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        #postTagTable thead
+
+    {
+        display: none;
+    }
+
+    #postTagTable,
+    #postTagTable tbody,
+    #postTagTable tr,
+    #postTagTable td {
+        display: block;
+        width: 100%;
+    }
+
+        #postTagTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #e3e6f0;
+            border-radius: 0.35rem;
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        #postTagTable td {
+            border: none;
+            position: relative;
+            padding-left: 40%;
+            text-align: left;
+            min-height: 2.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+            #postTagTable td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0.75rem;
+                width: 35%;
+                font-weight: bold;
+                text-align: left;
+            }
+
+            #postTagTable td:first-child {
+                background-color: #f8f9fc;
+                border-top-left-radius: 0.35rem;
+                border-top-right-radius: 0.35rem;
+                text-align: center;
+                font-weight: bold;
+                padding-left: 0.75rem;
+            }
+
+                #postTagTable td:first-child:before {
+                    display: none;
+                }
+
+            #postTagTable td:last-child {
+                border-bottom-left-radius: 0.35rem;
+                border-bottom-right-radius: 0.35rem;
+                padding-left: 0.75rem;
+            }
+
+                #postTagTable td:last-child:before {
+                    display: none;
+                }
+
+    .action-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        margin: 0;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .management-card
+
+    {
+        margin-bottom: 1rem;
+    }
+
+    .card-header-custom h4 {
+        font-size: 1.25rem;
+    }
+
+    .status-badge, .tag-badge {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.3rem;
+    }
+
+    .btn-action {
+        width: calc(33.333% - 0.5rem);
+        margin: 0.25rem;
+    }
+
+    .dataTables_length,
+    .dataTables_filter,
+    .dataTables_info,
+    .dataTables_paginate {
+        width: 100%;
+        text-align: center;
+        float: none;
+    }
+
+        .dataTables_filter input {
+            width: 100%;
+            margin-left: 0 !important;
+        }
+
     }
 </style>
 
-<div class="container mt-4">
-    <div class="card shadow border-0">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">
-                <i class="fas fa-tags"></i> PostTag Listesi
+<div class="container-fluid fade-in">
+    <!-- Başlık ve Breadcrumb -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-tags text-primary mr-2"></i> @ViewData["Title"]
+        </h1>
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Dashboard" asp-action="Index"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">İçerik Yönetimi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">PostTag</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Ana Kart -->
+    <div class="card management-card">
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+            <h4 class="m-0 text-white">
+                <i class="fas fa-list-check mr-2"></i> PostTag Listesi
             </h4>
+            <div class="header-actions">
+                <a asp-action="Create" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus-circle mr-2"></i>Yeni Ekle
+                </a>
+            </div>
         </div>
 
         <div class="card-body">
-            <!-- Başarı / Hata Mesajları -->
+            <!-- Bildirimler -->
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             }
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             }
 
-            <!-- Üst kısımdaki butonlar -->
-            <div class="top-buttons mb-3">
-                <a asp-action="Create" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Yeni PostTag Ekle
-                </a>
-            </div>
-
-            <!-- DataTable -->
+            <!-- Tablo -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="postTagTable">
-                    <thead class="thead-dark">
+                <table id="postTagTable" class="table table-hover" style="width:100%">
+                    <thead>
                         <tr>
                             <th>#</th>
-                            <th>Post Adı</th>
-                            <th>Tag Adı</th>
-                            <th>Aktiflik Durumu</th>
-                            <th>Oluşturulma Tarihi</th>
-                            <th>Güncellenme Tarihi</th>
+                            <th>Post</th>
+                            <th>Tag</th>
+                            <th>Durum</th>
+                            <th>Oluşturulma</th>
+                            <th>Güncellenme</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var pt in Model.Select((item, index) => new { Item = item, Index = index + 1 }))
+                        @foreach (var item in Model.Select((value, index) => new { Index = index + 1, Value = value }))
                         {
                             <tr>
-                                <td>@pt.Index</td>
-                                <td>@pt.Item.PostTitle</td>
-                                <td>@pt.Item.TagName</td>
-                                <td>
-                                    @if (pt.Item.IsActive)
+                                <td data-label="#">@item.Index</td>
+                                <td data-label="Post">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">@item.Value.PostTitle</h6>
+                                            <small class="text-muted">ID: @item.Value.PostId</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Tag">
+                                    <span class="tag-badge">
+                                        <i class="fas fa-tag mr-1"></i> @item.Value.TagName
+                                    </span>
+                                </td>
+                                <td data-label="Durum">
+                                    @if (item.Value.IsActive)
                                     {
-                                        <span class="badge badge-active"><i class="fas fa-check-circle"></i> Aktif</span>
+                                        <span class="status-badge badge-active">
+                                            <i class="fas fa-check-circle mr-1"></i> Aktif
+                                        </span>
                                     }
                                     else
                                     {
-                                        <span class="badge badge-inactive"><i class="fas fa-times-circle"></i> Pasif</span>
+                                        <span class="status-badge badge-inactive">
+                                            <i class="fas fa-times-circle mr-1"></i> Pasif
+                                        </span>
                                     }
                                 </td>
-                                <td>@pt.Item.CreatedAt.ToString("dd MMM yyyy HH:mm")</td>
-                                <td>@(pt.Item.UpdatedAt.HasValue ? pt.Item.UpdatedAt.Value.ToString("dd MMM yyyy HH:mm") : "Güncellenmedi")</td>
-                                <td>
-                                    <a asp-action="Details" asp-route-id="@pt.Item.Id"
-                                       class="btn btn-sm btn-info">
-                                        <i class="fas fa-eye"></i> Detay
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@pt.Item.Id"
-                                       class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i> Düzenle
-                                    </a>
+                                <td data-label="Oluşturulma">
+                                    <small class="text-muted">
+                                        <i class="far fa-calendar-plus mr-1"></i>
+                                        @item.Value.CreatedAt.ToString("dd MMM yyyy HH:mm")
+                                    </small>
+                                </td>
+                                <td data-label="Güncellenme">
+                                    <small class="text-muted">
+                                        <i class="far fa-calendar-check mr-1"></i>
+                                        @(item.Value.UpdatedAt.HasValue ? item.Value.UpdatedAt.Value.ToString("dd MMM yyyy HH:mm") : "-")
+                                    </small>
+                                </td>
+                                <td data-label="İşlemler">
+                                    <div class="action-buttons">
+                                        <!-- Detay Butonu -->
+                                        <a asp-action="Details" asp-route-id="@item.Value.Id"
+                                           class="btn-action btn-details" title="Detaylar">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
 
-                                    <!-- Yeni Butonlar (Form ile POST Kullanımı) -->
-                                    <form asp-action="AssignTagsToPost" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="postId" value="@pt.Item.PostId" />
-                                        <button type="submit" class="btn btn-sm btn-success">
-                                            <i class="fas fa-plus"></i> Etiket Ekle
-                                        </button>
-                                    </form>
+                                        <!-- Düzenle Butonu -->
+                                        <a asp-action="Edit" asp-route-id="@item.Value.Id"
+                                           class="btn-action btn-edit" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
 
-                                    <form asp-action="UnassignTagsFromPost" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="postId" value="@pt.Item.PostId" />
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-minus"></i> Etiket Kaldır
-                                        </button>
-                                    </form>
+                                        <!-- Atama Butonu -->
+                                        <form asp-action="AssignTagsToPost" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="postId" value="@item.Value.PostId" />
+                                            <button type="submit" class="btn-action btn-assign" title="Etiket Ekle">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </form>
 
-                                    <form asp-action="ClearTagsFromPost" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="postId" value="@pt.Item.PostId" />
-                                        <button type="submit" class="btn btn-sm btn-dark">
-                                            <i class="fas fa-trash"></i> Tüm Etiketleri Kaldır
-                                        </button>
-                                    </form>
+                                        <!-- Durum Değiştir Butonu -->
+                                        <form asp-action="ToggleTagStatusInPost" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="postTagId" value="@item.Value.Id" />
+                                            <button type="submit" class="btn-action btn-toggle" title="Durum Değiştir">
+                                                <i class="fas fa-toggle-on"></i>
+                                            </button>
+                                        </form>
 
-                                    <form asp-action="ToggleTagStatusInPost" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="postTagId" value="@pt.Item.Id" />
-                                        <button type="submit" class="btn btn-sm btn-secondary">
-                                            <i class="fas fa-toggle-on"></i> Durumu Değiştir
-                                        </button>
-                                    </form>
-
-                                    <!-- SweetAlert silme onayı için form -->
-                                    <form method="post"
-                                          asp-action="DeleteConfirmed"
-                                          onsubmit="return confirmDelete(this);"
-                                          class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@pt.Item.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i> Sil
-                                        </button>
-                                    </form>
+                                        <!-- Silme Butonu -->
+                                        <form method="post" asp-action="DeleteConfirmed"
+                                              onsubmit="return confirmDelete(event, '@item.Value.PostTitle ve @item.Value.TagName ilişkisini silmek istediğinize emin misiniz?');"
+                                              class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.Value.Id" />
+                                            <button type="submit" class="btn-action btn-delete" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -164,40 +595,71 @@
 </div>
 
 @section Scripts {
-    <!-- jQuery & DataTables JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Gerekli JS Kütüphaneleri -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- SweetAlert2 -->
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function () {
-            $('#postTagTable').DataTable({
-                scrollX: true,
+            // DataTable Yapılandırması
+            var table = $('#postTagTable').DataTable({
+                responsive: true,
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json"
+                    url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json"
+                },
+                dom: '<"top"f>rt<"bottom"lip><"clear">',
+                ordering: true,
+                columnDefs: [
+                    { orderable: false, targets: [6] } // İşlemler sütununu sıralamaya dahil etme
+                ],
+                initComplete: function() {
+                    $('.dataTables_filter input').attr('placeholder', 'Arama...');
+                }
+            });
+
+            // Mobil ekran için tablo yapılandırması
+            if (window.innerWidth < 768) {
+                $('.dataTables_filter input').attr('placeholder', 'PostTag ara...');
+            }
+
+            // Pencere boyutu değiştiğinde
+            $(window).resize(function() {
+                if (window.innerWidth < 768) {
+                    $('.dataTables_filter input').attr('placeholder', 'PostTag ara...');
+                } else {
+                    $('.dataTables_filter input').attr('placeholder', 'Arama...');
                 }
             });
         });
 
-        function confirmDelete(form) {
+        // Silme Onayı Fonksiyonu
+        function confirmDelete(event, message) {
             event.preventDefault();
+            const form = event.target;
+
             Swal.fire({
                 title: 'Emin misiniz?',
-                text: "Bu PostTag'i silmek istediğinize emin misiniz?",
+                text: message || "Bu kaydı silmek istediğinize emin misiniz?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
+                cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Evet, sil!',
-                cancelButtonText: 'İptal'
+                cancelButtonText: 'İptal',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
                 }
             });
+
             return false;
         }
+
+        // Bildirimleri otomatik kapatma
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 5000);
     </script>
 }

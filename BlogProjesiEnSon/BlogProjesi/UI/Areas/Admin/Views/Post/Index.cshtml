@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Business.DTOs.PostDTOs.PostListDTO>
 @{
-    ViewBag.Title = "Yönetim Paneli - Yazı İşlemleri";
+    ViewData["Title"] = "Yazı Yönetimi";
     Layout = "_AdminLayout";
 }
 @using System.Security.Claims
@@ -8,492 +8,274 @@
     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
-@section Scripts {
-    <!-- jQuery (DataTables için gereklidir) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#postTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Turkish.json"
-                }
-            });
-        });
-
-        // Başarı mesajını göster
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Başarılı',
-                        text: '@TempData["SuccessMessage"]'
-                    });
-            </text>
-        }
-
-        // Bireysel silme onayı
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Emin misiniz?',
-                    text: "Bu yazıyı silmek istediğinize emin misiniz?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Evet, sil!',
-                    cancelButtonText: 'İptal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-
-        // Toplu silme onayı
-        document.getElementById('bulkDeleteButton').addEventListener('click', function(){
-            Swal.fire({
-                title: 'Emin misiniz?',
-                text: "Seçilen yazıları silmek istediğinize emin misiniz?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Evet, sil!',
-                cancelButtonText: 'İptal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('bulkDeleteForm').submit();
-                }
-            });
-        });
-
-        // Tümünü seç/deseç
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.bulk-checkbox');
-            checkboxes.forEach(chk => chk.checked = this.checked);
-        });
-    </script>
-}
-
-<!-- Mobil uyum için -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
-
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-
-<!-- Stil Ayarları -->
-<style>
-    .table td, .table th {
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    .custom-table-container {
-        max-height: 600px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    .action-buttons .btn {
-        margin-right: 5px;
-        margin-bottom: 5px;
-    }
-
-    .dropdown-menu {
-        min-width: 200px;
-    }
-
-    .slug-dropdown {
-        margin-bottom: 10px;
-    }
-</style>
-
-<div class="container mt-4">
-    <!-- Kart yapısı ile sarıyoruz -->
-    <div class="card">
-        <!-- Kart Başlığı -->
-        <div class="card-header">
-            <h1 class="mb-4" style="margin-bottom:0!important;">Yazı İşlemleri</h1>
-        </div>
-
-        <!-- Kart Gövdesi -->
-        <div class="card-body">
-
-            <!-- Navigasyon Butonları -->
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a href="@Url.Action("Create")" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Yeni Yazı
-                </a>
-                <a href="@Url.Action("GetPostStatistics")" class="btn btn-info">
-                    <i class="bi bi-bar-chart-line"></i> İstatistikler
-                </a>
-
-                <!-- Kategori Filtreleme Formu -->
-                <form method="get" action="@Url.Action("GetPostsByCategoryId", "Post")" class="flex-grow-1">
-                    <div class="input-group">
-                        <select id="categorySelect" name="categoryId" class="form-select">
-                            <option value="">Tüm Kategoriler</option>
-                            @if (ViewBag.Categories != null)
-                            {
-                                foreach (var category in ViewBag.Categories)
-                                {
-                                    <option value="@category.Value">@category.Text</option>
-                                }
-                            }
-                        </select>
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-filter"></i> Filtrele
-                        </button>
-                    </div>
-                </form>
-
-                @if (!string.IsNullOrEmpty(currentUserId))
-                {
-                    <a href="@Url.Action("GetPostsByUserId", new { userId = currentUserId })" class="btn btn-warning">
-                        <i class="bi bi-person"></i> Yazar Yazıları
-                    </a>
-                }
-                else
-                {
-                    <a href="@Url.Action("Login", "Account")" class="btn btn-warning">
-                        <i class="bi bi-person"></i> Giriş Yap
-                    </a>
-                }
-
-                <a href="@Url.Action("SearchPosts")" class="btn btn-secondary">
-                    <i class="bi bi-search"></i> Arama
-                </a>
-                <a href="@Url.Action("GetPopularPosts", new { count = 5 })" class="btn btn-primary">
-                    <i class="bi bi-fire"></i> Popüler
-                </a>
-            </div>
-
-            <!-- Slug Bağlantıları (Dropdown Menü) -->
-            @if (ViewBag.Posts != null)
-            {
-                <div class="slug-dropdown">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownSlugButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-link-45deg"></i> Slug Bağlantıları
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownSlugButton">
-                            @foreach (var post in ViewBag.Posts)
-                            {
-                                <li>
-                                    <a href="@Url.Action("GetPostBySlug", new { slug = post.Slug })" class="dropdown-item">
-                                        @post.Title
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            }
-
-            <!-- Yazı Listesi -->
-            <form id="bulkDeleteForm" asp-action="BulkDeletePosts" method="post">
-                <button type="button" class="btn btn-danger mb-3" id="bulkDeleteButton">
-                    <i class="bi bi-trash"></i> Seçilenleri Sil
-                </button>
-
-                <div class="custom-table-container">
-                    <table id="postTable" class="table table-bordered table-striped">
-                        <thead class="table-light">
-                            <tr>
-                                <th><input type="checkbox" id="selectAll" /></th>
-                                <th>Başlık</th>
-                                <th>Video Yolu</th>
-                                <th>Video URL</th>
-                                <th>Kategori</th>
-                                <th>Yazar</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var post in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="postIds" value="@post.Id" class="bulk-checkbox" />
-                                    </td>
-                                    <td>@post.Title</td>
-                                    <td>@post.VideoUrl</td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(post.VideoUrl))
-                                        {
-                                            <a href="@post.VideoUrl" target="_blank" class="btn btn-link btn-sm">
-                                                <i class="bi bi-play-btn"></i> İzle
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">Yok</span>
-                                        }
-                                    </td>
-                                    <td>@post.CategoryName</td>
-                                    <td>@(post.FullName ?? "Bilinmiyor")</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-gear"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a href="@Url.Action("Edit", new { id = post.Id })" class="dropdown-item">
-                                                        <i class="bi bi-pencil"></i> Düzenle
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <form method="post" action="@Url.Action("Delete", new { id = post.Id })" class="delete-form">
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="bi bi-trash"></i> Sil
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <a href="@Url.Action("GetPostDetails", new { postId = post.Id })" class="dropdown-item">
-                                                        <i class="bi bi-info-circle"></i> Detaylar
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-
-        </div> <!-- card-body -->
-    </div> <!-- card -->
-</div> <!-- container -->
-
-
-
-
-
-@* @model IEnumerable<Business.DTOs.PostDTOs.PostListDTO>
-@{
-    ViewBag.Title = "Yönetim Paneli - Yazı İşlemleri";
-    Layout = "_AdminLayout";
-}
-
 @section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
     <style>
-        /* Genel Stil İyileştirmeleri */
-        .container {
-            padding: 20px;
-            max-width: 1400px;
-            margin: auto;
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --info-color: #00cfe8;
+            --success-color: #28c76f;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
         }
 
-        /* Başlık ve Navigasyon */
-        .page-header {
+        body {
+            background-color: #f5f5f9;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-            text-align: center;
         }
 
-            .page-header h1 {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-bottom: 1rem;
-            }
-
-        /* Filtre Formu */
-        .filter-form {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-            .filter-form .input-group {
-                max-width: 400px;
-                margin: auto;
-            }
-
-        /* Butonlar ve Araç Çubuğu */
-        .action-toolbar {
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.5rem;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-bottom: 1.5rem;
         }
 
-        .btn-icon {
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+                font-size: 1.5rem;
+            }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: var(--transition);
+            padding: 0.75rem 1.5rem;
+            box-shadow: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
         }
 
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+            .btn-success:hover {
+                background-color: #1da15a;
+                transform: translateY(-2px);
+            }
+
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+            .btn-info:hover {
+                background-color: #00a1b5;
+                transform: translateY(-2px);
+            }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+            .btn-warning:hover {
+                background-color: #ff851a;
+                transform: translateY(-2px);
+            }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #e42728;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background-color: #82868b;
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background-color: #6c757d;
+                transform: translateY(-2px);
+            }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+            }
+
         .btn-sm {
-            padding: 0.375rem 0.75rem;
+            padding: 0.5rem 1rem;
             font-size: 0.875rem;
         }
 
-        /* Tablo ve Kart Tasarımı */
-        .data-table-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-
-        .table thead th {
-            background: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .bulk-checkbox-cell {
-            vertical-align: middle;
-            text-align: center;
-        }
-
-        /* Responsive Adjustments */
-        @@media (max-width: 768px) {
-            .action-toolbar
-
-        {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .filter-form .input-group {
-            width: 100%;
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
         }
 
         .table-responsive {
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table th {
+                border-top: none;
+                font-weight: 600;
+                color: #6e6b7b;
+                background-color: #f8f8f8;
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+            }
+
+            .table td {
+                padding: 1rem 1.5rem;
+                vertical-align: middle;
+                border-top: 1px solid rgba(34, 41, 47, 0.05);
+                word-wrap: break-word;
+            }
+
+        .table-hover tbody tr:hover td {
+            background-color: #f9f9f9;
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            border-radius: 6px;
+            box-shadow: 0 5px 25px rgba(34, 41, 47, 0.1);
+            border: none;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .dropdown-item i {
+                margin-right: 0.75rem;
+                width: 20px;
+                text-align: center;
+            }
+
+            .dropdown-item.text-danger {
+                color: var(--danger-color) !important;
+            }
+
+                .dropdown-item.text-danger:hover {
+                    background-color: rgba(234, 84, 85, 0.1);
+                }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .badge-light-primary {
+            background-color: rgba(115, 103, 240, 0.12);
+            color: var(--primary-color);
+        }
+
+        .input-group {
+            max-width: 400px;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 767.98px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .input-group {
+                max-width: 100%;
+            }
+
+            .table td, .table th {
+                padding: 0.75rem;
+            }
         }
     </style>
 }
 
-@section Scripts {
-    <!-- jQuery (DataTables için gereklidir) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        $(document).ready(function () {
-            $('#postTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Turkish.json"
-                }
-            });
-        });
-
-        // Başarı mesajını göster
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Başarılı',
-                            text: '@TempData["SuccessMessage"]'
-                        });
-            </text>
-        }
-
-        // Bireysel silme onayı
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Emin misiniz?',
-                    text: "Bu yazıyı silmek istediğinize emin misiniz?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Evet, sil!',
-                    cancelButtonText: 'İptal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-
-        // Toplu silme onayı
-        document.getElementById('bulkDeleteButton').addEventListener('click', function(){
-            Swal.fire({
-                title: 'Emin misiniz?',
-                text: "Seçilen yazıları silmek istediğinize emin misiniz?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Evet, sil!',
-                cancelButtonText: 'İptal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('bulkDeleteForm').submit();
-                }
-            });
-        });
-
-        // Tümünü seç/deseç
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.bulk-checkbox');
-            checkboxes.forEach(chk => chk.checked = this.checked);
-        });
-    </script>
-}
-
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-
-<div class="container">
-    <!-- Başlık ve Ana Buton -->
-    <div class="page-header">
-        <h1>Yazı Yönetimi</h1>
-        <a href="@Url.Action("Create")" class="btn btn-success btn-icon">
-            <i class="bi bi-plus-circle"></i> Yeni Yazı Oluştur
-        </a>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">
+            <i class="bi bi-file-earmark-text"></i>@ViewData["Title"]
+        </h4>
+        <div class="badge badge-light-primary">
+            <i class="bi bi-collection me-1"></i>@Model.Count() Yazı
+        </div>
     </div>
+    <div class="card-body">
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Yeni Yazı
+            </a>
+            <a asp-action="GetPostStatistics" class="btn btn-info">
+                <i class="bi bi-bar-chart-line"></i> İstatistikler
+            </a>
 
-    <!-- Filtre ve Araç Çubuğu -->
-    <div class="filter-form">
-        <div class="row g-3 align-items-center">
-            <div class="col-md-4">
-                <form method="get" action="@Url.Action("GetPostsByCategoryId", "Post")" class="input-group">
-                    <select id="categorySelect" name="categoryId" class="form-select">
+            <form method="get" asp-action="GetPostsByCategoryId" class="flex-grow-1">
+                <div class="input-group">
+                    <select name="categoryId" class="form-select">
                         <option value="">Tüm Kategoriler</option>
                         @if (ViewBag.Categories != null)
                         {
@@ -503,42 +285,67 @@
                             }
                         }
                     </select>
-                    <button type="submit" class="btn btn-outline-secondary">
+                    <button type="submit" class="btn btn-warning">
                         <i class="bi bi-filter"></i> Filtrele
                     </button>
-                </form>
-            </div>
-
-            <div class="col-md-8">
-                <div class="action-toolbar">
-                    <a href="@Url.Action("GetPostStatistics")" class="btn btn-outline-info btn-icon">
-                        <i class="bi bi-bar-chart"></i> İstatistikler
-                    </a>
-                    <a href="@Url.Action("GetPopularPosts", new { count = 5 })" class="btn btn-outline-primary btn-icon">
-                        <i class="bi bi-fire"></i> Popüler Yazılar
-                    </a>
-                    <button type="button" class="btn btn-danger btn-icon" id="bulkDeleteButton">
-                        <i class="bi bi-trash"></i> Seçilenleri Sil
-                    </button>
                 </div>
-            </div>
-        </div>
-    </div>
+            </form>
 
-    <!-- Tablo Alanı -->
-    <div class="data-table-card">
-        <div class="table-responsive">
-            <form id="bulkDeleteForm" asp-action="BulkDeletePosts" method="post">
-                <table id="postTable" class="table table-hover align-middle">
+            @if (!string.IsNullOrEmpty(currentUserId))
+            {
+                <a asp-action="GetPostsByUserId" asp-route-userId="@currentUserId" class="btn btn-warning">
+                    <i class="bi bi-person"></i> Yazar Yazıları
+                </a>
+            }
+            else
+            {
+                <a asp-action="Login" asp-controller="Account" class="btn btn-warning">
+                    <i class="bi bi-person"></i> Giriş Yap
+                </a>
+            }
+
+            <a asp-action="SearchPosts" class="btn btn-secondary">
+                <i class="bi bi-search"></i> Arama
+            </a>
+            <a asp-action="GetPopularPosts" asp-route-count="5" class="btn btn-primary">
+                <i class="bi bi-fire"></i> Popüler
+            </a>
+        </div>
+
+        @if (ViewBag.Posts != null)
+        {
+            <div class="dropdown mb-4">
+                <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-link-45deg"></i> Slug Bağlantıları
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var post in ViewBag.Posts)
+                    {
+                        <li>
+                            <a asp-action="GetPostBySlug" asp-route-slug="@post.Slug" class="dropdown-item">
+                                @post.Title
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form id="bulkDeleteForm" asp-action="BulkDeletePosts" method="post">
+            <button type="button" class="btn btn-danger mb-3" id="bulkDeleteButton">
+                <i class="bi bi-trash"></i> Seçilenleri Sil
+            </button>
+
+            <div class="table-responsive">
+                <table id="postTable" class="table table-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="bulk-checkbox-cell">
-                                <input type="checkbox" id="selectAll" class="form-check-input" />
-                            </th>
+                            <th><input type="checkbox" id="selectAll" /></th>
                             <th>Başlık</th>
+                            <th>Video Yolu</th>
+                            <th>Video URL</th>
                             <th>Kategori</th>
                             <th>Yazar</th>
-                            <th>Video</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
@@ -546,59 +353,150 @@
                         @foreach (var post in Model)
                         {
                             <tr>
-                                <td class="bulk-checkbox-cell">
-                                    <input type="checkbox" name="postIds" value="@post.Id" class="form-check-input bulk-checkbox" />
-                                </td>
                                 <td>
-                                    <div class="d-flex flex-column">
-                                        <span class="fw-semibold">@post.Title</span>
-                                        <small class="text-muted">@post.Excerpt</small>
-                                    </div>
+                                    <input type="checkbox" name="postIds" value="@post.Id" class="bulk-checkbox" />
                                 </td>
-                                <td>@post.CategoryName</td>
-                                <td>@(string.IsNullOrEmpty(post.FullName) ? "Bilinmiyor" : post.FullName)</td>
+                                <td>@post.Title</td>
+                                <td>@post.VideoUrl</td>
                                 <td>
                                     @if (!string.IsNullOrEmpty(post.VideoUrl))
                                     {
-                                        <a href="@post.VideoUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <a href="@post.VideoUrl" target="_blank" class="btn btn-link btn-sm">
                                             <i class="bi bi-play-btn"></i> İzle
                                         </a>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary">Yok</span>
+                                        <span class="text-muted">Yok</span>
                                     }
                                 </td>
+                                <td>@post.CategoryName</td>
+                                <td>@(post.FullName ?? "Bilinmiyor")</td>
                                 <td>
-                                    <div class="d-flex gap-2">
-                                        <a href="@Url.Action("Edit", new { id = post.Id })"
-                                           class="btn btn-sm btn-outline-success"
-                                           title="Düzenle">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <form action="@Url.Action("Delete", new { id = post.Id })"
-                                              method="post"
-                                              class="delete-form">
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Sil">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                        <a href="@Url.Action("GetPostDetails", new { postId = post.Id })"
-                                           class="btn btn-sm btn-outline-info"
-                                           title="Detaylar">
-                                            <i class="bi bi-info-circle"></i>
-                                        </a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-gear"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a asp-action="Edit" asp-route-id="@post.Id" class="dropdown-item">
+                                                    <i class="bi bi-pencil"></i> Düzenle
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form method="post" asp-action="Delete" asp-route-id="@post.Id" class="delete-form">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-trash"></i> Sil
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <a asp-action="GetPostDetails" asp-route-postId="@post.Id" class="dropdown-item">
+                                                    <i class="bi bi-info-circle"></i> Detaylar
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-</div> *@
+</div>
 
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable with responsive extension
+            $('#postTable').DataTable({
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/Turkish.json"
+                },
+                columnDefs: [
+                    { orderable: false, targets: [0, 6] },
+                    { searchable: false, targets: [0, 6] }
+                ]
+            });
+
+            // Show success message
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonColor: '#7367f0'
+                    });
+            </text>
+        }
+
+            // Individual delete confirmation
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Emin misiniz?',
+                        text: "Bu yazıyı silmek istediğinize emin misiniz?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ea5455',
+                        cancelButtonColor: '#7367f0',
+                        confirmButtonText: 'Evet, sil!',
+                        cancelButtonText: 'İptal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Bulk delete confirmation
+            document.getElementById('bulkDeleteButton').addEventListener('click', function(){
+                const selectedCount = document.querySelectorAll('.bulk-checkbox:checked').length;
+                if (selectedCount > 0) {
+                    Swal.fire({
+                        title: 'Emin misiniz?',
+                        html: `<b>${selectedCount} yazı</b> silinecek. Bu işlem geri alınamaz!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ea5455',
+                        cancelButtonColor: '#7367f0',
+                        confirmButtonText: 'Evet, sil!',
+                        cancelButtonText: 'İptal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('bulkDeleteForm').submit();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Uyarı!',
+                        text: 'Lütfen silinecek yazıları seçiniz',
+                        icon: 'warning',
+                        confirmButtonColor: '#7367f0'
+                    });
+                }
+            });
+
+            // Select all checkboxes
+            document.getElementById('selectAll').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('.bulk-checkbox');
+                checkboxes.forEach(chk => chk.checked = this.checked);
+            });
+        });
+    </script>
+}

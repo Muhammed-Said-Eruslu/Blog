@@ -33,13 +33,15 @@ namespace UI.Areas.User.Controllers
             _notyf = notyf;
             _mailService = mailService;
         }
-
+        [HttpGet]
+        [Route("giris-yap")]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
+        [Route("giris-yap")]
         public async Task<IActionResult> Login(LoginVM model)
         {
             if (!ModelState.IsValid)
@@ -75,12 +77,14 @@ namespace UI.Areas.User.Controllers
         }
 
         [HttpGet]
+        [Route("kayıt-ol")]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [Route("kayıt-ol")]
         public async Task<IActionResult> Register(RegisterVM model)
         {
             if (ModelState.IsValid)

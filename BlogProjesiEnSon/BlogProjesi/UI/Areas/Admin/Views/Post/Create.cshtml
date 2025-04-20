@@ -7,196 +7,421 @@
 @section Styles {
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #7367f0;
+            --danger-color: #ea5455;
+            --warning-color: #ff9f43;
+            --info-color: #00cfe8;
+            --success-color: #28c76f;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+            --transition: all 0.3s ease-in-out;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            background-color: #f5f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control {
-            border: 1px solid #ccc;
-            border-radius: 0.375rem;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            padding: 0.5rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 0.375rem;
-            border: none;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-            .btn-success:hover {
-                background-color: #218838;
-            }
 
         .card {
-            border: 1px solid #e3e6f0;
-            border-radius: 0.35rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,.15);
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
             margin-bottom: 2rem;
         }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title i {
+                margin-right: 10px;
+                font-size: 1.5rem;
+                color: var(--primary-color);
+            }
 
         .card-body {
             padding: 2rem;
         }
 
-        .select2-container {
-            width: 100% !important;
+        .form-label {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0.5rem;
         }
 
-        #imagePreview {
-            max-width: 200px;
+        .form-control, .form-select, .select2-selection {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.3);
+            }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: var(--transition);
+            padding: 0.75rem 1.5rem;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+            .btn-success:hover {
+                background-color: #1da15a;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(40, 199, 111, 0.4);
+            }
+
+        .btn-secondary {
+            background-color: #82868b;
+            color: white;
+        }
+
+            .btn-secondary:hover {
+                background-color: #6c757d;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(130, 134, 139, 0.4);
+            }
+
+        .image-preview-container {
             margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px 0 rgba(34, 41, 47, 0.1);
             display: none;
+            margin-top: 1rem;
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 1rem;
+        }
+
+            .file-input-label:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px 0 rgba(115, 103, 240, 0.4);
+            }
+
+        .file-input {
+            display: none;
+        }
+
+        .note-editor {
+            border-radius: 6px !important;
+        }
+
+        .note-editable {
+            min-height: 300px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            min-height: 45px;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.3) !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: var(--primary-color) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white !important;
+            margin-right: 5px !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 767.98px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
         }
     </style>
 }
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Select2 başlatma
-            $('select[multiple]').select2({
-                placeholder: "Etiket seçiniz...",
-                allowClear: true
-            });
-            $('select:not([multiple])').select2({
-                placeholder: "Seçiniz...",
-                allowClear: true
-            });
-
-            // Öne çıkan resim önizleme
-            $('#FeaturedImageFile').change(function () {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result).fadeIn();
-                }
-                reader.readAsDataURL(this.files[0]);
-            });
-        });
-           // Başlık girildiğinde slug otomatik oluştur
-        document.getElementById("Title").addEventListener("input", function () {
-            let title = this.value.toLowerCase().trim();
-            let slug = title
-                .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
-                .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
-                .replace(/[^a-z0-9\s-]/g, "") // Sadece harf ve rakam kalsın
-                .replace(/\s+/g, "-") // Boşlukları tire yap
-                .replace(/-+/g, "-"); // Çift tireleri tek tire yap
-            document.getElementById("Slug").value = slug;
-        });
-
-        // Öne çıkan resim önizleme
-        document.getElementById("FeaturedImageFile").addEventListener("change", function () {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById("imagePreview").src = e.target.result;
-                document.getElementById("imagePreview").style.display = "block";
-            }
-            reader.readAsDataURL(this.files[0]);
-        });
-    </script>
-}
-
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="bi bi-plus-circle"></i> @ViewBag.Title
+                    </h4>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Geri Dön
+                    </a>
+                </div>
                 <div class="card-body">
-                    <h2 class="mb-4">Yeni Yazı Oluştur</h2>
-                    <form asp-action="Create" method="post" enctype="multipart/form-data">
-                        <!-- Başlık -->
-                        <div class="form-group">
-                            <label asp-for="Title" class="form-label">Başlık</label>
-                            <input asp-for="Title" class="form-control" placeholder="Yazı başlığı giriniz" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
+                    <form asp-action="Create" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <!-- Başlık -->
+                                <div class="mb-4">
+                                    <label asp-for="Title" class="form-label">Başlık *</label>
+                                    <input asp-for="Title" class="form-control" placeholder="Yazı başlığını giriniz" required />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+
+                                <!-- Slug (URL Dostu Ad) -->
+                                <div class="mb-4">
+                                    <label asp-for="Slug" class="form-label">SEO URL (Slug)</label>
+                                    <input asp-for="Slug" class="form-control" placeholder="SEO dostu URL otomatik oluşturulacak" readonly />
+                                    <small class="text-muted">Bu alan başlığa göre otomatik doldurulur, gerektiğinde düzenleyebilirsiniz.</small>
+                                    <span asp-validation-for="Slug" class="text-danger"></span>
+                                </div>
+
+                                <!-- İçerik -->
+                                <div class="mb-4">
+                                    <label asp-for="Content" class="form-label">İçerik *</label>
+                                    <textarea asp-for="Content" id="summernote" class="form-control" required></textarea>
+                                    <span asp-validation-for="Content" class="text-danger"></span>
+                                </div>
+
+                                <!-- Özet -->
+                                <div class="mb-4">
+                                    <label asp-for="Excerpt" class="form-label">Özet</label>
+                                    <textarea asp-for="Excerpt" class="form-control" rows="4" placeholder="Yazı özetini giriniz (Opsiyonel)"></textarea>
+                                    <small class="text-muted">Bu özet arama sonuçlarında ve kartlarda görüntülenir.</small>
+                                    <span asp-validation-for="Excerpt" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <!-- Öne Çıkan Resim -->
+                                <div class="mb-4">
+                                    <label class="form-label">Öne Çıkan Resim</label>
+                                    <label for="FeaturedImageFile" class="file-input-label">
+                                        <i class="bi bi-image"></i> Resim Seç
+                                    </label>
+                                    <input type="file" id="FeaturedImageFile" name="FeaturedImageFile" class="file-input" accept="image/*" />
+                                    <div class="image-preview-container">
+                                        <img id="imagePreview" class="image-preview" src="#" alt="Resim Önizleme" />
+                                    </div>
+                                    <small class="text-muted">Önerilen boyut: 1200x630 piksel (16:9 oran)</small>
+                                </div>
+
+                                <!-- Video Dosyası -->
+                                <div class="mb-4">
+                                    <label class="form-label">Video Dosyası</label>
+                                    <label for="VideoFile" class="file-input-label">
+                                        <i class="bi bi-film"></i> Video Seç
+                                    </label>
+                                    <input type="file" id="VideoFile" name="VideoFile" class="file-input" accept="video/*" />
+                                    <small class="text-muted">MP4 formatı önerilir. Maksimum 50MB.</small>
+                                </div>
+
+                                <!-- Kategori -->
+                                <div class="mb-4">
+                                    <label asp-for="CategoryId" class="form-label">Kategori *</label>
+                                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select" required>
+                                        <option value="">Kategori Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Yazar -->
+                                <div class="mb-4">
+                                    <label asp-for="UserId" class="form-label">Yazar *</label>
+                                    <select asp-for="UserId" asp-items="ViewBag.Users" class="form-select" required>
+                                        <option value="">Yazar Seçiniz</option>
+                                    </select>
+                                    <span asp-validation-for="UserId" class="text-danger"></span>
+                                </div>
+
+                                <!-- Etiketler -->
+                                <div class="mb-4">
+                                    <label asp-for="TagIds" class="form-label">Etiketler</label>
+                                    <select asp-for="TagIds" asp-items="ViewBag.Tags" class="form-control" multiple="multiple">
+                                    </select>
+                                    <small class="text-muted">Birden fazla etiket seçebilirsiniz.</small>
+                                    <span asp-validation-for="TagIds" class="text-danger"></span>
+                                </div>
+
+                       @*          <!-- Durum -->
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="IsPublished" name="IsPublished" checked>
+                                        <label class="form-check-label" for="IsPublished">Yayınla</label>
+                                    </div>
+                                    <small class="text-muted">Bu yazıyı hemen yayınlamak istemiyorsanız kapatabilirsiniz.</small>
+                                </div> *@
+                            </div>
                         </div>
 
-                        <!-- Slug (URL Dostu Ad) -->
-                        <div class="mb-3">
-                            <label asp-for="Slug" class="form-label">Slug (URL Adı)</label>
-                            <input asp-for="Slug" class="form-control" placeholder="Slug otomatik oluşturulacak..." readonly />
-                            <span asp-validation-for="Slug" class="text-danger"></span>
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-save"></i> Yazıyı Kaydet
+                            </button>
                         </div>
-
-                        <!-- İçerik -->
-                        <div class="form-group">
-                            <label asp-for="Content" class="form-label">İçerik</label>
-                            <textarea asp-for="Content" class="form-control" rows="5" placeholder="Yazı içeriğini giriniz"></textarea>
-                            <span asp-validation-for="Content" class="text-danger"></span>
-                        </div>
-
-                        <!-- Video Dosyası (dosya inputu, modeldeki VideoUrl alanına değil) -->
-                        <div class="form-group">
-                            <label class="form-label">Video Dosyası Seçiniz</label>
-                            <input type="file" id="VideoFile" name="VideoFile" class="form-control" accept="video/*" />
-                        </div>
-
-                        <!-- Özet -->
-                        <div class="form-group">
-                            <label asp-for="Excerpt" class="form-label">Özet</label>
-                            <textarea asp-for="Excerpt" class="form-control" placeholder="Yazı özetini giriniz"></textarea>
-                            <span asp-validation-for="Excerpt" class="text-danger"></span>
-                        </div>
-
-                        <!-- Öne Çıkan Resim -->
-                        <div class="form-group">
-                            <label class="form-label">Öne Çıkan Resim</label>
-                            <input type="file" id="FeaturedImageFile" name="FeaturedImageFile" class="form-control" accept="image/*" />
-                            <img id="imagePreview" src="#" alt="Resim Önizleme" />
-                        </div>
-
-                        <!-- Kategori -->
-                        <div class="form-group">
-                            <label asp-for="CategoryId" class="form-label">Kategori</label>
-                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
-                                <option value="">Kategori Seçiniz</option>
-                            </select>
-                            <span asp-validation-for="CategoryId" class="text-danger"></span>
-                        </div>
-
-                        <!-- Yazar -->
-                        <div class="form-group">
-                            <label asp-for="UserId" class="form-label">Yazar</label>
-                            <select asp-for="UserId" asp-items="ViewBag.Users" class="form-control">
-                                <option value="">Yazar Seçiniz</option>
-                            </select>
-                            <span asp-validation-for="UserId" class="text-danger"></span>
-                        </div>
-
-                        <!-- Etiketler -->
-                        <div class="form-group">
-                            <label asp-for="TagIds" class="form-label">Etiketler</label>
-                            <select asp-for="TagIds" asp-items="ViewBag.Tags" class="form-control" multiple>
-                                <option value="">Etiket Seçiniz</option>
-                            </select>
-                            <span asp-validation-for="TagIds" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Oluştur</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-tr-TR.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Summernote editor initialization
+            $('#summernote').summernote({
+                height: 300,
+                lang: 'tr-TR',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+
+            // Select2 initialization
+            $('select').select2({
+                placeholder: "Seçiniz...",
+                allowClear: true
+            });
+
+            $('select[multiple]').select2({
+                placeholder: "Etiket seçiniz...",
+                allowClear: true
+            });
+
+            // Auto generate slug from title
+            $('#Title').on('input', function () {
+                let title = $(this).val().toLowerCase().trim();
+                let slug = title
+                    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
+                    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-")
+                    .replace(/-+/g, "-");
+                $('#Slug').val(slug);
+            });
+
+            // Image preview
+            $('#FeaturedImageFile').change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#imagePreview').attr('src', e.target.result).show();
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            // Form validation
+            (function () {
+                'use strict';
+                var forms = document.querySelectorAll('.needs-validation');
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+            })();
+
+            // Show success message
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonColor: '#7367f0'
+                    });
+            </text>
+        }
+        });
+    </script>
+}

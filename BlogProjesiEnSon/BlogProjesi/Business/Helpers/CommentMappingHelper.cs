@@ -11,31 +11,29 @@ namespace Business.Helpers
     {
         public static List<CommentDTO> MapCommentsWithReplies(List<Comment> allComments)
         {
-            var topLevelComments = allComments
+            // Önce tüm yorumları al, sonra ana yorumları filtrele
+            var comments = allComments.ToList(); // Materialize ediyoruz
+            return comments
                 .Where(c => c.ParentCommentId == null)
-                .Select(c => new CommentDTO
-                {
-                    Id = c.Id,
-                    Content = c.Content,
-                    CreatedAt = c.CreatedAt,
-                    AuthorName = !string.IsNullOrEmpty(c.User?.FullName) ? c.User.FullName : c.AuthorName ?? "Anonim",
-                    ProfileImage = !string.IsNullOrEmpty(c.User?.ProfileImage) ? c.User.ProfileImage : "/images/default-avatar.png",
-                    UserName = !string.IsNullOrEmpty(c.User?.UserName) ? c.User.UserName : "Anonim",
-                    Replies = allComments
-                        .Where(r => r.ParentCommentId == c.Id)
-                        .Select(r => new CommentDTO
-                        {
-                            Id = r.Id,
-                            Content = r.Content,
-                            CreatedAt = r.CreatedAt,
-                            AuthorName = !string.IsNullOrEmpty(r.User?.FullName) ? r.User.FullName : r.AuthorName ?? "Anonim",
-                            ProfileImage = !string.IsNullOrEmpty(r.User?.ProfileImage) ? r.User.ProfileImage : "/images/default-avatar.png",
-                            UserName = !string.IsNullOrEmpty(r.User?.UserName) ? r.User.UserName : "Anonim"
-                        }).ToList()
-                })
+                .Select(c => MapComment(c, comments))
                 .ToList();
+        }
 
-            return topLevelComments;
+        private static CommentDTO MapComment(Comment comment, List<Comment> allComments)
+        {
+            return new CommentDTO
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                CreatedAt = comment.CreatedAt,
+                AuthorName = comment.User?.FullName ?? comment.AuthorName ?? "Anonim",
+                ProfileImage = comment.User?.ProfileImage ?? "/images/default-avatar.png",
+                Replies = allComments
+                    .Where(r => r.ParentCommentId == comment.Id)
+                    .OrderBy(r => r.CreatedAt) // Alt yorumları tarihe göre sırala
+                    .Select(r => MapComment(r, allComments))
+                    .ToList()
+            };
         }
     }
 }

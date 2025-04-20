@@ -19,7 +19,6 @@
         max-width: 100%; /* Tam genişliği kullan */
     }
 
-
     .avatar-img {
         width: 50px; /* Profil resminin sabit genişliği */
         height: 50px;
@@ -27,7 +26,6 @@
         object-fit: cover; /* Resmin oranını koruyarak kırpmadan göster */
         border: 2px solid #fff; /* Hafif bir beyaz çerçeve ekleyerek belirginleştir */
     }
-
 
     /* Sidebar Stilleri */
     .sidebar-box {
@@ -102,6 +100,225 @@
         height: 100%;
         background: rgba(0,0,0,0.3);
     }
+
+    /* Reply button highlight to make it more visible */
+    .btn-reply {
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .btn-reply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+
+    /* Visual indicator for reply comments */
+    .reply-comment {
+        position: relative;
+    }
+
+        .reply-comment::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            width: 15px;
+            height: 12px;
+            border-left: 2px solid var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            border-bottom-left-radius: 6px;
+        }
+
+    .comment-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .comment-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    /* Ana Yorum Stili */
+    .comment {
+        position: relative;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+        .comment:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+    /* Yorum Yazar Bilgisi */
+    .comment-author {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .avatar-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .comment-meta {
+        margin-left: 1rem;
+    }
+
+    .comment-author-name {
+        font-weight: 600;
+        color: #2d3436;
+        margin-bottom: 0.25rem;
+    }
+
+    .comment-date {
+        font-size: 0.85rem;
+        color: #636e72;
+    }
+
+    /* Yorum İçeriği */
+    .comment-content {
+        line-height: 1.6;
+        color: #2d3436;
+        margin-bottom: 1rem;
+        padding-left: 62px; /* Avatar ile hizalama */
+    }
+
+    /* Yanıt Butonu */
+    .comment-actions {
+        display: flex;
+        gap: 1rem;
+        padding-left: 62px;
+    }
+
+    .btn-reply {
+        background: transparent;
+        border: 1px solid #6c5ce7;
+        color: #6c5ce7;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+        .btn-reply:hover {
+            background: #6c5ce7;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    /* Yanıt Yorumları */
+    .replies {
+        margin-left: 2.5rem;
+        padding-left: 1.5rem;
+        border-left: 2px solid #eee;
+        position: relative;
+    }
+
+        .replies::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -2px;
+            height: 1.5rem;
+            width: 2px;
+            background: #6c5ce7;
+        }
+
+    .reply-comment {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+        .reply-comment .avatar-img {
+            width: 40px;
+            height: 40px;
+        }
+
+    /* Yorum Formu */
+    .comment-form-wrap {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-top: 2rem;
+    }
+
+    .comment-form-title {
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #2d3436;
+    }
+
+    #replyingToInfo {
+        padding: 0.75rem 1rem;
+        background: rgba(108, 92, 231, 0.1);
+        border-left: 3px solid #6c5ce7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #commentContent {
+        min-height: 120px;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        transition: all 0.2s;
+    }
+
+        #commentContent:focus {
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
+    /* Yorum highlight efekti */
+    .highlight-comment {
+        animation: highlight 2s ease;
+        border-left: 3px solid #6c5ce7 !important;
+    }
+
+    @@keyframes highlight {
+        0%
+
+    {
+        background-color: rgba(108, 92, 231, 0.1);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+
+    }
+
+    /* Responsive düzenlemeler */
+    @@media (max-width: 768px) {
+        .comment-content, .comment-actions
+
+    {
+        padding-left: 0;
+    }
+
+    .replies {
+        margin-left: 1rem;
+        padding-left: 1rem;
+    }
+
+    }
 </style>
 
 <section class="ftco-section py-5">
@@ -170,60 +387,60 @@
                                 }
                             </div>
                         }
-
-
                     </div>
                 </div>
 
                 <!-- Yorumlar -->
-                <div class="pt-5 mt-4">
-                    <h3 class="mb-4 fw-bold">@Model.Comments.Count Yorum</h3>
+                <div class="comment-section">
+                    <h3 class="mb-4 fw-bold" id="commentCount">
+                        <span id="totalCommentCount">@Model.Comments.Count</span> Yorum
+                    </h3>
 
-                    <ul class="comment-list list-unstyled">
+                    <ul class="comment-list">
                         @if (Model.Comments?.Any() ?? false)
                         {
-                            @foreach (var comment in Model.Comments.Where(c => c.ParentCommentId == null))
+                            @foreach (var comment in Model.Comments.Where(c => c.ParentCommentId == null).OrderByDescending(c => c.CreatedAt))
                             {
-                                <li class="comment card mb-3 p-3 bg-light border-start border-3 border-primary">
-                                    <div class="d-flex align-items-center mb-3">
+                                <li class="comment" id="comment-@comment.Id">
+                                    <div class="comment-author">
                                         <img src="@(!string.IsNullOrEmpty(comment.ProfileImage) ? comment.ProfileImage : "/images/default-avatar.png")"
-                                             class="rounded-circle me-3 avatar-img"
-                                             width="60"
-                                             height="60"
+                                             class="avatar-img"
                                              alt="@comment.AuthorName">
-                                        <div class="comment-author">
-                                            <h6 class="mb-0 fw-bold" title="@comment.AuthorName">@comment.AuthorName</h6>
-                                            <small class="text-muted">@comment.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+                                        <div class="comment-meta">
+                                            <h6 class="comment-author-name">@comment.AuthorName</h6>
+                                            <span class="comment-date">@comment.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
                                         </div>
                                     </div>
-                                    <p class="mb-2">@comment.Content</p>
-                                    <button class="btn btn-sm btn-outline-primary align-self-start"
-                                            onclick="replyToComment('@comment.Id')">
-                                        <i class="fas fa-reply me-1"></i>Yanıtla
-                                    </button>
+                                    <div class="comment-content">
+                                        @comment.Content
+                                    </div>
+                                    <div class="comment-actions">
+                                        <button class="btn-reply" onclick="replyToComment('@comment.Id', '@comment.AuthorName')">
+                                            <i class="fas fa-reply me-1"></i>Yanıtla
+                                        </button>
+                                    </div>
 
                                     @if (Model.Comments.Any(r => r.ParentCommentId == comment.Id))
                                     {
-                                        <ul class="reply-list list-unstyled mt-3 ps-4">
-                                            @foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id))
+                                        <div class="replies" id="replies-@comment.Id">
+                                            @foreach (var reply in Model.Comments.Where(r => r.ParentCommentId == comment.Id).OrderBy(r => r.CreatedAt))
                                             {
-                                                <li class="comment card p-3 mt-2 bg-white border-start border-3 border-secondary">
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="@(!string.IsNullOrEmpty(comment.ProfileImage) ? comment.ProfileImage : "/images/default-avatar.png")"
-                                                             class="rounded-circle me-3 avatar-img"
-                                                             width="60"
-                                                             height="60"
-                                                             alt="@comment.AuthorName">
-                                                        <div class="comment-author">
-                                                            <h6 class="mb-0 fw-bold" title="@reply.AuthorName">@reply.AuthorName</h6>
-                                                            <small class="text-muted">@reply.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+                                                <div class="comment reply-comment" id="comment-@reply.Id">
+                                                    <div class="comment-author">
+                                                        <img src="@(!string.IsNullOrEmpty(reply.ProfileImage) ? reply.ProfileImage : "/images/default-avatar.png")"
+                                                             class="avatar-img"
+                                                             alt="@reply.AuthorName">
+                                                        <div class="comment-meta">
+                                                            <h6 class="comment-author-name">@reply.AuthorName</h6>
+                                                            <span class="comment-date">@reply.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
                                                         </div>
                                                     </div>
-                                                    <p class="mt-2 mb-0">@reply.Content</p>
-                                                </li>
-
+                                                    <div class="comment-content">
+                                                        @reply.Content
+                                                    </div>
+                                                </div>
                                             }
-                                        </ul>
+                                        </div>
                                     }
                                 </li>
                             }
@@ -235,51 +452,57 @@
                             </div>
                         }
                     </ul>
+                </div>
 
-
-                    <!-- Yorum Formu -->
-                    <div class="comment-form-wrap mt-5 card p-4 bg-light rounded-3">
-                        <h4 class="mb-4 fw-bold">Yorum Yaz</h4>
-
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <form asp-area="User" asp-controller="Home" asp-action="AddComment" method="post">
-                                <input type="hidden" name="PostId" value="@Model.Id" /> <!-- ✅ Post ID -->
-                                <input type="hidden" name="PostSlug" value="@Model.Slug" /> <!-- ✅ Slug bilgisini de ekledik -->
-                                <input type="hidden" name="ParentCommentId" id="parentCommentId" value="" />
-                                <input type="hidden" asp-for="Author.ProfilePhotoUrl" />
-                                <div class="mb-3">
-                                    <input type="text" name="AuthorName" class="form-control" value="@User.Identity.Name" readonly>
-                                </div>
-
-                                <div class="mb-3">
-                                    <textarea name="Content" class="form-control" rows="4" placeholder="Düşüncelerinizi yazın..." required></textarea>
-                                </div>
-
-                                <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="fas fa-paper-plane me-2"></i>Gönder
-                                    </button>
-                                </div>
-                            </form>
-
-
-                        }
-                        else
-                        {
-                            <div class="alert alert-warning text-center py-3">
-                                <p class="mb-3">Yorum yapabilmek için giriş yapmalısınız</p>
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <a href="/User/Account/Login" class="btn btn-primary">
-                                        <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
-                                    </a>
-                                    <a href="/User/Account/Register" class="btn btn-outline-primary">
-                                        <i class="fas fa-user-plus me-2"></i>Kayıt Ol
-                                    </a>
-                                </div>
-                            </div>
-                        }
+                <!-- Yorum Formu -->
+                <div class="comment-form-wrap">
+                    <h4 class="comment-form-title">Yorum Yaz</h4>
+                    <div id="replyingToInfo" class="alert alert-info d-none mb-3">
+                        <span><i class="fas fa-info-circle me-2"></i><span id="replyingToText"></span></span>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="resetCommentForm()">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </button>
                     </div>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form id="commentForm" method="post">
+                            <input type="hidden" name="PostId" value="@Model.Id" />
+                            <input type="hidden" name="PostSlug" value="@Model.Slug" />
+                            <input type="hidden" name="ParentCommentId" id="parentCommentId" value="" />
+                            <input type="hidden" name="Author.ProfilePhotoUrl" value="@User.Claims.FirstOrDefault(c => c.Type == "ProfilePhoto")?.Value" />
+
+                            <div class="mb-3">
+                                <label for="authorName" class="form-label">Adınız</label>
+                                <input type="text" name="AuthorName" id="authorName" class="form-control" value="@User.Identity.Name" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="commentContent" class="form-label">Yorumunuz</label>
+                                <textarea name="Content" id="commentContent" class="form-control" rows="4" placeholder="Düşüncelerinizi yazın..." required></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="fas fa-paper-plane me-2"></i>Gönder
+                                </button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center py-3">
+                            <p class="mb-3">Yorum yapabilmek için giriş yapmalısınız</p>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <a href="@Url.Action("Login","Account", new {area = "User"})" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                                </a>
+                                <a href="@Url.Action("Register","Account",new{area = "User"})" class="btn btn-outline-primary">
+                                    <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                                </a>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -367,7 +590,7 @@
 </section>
 
 <script>
-
+        // YouTube Video Player
     function playYouTubeVideo() {
         var videoUrl = "@Model.VideoUrl".replace("watch?v=", "embed/");
         var embeddedVideo = document.getElementById("embeddedVideo");
@@ -379,24 +602,241 @@
         videoFrame.classList.remove("d-none");
     }
 
+    // Sayfa yüklendiğinde çalışacak fonksiyonlar
     document.addEventListener("DOMContentLoaded", function () {
+        // Video hatası kontrolü
         var localVideo = document.getElementById("localVideo");
-
         if (localVideo) {
             localVideo.onerror = function () {
                 alert("Bu video açılamıyor! Lütfen video formatını veya yolunu kontrol edin.");
             };
         }
+
+        // Yorum formunu ayarla
+        setupCommentForm();
+
+        // URL'de yorum ID varsa ona scroll yap
+        if (window.location.hash) {
+            var commentElement = document.querySelector(window.location.hash);
+            if (commentElement) {
+                setTimeout(function() {
+                    commentElement.scrollIntoView({ behavior: 'smooth' });
+                    commentElement.classList.add('highlight-comment');
+                    setTimeout(() => commentElement.classList.remove('highlight-comment'), 2000);
+                }, 300);
+            }
+        }
     });
 
-
-
-    function replyToComment(commentId) {
+    // Yorum yanıtlama fonksiyonu
+    function replyToComment(commentId, authorName) {
+        // Ebeveyn yorum ID'sini ayarla
         document.getElementById("parentCommentId").value = commentId;
+
+        // UI güncellemeleri
         document.querySelector('.comment-form-wrap h4').textContent = "Yanıt Yazıyorsunuz";
+
+        var replyingToInfo = document.getElementById('replyingToInfo');
+        var replyingToText = document.getElementById('replyingToText');
+        replyingToInfo.classList.remove('d-none');
+        replyingToText.textContent = authorName + " kullanıcısına yanıt yazıyorsunuz";
+
+        // Forma kaydır
         window.scrollTo({
             top: document.querySelector('.comment-form-wrap').offsetTop - 100,
             behavior: 'smooth'
+        });
+
+        // İptal butonu ekle (eğer yoksa)
+        if (!document.getElementById('cancelReplyBtn')) {
+            var cancelBtn = document.createElement('button');
+            cancelBtn.id = 'cancelReplyBtn';
+            cancelBtn.className = 'btn btn-outline-secondary me-2';
+            cancelBtn.innerHTML = '<i class="fas fa-times me-1"></i>İptal';
+            cancelBtn.onclick = function(e) {
+                e.preventDefault();
+                resetCommentForm();
+            };
+
+            var submitBtn = document.querySelector('#commentForm button[type="submit"]');
+            submitBtn.parentNode.insertBefore(cancelBtn, submitBtn);
+        }
+
+        // Input alanına odaklan
+        document.getElementById('commentContent').focus();
+    }
+
+    // Yorum formunu ayarla
+    function setupCommentForm() {
+        $("#commentForm").submit(function(e) {
+            e.preventDefault();
+
+            // Form verilerini topla
+            var formData = {
+                PostId: $("input[name='PostId']").val(),
+                PostSlug: $("input[name='PostSlug']").val(),
+                ParentCommentId: $("#parentCommentId").val() || null,
+                AuthorName: $("input[name='AuthorName']").val(),
+                Content: $("#commentContent").val().trim(),
+                AuthorProfileImage: $("input[name='Author.ProfilePhotoUrl']").val() || "/images/default-avatar.png"
+            };
+
+            // İçerik kontrolü
+            if (!formData.Content) {
+                showErrorMessage("Lütfen yorum içeriğini yazın.");
+                return;
+            }
+
+            // Yükleniyor göstergesi
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalBtnHtml = submitBtn.html();
+            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...').prop('disabled', true);
+
+            // AJAX çağrısı
+            $.ajax({
+                type: "POST",
+                url: '/User/Post/AddComment',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    submitBtn.html(originalBtnHtml).prop('disabled', false);
+
+                    if (response.success) {
+                        // Yorumu DOM'a ekle
+                        addCommentToDOM(response.comment);
+
+                        // Formu temizle
+                        resetCommentForm();
+
+                        // Başarı mesajı göster
+                        showSuccessMessage(response.message);
+
+                        // Yorum sayısını güncelle
+                        if (response.commentCount !== undefined) {
+                            updateCommentCount(response.commentCount);
+                        }
+
+                        // Yeni yoruma scroll yap
+                        setTimeout(function() {
+                            var commentElement = document.getElementById('comment-' + response.comment.id);
+                            if (commentElement) {
+                                commentElement.scrollIntoView({ behavior: 'smooth' });
+                                commentElement.classList.add('highlight-comment');
+                                setTimeout(() => commentElement.classList.remove('highlight-comment'), 2000);
+                            }
+
+                            // Sayfayı yenile (isteğe bağlı)
+                            window.location.href = response.redirectUrl;
+                        }, 300);
+                    } else {
+                        showErrorMessage(response.message || "Bir hata oluştu.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    submitBtn.html(originalBtnHtml).prop('disabled', false);
+                    console.error("Yorum eklenirken hata:", xhr.responseText);
+                    showErrorMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
+                }
+            });
+        });
+    }
+
+    // DOM'a yorum ekle
+    function addCommentToDOM(comment) {
+        var commentHtml = '';
+        var parentId = comment.parentCommentId;
+        var profileImage = comment.authorProfileImage || "/images/default-avatar.png";
+
+        if (!parentId) {
+            // Ana yorum
+            commentHtml = `
+                <li class="comment card mb-3 p-3 bg-light border-start border-3 border-primary" id="comment-${comment.id}">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="${profileImage}" class="rounded-circle me-3 avatar-img" width="60" height="60" alt="${comment.authorName}">
+                        <div class="comment-author">
+                            <h6 class="mb-0 fw-bold" title="${comment.authorName}">${comment.authorName}</h6>
+                            <small class="text-muted">${comment.createdAt}</small>
+                        </div>
+                    </div>
+                    <p class="mb-2">${comment.content}</p>
+                    <div class="comment-actions">
+                        <button class="btn btn-sm btn-outline-primary btn-reply"
+                                onclick="replyToComment('${comment.id}', '${comment.authorName}')">
+                            <i class="fas fa-reply me-1"></i> Yanıtla
+                        </button>
+                    </div>
+                    <ul class="reply-list list-unstyled mt-3 ps-4" id="replies-${comment.id}"></ul>
+                </li>`;
+
+            $(".comment-list").prepend(commentHtml);
+            $(".comment-list .alert-info").remove();
+        } else {
+            // Yanıt yorumu
+            commentHtml = `
+                <li class="comment reply-comment card p-3 mt-2 bg-white border-start border-3 border-secondary" id="comment-${comment.id}">
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="${profileImage}" class="rounded-circle me-3 avatar-img" width="40" height="40" alt="${comment.authorName}">
+                        <div class="comment-author">
+                            <h6 class="mb-0 fw-bold" title="${comment.authorName}">${comment.authorName}</h6>
+                            <small class="text-muted">${comment.createdAt}</small>
+                        </div>
+                    </div>
+                    <p class="mt-2 mb-0">${comment.content}</p>
+                </li>`;
+
+            $(`#replies-${parentId}`).append(commentHtml);
+
+            // Ebeveyn yorumu vurgula
+            $(`#comment-${parentId}`).addClass("highlight-comment")
+                .delay(2000)
+                .queue(function(next) {
+                    $(this).removeClass("highlight-comment");
+                    next();
+                });
+        }
+    }
+
+    // Yorum formunu sıfırla
+    function resetCommentForm() {
+        $("#commentContent").val('');
+        $("#parentCommentId").val('');
+        $(".comment-form-wrap h4").text("Yorum Yaz");
+        $("#replyingToInfo").addClass('d-none');
+
+        var cancelBtn = document.getElementById('cancelReplyBtn');
+        if (cancelBtn) cancelBtn.remove();
+    }
+
+    // Yorum sayısını güncelle
+    function updateCommentCount(newCount) {
+        var countElement = document.getElementById('totalCommentCount');
+        if (countElement) {
+            countElement.textContent = newCount;
+        }
+    }
+
+    // Başarı mesajı göster
+    function showSuccessMessage(message) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Başarılı!',
+            text: message,
+            confirmButtonColor: '#6c5ce7',
+            timer: 3000,
+            timerProgressBar: true,
+            didClose: () => {
+                // İsteğe bağlı: Mesaj kapatıldığında yapılacak işlemler
+            }
+        });
+    }
+
+    // Hata mesajı göster
+    function showErrorMessage(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Hata!',
+            text: message,
+            confirmButtonColor: '#6c5ce7'
         });
     }
 </script>

@@ -1,10 +1,12 @@
 ﻿using Business.DTOs.PhotoDTOs;
 using Business.Services.PhotoServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace UI.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class PhotoController : Controller
     {

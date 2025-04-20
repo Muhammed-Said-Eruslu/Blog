@@ -4,46 +4,308 @@
     Layout = "_AdminLayout";
 }
 
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #7367f0;
+            --info-color: #00cfe8;
+            --border-color: #d8d6de;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+
+        body {
+            background-color: #f5f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+            padding: 1.25rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #5e5873;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+            .table th {
+                background-color: #f8f8f8;
+                padding: 1rem 0.75rem;
+                font-weight: 600;
+                color: #6e6b7b;
+                border-bottom: 1px solid var(--border-color);
+                white-space: nowrap;
+            }
+
+            .table td {
+                padding: 0.75rem;
+                vertical-align: middle;
+            }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            margin: 0.25rem 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #5e50ee;
+                box-shadow: 0 4px 12px rgba(115, 103, 240, 0.4);
+            }
+
+        .btn-info {
+            background-color: var(--info-color);
+            border: none;
+        }
+
+            .btn-info:hover {
+                background-color: #00b8d4;
+                box-shadow: 0 4px 12px rgba(0, 207, 232, 0.4);
+            }
+
+        .badge-category {
+            background-color: rgba(0, 207, 232, 0.1);
+            color: var(--info-color);
+            padding: 0.35rem 0.65rem;
+            border-radius: 50px;
+            font-weight: 500;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .text-muted {
+            color: #b8c2cc !important;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .table-row-mobile {
+            display: none;
+        }
+
+        /* Medium devices (tablets) */
+        @@media (max-width: 991.98px) {
+            .container-fluid
+
+        {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .card-header, .card-body {
+            padding: 1rem;
+        }
+
+        .btn {
+            padding: 0.4rem 0.75rem;
+        }
+
+        }
+
+        /* Small devices (landscape phones) */
+        @@media (max-width: 767.98px) {
+            .table-responsive
+
+        {
+            border-radius: 0;
+        }
+
+        /* Hide table headers */
+        .table thead {
+            display: none;
+        }
+
+        /* Convert rows to cards */
+        .table, .table tbody, .table tr {
+            display: block;
+            width: 100%;
+        }
+
+            .table tbody tr {
+                margin-bottom: 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(34, 41, 47, 0.05);
+            }
+
+            .table td {
+                display: flex;
+                padding: 0.75rem 1rem;
+                text-align: right;
+                justify-content: space-between;
+                border-bottom: 1px solid #f1f1f1;
+            }
+
+                .table td:last-child {
+                    border-bottom: none;
+                }
+
+        /* Add data labels */
+        .table-row-mobile {
+            display: block;
+            font-weight: 600;
+            color: #6e6b7b;
+            text-align: left;
+            margin-right: 1rem;
+        }
+
+        .action-buttons {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .card-title {
+            font-size: 1rem;
+        }
+
+        }
+
+        /* Extra small devices (phones) */
+        @@media (max-width: 575.98px) {
+            .action-buttons
+
+        {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            margin: 0.2rem 0;
+        }
+
+        .card-title i {
+            display: none;
+        }
+
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">
+                        <i class="bi bi-person-lines-fill me-2"></i>@ViewBag.Title
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Video</th>
+                                    <th>Kategori</th>
+                                    <th>Yazar ID</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="table-row-mobile">Başlık:</span>
+                                            <span>@post.Title</span>
+                                        </td>
+                                        <td>
+                                            <span class="table-row-mobile">Video:</span>
+                                            @if (!string.IsNullOrEmpty(post.VideoUrl))
+                                            {
+                                                <a href="@post.VideoUrl" target="_blank" class="text-primary">
+                                                    <i class="bi bi-play-circle me-1"></i>Video Linki
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Yok</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="table-row-mobile">Kategori:</span>
+                                            <span class="badge-category">@post.CategoryName</span>
+                                        </td>
+                                        <td>
+                                            <span class="table-row-mobile">Yazar ID:</span>
+                                            <span>@post.UserId</span>
+                                        </td>
+                                        <td>
+                                            <span class="table-row-mobile">İşlemler:</span>
+                                            <div class="action-buttons">
+                                                <a href="@Url.Action("Edit", new { id = post.Id })" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-pencil me-1"></i>Düzenle
+                                                </a>
+                                                <a href="@Url.Action("GetPostDetails", new { postId = post.Id })" class="btn btn-info btn-sm">
+                                                    <i class="bi bi-info-circle me-1"></i>Detaylar
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function () {
         @if (TempData["SuccessMessage"] != null)
         {
             <text>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Başarılı',
-                    text: '@TempData["SuccessMessage"]'
-                });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Başarılı',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonColor: '#7367f0'
+                    });
             </text>
         }
+        });
     </script>
 }
-
-<h2>Yazara Göre Yazılar</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Başlık</th>
-            <th>URL</th>
-            <th>Kategori</th>
-            <th>Yazar</th>
-            <th>İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var post in Model)
-        {
-            <tr>
-                <td>@post.Title</td>
-                <td>@post.VideoUrl</td>
-                <td>@post.CategoryName</td>
-                <td>@post.UserId</td>
-                <td>
-                    <a href="@Url.Action("Edit", new { id = post.Id })" class="btn btn-primary">Düzenle</a>
-                    <a href="@Url.Action("GetPostDetails", new { postId = post.Id })" class="btn btn-info">Detaylar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

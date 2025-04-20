@@ -11,6 +11,7 @@ using Domain.Enums;
 using Domain.Utilities.Concretes;
 using Domain.Utilities.Interfaces;
 using Mapster;  // Mapster'ı ekliyoruz
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace UI.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class PostController : Controller
     {

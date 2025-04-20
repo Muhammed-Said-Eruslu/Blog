@@ -14,11 +14,12 @@
             </div>
 
             <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <!-- Email Girişi -->
                 <div class="mb-3 text-start">
                     <label asp-for="Email" class="form-label">E-posta Adresi</label>
-                    <input asp-for="Email" class="form-control" placeholder="Email giriniz" required />
+                    <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
@@ -26,7 +27,7 @@
                 <div class="mb-3 text-start password-container">
                     <label asp-for="Password" class="form-label">Şifre</label>
                     <div class="input-group position-relative">
-                        <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Şifre giriniz" required />
+                        <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Şifrenizi giriniz" />
 
                         <!-- Valorant Tarzı Caps Lock Uyarısı -->
                         <div class="caps-lock-warning" id="capsLockWarning">
@@ -41,14 +42,6 @@
                         </button>
                     </div>
                     <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-
-                <!-- Beni Hatırla -->
-                <div class="form-check mb-3 text-start">
-                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">
-                        Beni Hatırla
-                    </label>
                 </div>
 
                 <!-- reCAPTCHA -->
@@ -78,12 +71,8 @@
 
                 <!-- Şifremi Unuttum -->
                 <div class="text-center mt-3">
-                    <!-- Şifremi Unuttum -->
-                    <div class="text-center mt-3">
-                        <a asp-action="ForgotPassword" class="text-decoration-none">Şifremi Unuttum</a>
-                    </div>
+                    <a asp-action="ForgotPassword" class="text-decoration-none">Şifremi Unuttum</a>
                 </div>
-
             </form>
         </div>
     </div>
@@ -91,6 +80,7 @@
 
 @section Scripts {
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <partial name="_ValidationScriptsPartial" />
 }
 
 <style>
@@ -108,7 +98,7 @@
         display: none;
         position: absolute;
         top: 50%;
-        right: 50px; /* Göz butonundan biraz solda */
+        right: 50px;
         transform: translateY(-50%);
         width: 24px;
         height: 24px;
@@ -146,7 +136,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-
         // 1) Şifre Göster/Gizle (Göz)
         document.querySelectorAll(".toggle-password").forEach(btn => {
             btn.addEventListener("click", function() {

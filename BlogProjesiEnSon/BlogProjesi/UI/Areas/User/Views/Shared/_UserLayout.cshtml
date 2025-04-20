@@ -1,14 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
-    <title>Elen - Blog Template</title>
+    <title>Şüphelenen Hakikate Yolculuk</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700" rel="stylesheet">
-
+    <link rel="icon" href="~/uploads/images/blogson.png" type="image/png" class="rounded-icon">
     <!-- Template CSS (Colorlib) -->
     <link rel="stylesheet" href="~/elen-master/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/elen-master/css/animate.css">
@@ -47,6 +47,14 @@
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .175);
             margin-top: 0.5rem !important;
         }
+
+        .rounded-icon {
+            width: 100px; /* İconun genişliği */
+            height: 100px; /* İconun yüksekliği */
+            border-radius: 50%; /* Yuvarlak hale getirme */
+            object-fit: cover; /* Resmin doğru şekilde sığmasını sağlar */
+        }
+
 
         .dropdown-item {
             padding: 0.5rem 1.5rem;
@@ -490,10 +498,10 @@
                 else
                 {
                     <div class="d-grid gap-2">
-                        <a href="~/User/Account/Login" class="btn btn-primary user-btn">
+                        <a href="@Url.Action("Login","Account", new {area = "User"})" class="btn btn-primary user-btn">
                             <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
                         </a>
-                        <a href="~/User/Account/Register" class="btn btn-outline-secondary user-btn">
+                        <a href="@Url.Action("Register","Account", new {area = "User"})" class="btn btn-outline-secondary user-btn">
                             <i class="fas fa-user-plus me-2"></i>Kayıt Ol
                         </a>
                     </div>
@@ -525,10 +533,9 @@
                     <br>Created by Muhammed Said Eruslu
                 </p>
                 <ul class="list-inline">
-                    <li class="list-inline-item"><a href="#"><i class="icon-facebook"></i></a></li>
-                    <li class="list-inline-item"><a href="#"><i class="icon-twitter"></i></a></li>
-                    <li class="list-inline-item"><a href="#"><i class="icon-instagram"></i></a></li>
-                    <li class="list-inline-item"><a href="#"><i class="icon-linkedin"></i></a></li>
+                    <li class="list-inline-item"><a href="https://www.facebook.com/share/1BttnEkXfo/"><i class="icon-facebook"></i></a></li>
+                    <li class="list-inline-item"><a href="https://www.instagram.com/ali_03011?igsh=MWRwYTFpOHFvNXpteg== "><i class="icon-instagram"></i></a></li>
+                    <li class="list-inline-item"><a href="https://www.linkedin.com/in/muhammed-said-eruslu-9799272b5/"><i class="icon-linkedin"></i></a></li>
                 </ul>
             </div>
         </aside>
@@ -544,57 +551,10 @@
             @RenderBody()
 
             <!-- Footer -->
+            <!-- Footer -->
             <footer class="ftco-footer ftco-bg-dark ftco-section">
                 <div class="container px-md-5">
-                    <div class="row mb-5">
-                        <div class="col-md-4">
-                            <div class="ftco-footer-widget mb-4">
-                                <h2 class="ftco-heading-2">Kategoriler</h2>
-                                <ul class="list-unstyled categories">
-                                    <li><a href="#">Teknoloji <span>(12)</span></a></li>
-                                    <li><a href="#">Yaşam <span>(8)</span></a></li>
-                                    <li><a href="#">Seyahat <span>(5)</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="ftco-footer-widget mb-4">
-                                <h2 class="ftco-heading-2">Arşiv</h2>
-                                <ul class="list-unstyled categories">
-                                    <li><a href="#">Ocak 2024 <span>(5)</span></a></li>
-                                    <li><a href="#">Şubat 2024 <span>(3)</span></a></li>
-                                    <li><a href="#">Mart 2024 <span>(7)</span></a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="ftco-footer-widget mb-4">
-                                <h2 class="ftco-heading-2">İletişim</h2>
-                                <div class="block-23 mb-4">
-                                    <ul>
-                                        <li>
-                                            <span class="icon icon-envelope"></span>
-                                            <span class="text">silentsite@gmail.com</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- FİX: Abone Ol bölümü daima görünür olacak -->
-                                <div class="subscribe-form">
-                                    <span class="subscribe-heading">Bültenimize Abone Olun</span>
-                                    <form asp-controller="Common" asp-action="Subscribe" method="post">
-                                        <div class="form-group d-flex" >
-                                            <input type="email" name="email" class="form-control" placeholder="E-posta adresiniz" required />
-                                            <button type="submit" class="btn btn-dark">
-                                                <i class="fa fa-paper-plane"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @await Component.InvokeAsync("Footer")
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <p>

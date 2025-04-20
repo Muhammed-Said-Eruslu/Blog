@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Core.İnterfaces;
 using Business.DTOs.TagDTOs;
 using Business.DTOs.PostTagDTOs;
+using Business.Helpers;
 
 namespace Business.Services.PostServices
 {
@@ -196,7 +197,10 @@ namespace Business.Services.PostServices
                 Slug = p.Slug,
                 LikeCount = p.LikeCount,
                 ViewCount = p.ViewCount,
-                CommentCount = p.Comments.Count()
+                CommentCount = p.Comments.Count(),
+                VideoUrl = p.VideoUrl,
+                FullName = p.User.FullName
+
             }).ToList();
 
             return new SuccessDataResult<List<PostListDTO>>(postListDTOs, "Popular posts retrieved successfully.");
@@ -207,13 +211,18 @@ namespace Business.Services.PostServices
         public async Task<IDataResult<PostDTO>> GetPostBySlugAsync(string slug)
         {
             var post = await _postRepository.GetAsync(
-                predicate: p => p.Slug == slug,
-                include: query => query
-                    .Include(p => p.User)
-                    .Include(p => p.Category)
-                    .Include(p => p.Comments).ThenInclude(c => c.User)
-                    .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
-            );
+         predicate: p => p.Slug == slug,
+         include: query => query
+             .Include(p => p.User)
+             .Include(p => p.Category)
+             .Include(p => p.Comments)
+                 .ThenInclude(c => c.User)
+             .Include(p => p.Comments)
+                 .ThenInclude(c => c.Replies) // Alt yorumları include et
+                 .ThenInclude(r => r.User)
+             .Include(p => p.PostTag)
+                 .ThenInclude(pt => pt.Tag)
+     );
 
             if (post == null)
                 return new ErrorDataResult<PostDTO>(null, "Post not found.");
@@ -591,7 +600,7 @@ namespace Business.Services.PostServices
             return new SuccessDataResult<List<PostListDTO>>(postListDTOs, "Filtered posts retrieved successfully.");
         }
 
-        
+
 
         public async Task<IDataResult<List<PostListDTO>>> GetRelatedTagPostsAsync(Guid postId, int count = 5)
         {
@@ -671,7 +680,65 @@ namespace Business.Services.PostServices
             return new SuccessDataResult<Post>(post, "Beğeni durumu değiştirildi.");
         }
 
+        public async Task<IDataResult<Post>> GetPostWithIncludesAsync(string slug)
+        {
+            try
+            {
+                var post = await _postRepository.GetAsync(
+           p => p.Slug == slug,
+           include: query => query
+               .Include(p => p.Comments)
+                   .ThenInclude(c => c.User)
+               .Include(p => p.Comments)
+                   .ThenInclude(c => c.Replies)
+                   .ThenInclude(r => r.User)
+       );
 
+                if (post == null)
+                {
+                    return new ErrorDataResult<Post>("Post bulunamadı.");
+                }
 
+                return new SuccessDataResult<Post>(post, "Post başarıyla getirildi.");
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<Post>($"Post getirilirken hata oluştu: {ex.Message}");
+            }
+        }
+
+        public async Task<IDataResult<PostDetailDTO>> GetPostWithFullComments(string slug)
+        {
+            var post = await _postRepository.GetPostWithComments(slug);
+
+            if (post == null)
+                return new ErrorDataResult<PostDetailDTO>("Post bulunamadı");
+
+            var dto = post.Adapt<PostDetailDTO>();
+
+            // DEBUG: Kontrol için
+            Console.WriteLine($"Toplam Yorum: {post.Comments.Count}");
+            Console.WriteLine($"Ana Yorum: {post.Comments.Count(c => c.ParentCommentId == null)}");
+
+            return new SuccessDataResult<PostDetailDTO>(dto,"Yorumlar Başarılı Bir Şekilde Getirildi");
+        }
+
+        public async Task<IDataResult<List<CommentDTO>>> GetPostCommentsWithReplies(string slug)
+        {
+            var post = await _postRepository.GetAsync(
+                p => p.Slug == slug,
+                include: q => q.Include(p => p.Comments)
+                              .ThenInclude(c => c.User)
+                              .Include(p => p.Comments)
+                              .ThenInclude(c => c.Replies)
+                              .ThenInclude(r => r.User)
+            );
+
+            if (post == null)
+                return new ErrorDataResult<List<CommentDTO>>("Post bulunamadı");
+
+            var comments = CommentMappingHelper.MapCommentsWithReplies(post.Comments.ToList());
+            return new SuccessDataResult<List<CommentDTO>>(comments,"Yorumlar Başarılı Bir Şekilde Getirildi");
+        }
     }
 }

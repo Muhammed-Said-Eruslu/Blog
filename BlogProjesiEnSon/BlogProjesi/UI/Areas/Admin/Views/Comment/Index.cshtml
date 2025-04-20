@@ -6,46 +6,417 @@
     Layout = "_AdminLayout";
 }
 
+@section Styles {
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <style>
+        :root {
+            --primary: #7367f0;
+            --secondary: #82868b;
+            --success: #28c76f;
+            --info: #00cfe8;
+            --warning: #ff9f43;
+            --danger: #ea5455;
+            --light: #f6f6f6;
+            --dark: #4b4b4b;
+            --border: #e0e0e0;
+            --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            background: white;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px 10px 0 0 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+
+        .badge-count {
+            background-color: rgba(115, 103, 240, 0.1);
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .input-group {
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .input-group-text {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+            .table th {
+                background-color: #f5f5f5;
+                color: var(--dark);
+                font-weight: 600;
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid var(--border);
+                white-space: nowrap;
+            }
+
+            .table td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-top: 1px solid var(--border);
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(115, 103, 240, 0.03);
+        }
+
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+            .btn i {
+                margin-right: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8125rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #5d50e6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(115, 103, 240, 0.3);
+            }
+
+        .btn-info {
+            background-color: var(--info);
+            color: white;
+        }
+
+            .btn-info:hover {
+                background-color: #00b5c8;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 207, 232, 0.3);
+            }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+            .btn-warning:hover {
+                background-color: #ff8f1a;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 159, 67, 0.3);
+            }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #e03535;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(234, 84, 85, 0.3);
+            }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(115, 103, 240, 0.3);
+            z-index: 99;
+            transition: all 0.3s ease;
+            min-width: 160px;
+        }
+
+            .floating-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 16px rgba(115, 103, 240, 0.4);
+            }
+
+        .comment-content {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* DataTables Özelleştirmeleri */
+        div.dataTables_wrapper div.dataTables_filter input {
+            margin-left: 0.5em;
+            display: inline-block;
+            width: auto;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        div.dataTables_wrapper div.dataTables_length select {
+            width: auto;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .dataTables_info, .dataTables_paginate {
+            margin-top: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .page-link {
+            color: var(--primary);
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Responsive adjustment for DataTables */
+        table.dataTable.dtr-inline.collapsed > tbody > tr > td.dtr-control:before,
+        table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
+            background-color: var(--primary);
+            border-radius: 6px;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 992px) {
+            .table td, .table th
+
+        {
+            padding: 0.75rem;
+        }
+
+        .comment-content {
+            max-width: 200px;
+        }
+
+        }
+
+        @@media (max-width: 768px) {
+            .filter-group
+
+        {
+            min-width: 100%;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table-responsive {
+            border-radius: 0;
+        }
+
+        .comment-content {
+            max-width: 150px;
+        }
+
+        .floating-btn {
+            min-width: auto;
+            padding: 0.75rem 1rem;
+            right: 1.5rem;
+            bottom: 1.5rem;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .page-header
+
+        {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .table td, .table th {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .comment-content {
+            max-width: 120px;
+        }
+
+        .floating-btn {
+            right: 1rem;
+            bottom: 1rem;
+        }
+
+        div.dataTables_wrapper div.dataTables_filter,
+        div.dataTables_wrapper div.dataTables_length,
+        div.dataTables_wrapper div.dataTables_info {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        div.dataTables_wrapper div.dataTables_paginate {
+            text-align: center;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        }
+    </style>
+}
+
 <div class="container-fluid">
     <!-- Başlık -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+    <div class="page-header">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="bi bi-chat-square-text me-2"></i> @ViewData["Title"]
+        </h1>
+        <div class="badge-count">
+            <i class="bi bi-collection me-1"></i> @Model.Count Yorum
+        </div>
     </div>
 
-    <!-- Filtreleme Butonları -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Filtreleme Seçenekleri</h6>
+    <!-- Filtreleme Bölümü -->
+    <div class="card filter-section">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold">
+                <i class="bi bi-funnel me-2"></i> Filtreleme Seçenekleri
+            </h6>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <form method="get" asp-action="ByUser" class="form-inline">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <form method="get" asp-action="ByUser">
                         <div class="input-group">
                             <input type="text" name="userId" class="form-control" placeholder="Kullanıcı ID" required />
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search"></i> Kullanıcı Yorumları
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search me-1"></i> Kullanıcı Yorumları
+                            </button>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-4">
-                    <form method="get" asp-action="ByPost" class="form-inline">
+                <div class="filter-group">
+                    <form method="get" asp-action="ByPost">
                         <div class="input-group">
                             <input type="text" name="postId" class="form-control" placeholder="Yazı ID" required />
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search"></i> Yazıya Göre Yorumlar
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search me-1"></i> Yazıya Göre Yorumlar
+                            </button>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-4">
-                    <a asp-action="RecentComments" class="btn btn-info btn-block">
-                        <i class="fas fa-clock"></i> Son Yorumlar
+                <div class="filter-group">
+                    <a asp-action="RecentComments" class="btn btn-info w-100">
+                        <i class="bi bi-clock-history me-1"></i> Son Yorumlar
                     </a>
                 </div>
             </div>
@@ -53,21 +424,23 @@
     </div>
 
     <!-- Yorumlar Tablosu -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Yorum Listesi</h6>
+    <div class="card">
+        <div class="card-header">
+            <h6 class="m-0 font-weight-bold">
+                <i class="bi bi-list-ul me-2"></i> Yorum Listesi
+            </h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover">
-                    <thead class="thead-dark">
+                <table id="commentsTable" class="table table-hover" style="width:100%">
+                    <thead>
                         <tr>
-                            <th>Id</th>
+                            <th>ID</th>
                             <th>İçerik</th>
-                            <th>Oluşturulma Tarihi</th>
+                            <th>Tarih</th>
                             <th>Yazar</th>
                             <th>Yazı ID</th>
-                            <th>İşlemler</th>
+                            <th data-orderable="false">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,23 +448,23 @@
                         {
                             <tr>
                                 <td>@item.Id</td>
-                                <td>@item.Content.Truncate(50)</td>
-                                <td>@item.CreatedDate.ToString("dd MMM yyyy")</td>
-                                <td>@item.AuthorName</td>
+                                <td class="comment-content" title="@item.Content">@item.Content.Truncate(50)</td>
+                                <td data-order="@item.CreatedDate.ToString("yyyy-MM-dd")">@item.CreatedDate.ToString("dd MMM yyyy")</td>
+                                <td>@(item.AuthorName ?? "Bilinmiyor")</td>
                                 <td>@item.PostId</td>
                                 <td>
-                                    <div class="btn-group" role="group">
+                                    <div class="action-buttons">
                                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
-                                            <i class="fas fa-info"></i> Detaylar
+                                            <i class="bi bi-info-circle"></i> Detay
                                         </a>
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> Güncelle
+                                            <i class="bi bi-pencil"></i> Düzenle
                                         </a>
                                         <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@item.Id">
-                                            <i class="fas fa-trash"></i> Sil
+                                            <i class="bi bi-trash"></i> Sil
                                         </button>
                                         <a asp-action="WithReplies" asp-route-commentId="@item.Id" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-comments"></i> Yanıtlar
+                                            <i class="bi bi-chat-left-text"></i> Yanıtlar
                                         </a>
                                     </div>
                                 </td>
@@ -103,46 +476,118 @@
         </div>
     </div>
 </div>
-<!-- Yeni Yorum Ekle Butonu -->
-<a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-    <i class="fas fa-plus fa-sm text-white-50"></i> Test Yorumu Ekle
-</a>
-<!-- SweetAlert ve Silme İşlemi -->
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".delete-btn").forEach(button => {
-                button.addEventListener("click", function () {
-                    let commentId = this.getAttribute("data-id");
 
-                    Swal.fire({
-                        title: "Emin misiniz?",
-                        text: "Bu yorumu geri alamazsınız!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#d33",
-                        cancelButtonColor: "#3085d6",
-                        confirmButtonText: "Evet, sil!",
-                        cancelButtonText: "İptal"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/Admin/Comment/Delete/${commentId}`, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ id: commentId })
-                            }).then(response => {
-                                if (response.ok) {
-                                    Swal.fire("Silindi!", "Yorum başarıyla silindi.", "success")
-                                        .then(() => location.reload());
+<!-- Yeni Yorum Ekle Butonu -->
+<a asp-action="Create" class="floating-btn btn btn-primary">
+    <i class="bi bi-plus me-1" style="font-size: 1rem;"></i> Yorum Ekle
+</a>
+
+@section Scripts {
+    <!-- DataTables Scripts -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            // DataTable initialization
+            $('#commentsTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json',
+                },
+                order: [[0, 'desc']], // ID'ye göre azalan sıralama
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 }, // ID
+                    { responsivePriority: 2, targets: 1 }, // İçerik
+                    { responsivePriority: 3, targets: 5 }  // İşlemler
+                ],
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tümü"]],
+                dom: '<"d-flex justify-content-between align-items-center flex-wrap mb-3"lf>rt<"d-flex justify-content-between align-items-center flex-wrap"ip>'
+            });
+
+            // Silme butonu işlemi
+            $('.delete-btn').click(function () {
+                const commentId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Emin misiniz?',
+                    text: "Bu yorumu silmek istediğinize emin misiniz? Bu işlem geri alınamaz!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ea5455',
+                    cancelButtonColor: '#7367f0',
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'İptal',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'border-radius-10'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Comment")/' + commentId,
+                            type: 'POST',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Silindi!',
+                                        text: 'Yorum başarıyla silindi.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7367f0',
+                                        customClass: {
+                                            popup: 'border-radius-10'
+                                        }
+                                    }).then(() => {
+                                        location.reload();
+                                    });
                                 } else {
-                                    Swal.fire("Hata!", "Yorum silinemedi.", "error");
+                                    Swal.fire({
+                                        title: 'Hata!',
+                                        text: response.message || 'Yorum silinirken bir hata oluştu.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#ea5455',
+                                        customClass: {
+                                            popup: 'border-radius-10'
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: 'Hata!',
+                                    text: 'Bir hata oluştu, lütfen tekrar deneyin.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#ea5455',
+                                    customClass: {
+                                        popup: 'border-radius-10'
+                                    }
+                                });
+                            }
+                        });
+                    }
                 });
             });
+
+            // Başarı mesajı gösterimi
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            title: 'Başarılı!',
+                            text: '@TempData["SuccessMessage"]',
+                            icon: 'success',
+                            confirmButtonColor: '#7367f0',
+                            customClass: {
+                                popup: 'border-radius-10'
+                            }
+                        });
+            </text>
+        }
         });
     </script>
 }

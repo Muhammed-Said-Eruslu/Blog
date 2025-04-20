@@ -1,30 +1,181 @@
 ﻿@model IEnumerable<Business.DTOs.TagDTOs.TagDTO>
-
 @{
     ViewData["Title"] = "Popüler Etiketler";
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4">
-    <div class="card shadow border-0">
-        <div class="card-header bg-warning text-white">
-            <h4>Popüler Etiketler</h4>
+<style>
+    .popular-tags-card {
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.35rem 1.5rem rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+        .popular-tags-card:hover {
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
+        }
+
+    .card-header-popular {
+        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 1.5rem;
+    }
+
+    .tag-list-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+        .tag-list-item:hover {
+            background-color: #f8f9fc;
+            border-left: 4px solid #4e73df;
+            transform: translateX(5px);
+        }
+
+    .tag-rank {
+        font-weight: 700;
+        color: #4e73df;
+        margin-right: 1.5rem;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .tag-name {
+        font-weight: 600;
+        color: #5a5c69;
+        flex-grow: 1;
+    }
+
+    .tag-count {
+        background-color: #e74a3b;
+        color: white;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #858796;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #dddfeb;
+            margin-bottom: 1rem;
+        }
+
+    .btn-back {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(108, 117, 125, 0.25);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 768px) {
+        .card-header-popular {
+            padding: 1.25rem;
+        }
+
+        .tag-list-item {
+            padding: 0.75rem 1rem;
+        }
+
+        .tag-rank {
+            margin-right: 1rem;
+            min-width: 25px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-fire mr-2 text-danger"></i>@ViewData["Title"]
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Etiket Yönetimi</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Popüler Etiketler</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Popular Tags Card -->
+    <div class="card popular-tags-card mb-4">
+        <div class="card-header card-header-popular">
+            <div class="d-flex align-items-center justify-content-between">
+                <h4 class="m-0 text-white">
+                    <i class="fas fa-chart-line mr-2"></i>En Çok Kullanılan Etiketler
+                </h4>
+                <span class="badge bg-white text-dark">
+                    <i class="fas fa-tags mr-1"></i> Toplam @Model.Count()
+                </span>
+            </div>
         </div>
-        <div class="card-body">
+
+        <div class="card-body p-0">
             @if (!Model.Any())
             {
-                <p class="text-muted">Popüler etiket bulunamadı.</p>
+                <div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <h5>Popüler etiket bulunamadı</h5>
+                    <p class="mb-0">Henüz yeterli veri toplanmamış</p>
+                </div>
             }
             else
             {
-                <ol class="list-group list-group-numbered">
+                <div class="list-group list-group-flush">
+                    @{
+                        int rank = 1;
+                    }
                     @foreach (var tag in Model)
                     {
-                        <li class="list-group-item">@tag.Name</li>
+                        <div class="list-group-item tag-list-item">
+                            <span class="tag-rank">@(rank++)</span>
+                            <span class="tag-name">
+                                <i class="fas fa-tag mr-2" style="color: #4e73df"></i>@tag.Name
+                                @if (!string.IsNullOrEmpty(tag.Description))
+                                {
+                                    <small class="d-block text-muted mt-1">@tag.Description</small>
+                                }
+                            </span>
+                      @*       @if (tag.PostCount > 0)
+                            {
+                                <span class="tag-count" title="@tag.PostCount gönderi">
+                                    @tag.PostCount
+                                </span>
+                            } *@
+                        </div>
                     }
-                </ol>
+                </div>
             }
-            <a asp-action="Index" class="btn btn-secondary mt-3">Geri Dön</a>
+
+            <div class="card-footer bg-white border-0 text-right">
+                <a asp-action="Index" class="btn btn-back">
+                    <i class="fas fa-arrow-left mr-2"></i>Geri Dön
+                </a>
+            </div>
         </div>
     </div>
 </div>

@@ -76,12 +76,7 @@ namespace UI.Areas.User.Controllers
         [HttpGet("Details/{slug}")]
         public async Task<IActionResult> Details(string slug)
         {
-            var result = await _postService.GetPostWithIncludesAsync<Post>(
-                slug,
-                query => query
-                    .Include(p => p.PostTag).ThenInclude(pt => pt.Tag)
-                    .Include(p => p.Comments).ThenInclude(c => c.User)
-            );
+            var result = await _postService.GetPostWithIncludesAsync(slug);
 
             if (!result.IsSucces || result.Data == null)
             {
@@ -94,7 +89,11 @@ namespace UI.Areas.User.Controllers
 
             // PostDetailDTO'ya çevir
             var postDetailDto = result.Data.Adapt<PostDetailDTO>();
-            postDetailDto.Comments = CommentMappingHelper.MapCommentsWithReplies(result.Data.Comments.ToList());
+
+    //           postDetailDto.Comments = CommentMappingHelper.MapCommentsWithReplies(
+    //    result.Data.Comments.ToList() // Burada tüm yorumlar gelmeli
+    //);
+
 
             // İlişkili verileri doldur
             var relatedTagResult = await _postService.GetRelatedTagPostsAsync(result.Data.Id);
@@ -110,52 +109,75 @@ namespace UI.Areas.User.Controllers
             return View(postDetailDto);
         }
 
-        /// <summary>
-        /// Yorum ekleme
-        /// </summary>
         [HttpPost("User/Post/AddComment")]
         public async Task<IActionResult> AddComment(CommentCreateDTO model)
         {
+            // Sadece AJAX isteklerine cevap ver (SPA tarzı uygulamalar için)
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
             if (!Guid.TryParse(userIdClaim, out Guid userId))
             {
-                TempData["ErrorMessage"] = "Kullanıcı bilgisi alınamadı.";
-                return RedirectToAction("Details", new { slug = model.PostSlug });
+                return isAjax
+                    ? Json(new { success = false, message = "Kullanıcı bilgisi alınamadı." })
+                    : RedirectToLogin(model.PostSlug);
             }
 
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
-                return RedirectToAction("Details", new { slug = model.PostSlug });
+                return isAjax
+                    ? Json(new { success = false, message = "Kullanıcı bulunamadı." })
+                    : RedirectToLogin(model.PostSlug);
             }
 
-
+            // Modeli hazırla
             model.UserId = userId;
-            model.AuthorProfileImage = user.ProfileImage ?? "default-avatar.png";
-            model.AuthorEmail = model.AuthorName;
+            model.AuthorName = user.UserName;
+            model.AuthorProfileImage = user.ProfileImage ?? "/images/default-avatar.png";
+            model.ParentCommentId = model.ParentCommentId == Guid.Empty ? null : model.ParentCommentId;
 
-
+            // Validasyon
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Lütfen tüm alanları doldurun.";
-                return RedirectToAction("Details", new { slug = model.PostSlug });
+                return isAjax
+                    ? Json(new { success = false, message = "Lütfen tüm alanları doldurun." })
+                    : RedirectWithError(model.PostSlug, "Lütfen tüm alanları doldurun.");
             }
 
             var result = await _commentService.AddAsync(model);
 
             if (!result.IsSucces)
             {
-                TempData["ErrorMessage"] = result.Message;
-            }
-            else
-            {
-                TempData["SuccessMessage"] = "Yorumunuz başarıyla eklendi!";
+                return isAjax
+                    ? Json(new { success = false, message = result.Message })
+                    : RedirectWithError(model.PostSlug, result.Message);
             }
 
-            return RedirectToAction("Details", new { slug = model.PostSlug });
+            // Başarılı sonuç - AJAX isteklerinde yönlendirme yapma, sadece bilgi dön
+            if (isAjax)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "Yorumunuz başarıyla eklendi!",
+                    comment = new
+                    {
+                        id = result.Message,
+                        authorName = model.AuthorName,
+                        authorProfileImage = model.AuthorProfileImage,
+                        content = model.Content,
+                        parentCommentId = model.ParentCommentId,
+                        createdAt = DateTime.Now.ToString("dd MMM yyyy HH:mm")
+                    },
+                    // Doğru URL formatını oluştur
+                    redirectUrl = $"/Details/{model.PostSlug}"
+                });
+            }
+
+            // Normal form post için yönlendirme
+            TempData["SuccessMessage"] = "Yorumunuz başarıyla eklendi!";
+            return Redirect($"/Details/{model.PostSlug}");
         }
 
 
@@ -353,6 +375,16 @@ namespace UI.Areas.User.Controllers
             var photos = await _photoService.GetAllPhotosAsync();
             return View(photos);
         }
+        private IActionResult RedirectToLogin(string slug)
+        {
+            TempData["ErrorMessage"] = "Lütfen giriş yapınız.";
+            return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Details", "Post", new { slug }) });
+        }
 
+        private IActionResult RedirectWithError(string slug, string errorMessage)
+        {
+            TempData["ErrorMessage"] = errorMessage;
+            return RedirectToAction("Details", new { slug });
+        }
     }
 }
