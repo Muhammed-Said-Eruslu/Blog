@@ -19,26 +19,30 @@
                 <!-- Ad Girişi -->
                 <div class="mb-3 text-start">
                     <label asp-for="FirstName" class="form-label">Adınız</label>
-                    <input asp-for="FirstName" class="form-control" placeholder="Adınızı giriniz" required />
+                    <input asp-for="FirstName" class="form-control" placeholder="Adınızı giriniz"  />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
                 <!-- Soyad Girişi -->
                 <div class="mb-3 text-start">
                     <label asp-for="LastName" class="form-label">Soyadınız</label>
-                    <input asp-for="LastName" class="form-control" placeholder="Soyadınızı giriniz" required />
+                    <input asp-for="LastName" class="form-control" placeholder="Soyadınızı giriniz"  />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
 
                 <!-- E-posta Girişi -->
                 <div class="mb-3 text-start">
                     <label asp-for="Email" class="form-label">E-posta Adresi</label>
-                    <input asp-for="Email" type="email" class="form-control" placeholder="E-posta adresinizi giriniz" required />
+                    <input asp-for="Email" type="email" class="form-control" placeholder="E-posta adresinizi giriniz"  />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <!-- Şifre Girişi -->
                 <div class="mb-3 text-start password-container">
                     <label asp-for="Password" class="form-label">Şifre</label>
                     <div class="input-group position-relative">
-                        <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Şifrenizi giriniz" required />
+                        <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Şifrenizi giriniz"  />
+                        <span asp-validation-for="Password" class="text-danger"></span>
 
                         <!-- Valorant Tarzı Caps Lock Uyarısı -->
                         <div class="caps-lock-warning" id="capsLockWarning">
@@ -67,15 +71,19 @@
                 <div class="mb-3 text-start">
                     <label asp-for="Gender" class="form-label">Cinsiyet</label>
                     <select asp-for="Gender" class="form-select">
+                        <option value="">Seçiniz</option> <!-- Boş bir default değer koyuyoruz -->
                         <option value="Male">Erkek</option>
                         <option value="Female">Kadın</option>
                     </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
+
 
                 <!-- Doğum Tarihi -->
                 <div class="mb-3 text-start">
                     <label asp-for="BirthDate" class="form-label">Doğum Tarihi</label>
                     <input asp-for="BirthDate" type="date" class="form-control" />
+                    <span asp-validation-for="BirthDate" class="text-danger"></span>
                 </div>
 
                 <!-- reCAPTCHA -->
@@ -226,3 +234,6 @@
         });
     });
 </script>
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
